@@ -1,1 +1,1562 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ecossistema Institucional YM — v2.0 · Central Operacional</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+:root{
+  --azul:#0A2540;--azul2:#0D1B35;--vivo:#0066FF;--vivo2:#3D47C4;--branco:#FFFFFF;
+  --off:#F7F9FC;--borda:#E4EAF2;--cinza:#6B7A99;--escuro:#2D3A50;
+  --verde:#059669;--verde-bg:#ECFDF5;--amarelo:#B45309;--amarelo-bg:#FFFBEB;
+  --vermelho:#DC2626;--vermelho-bg:#FEF2F2;--roxo:#7C3AED;--roxo-bg:#F5F1FE;
+  --sidebar-w:288px;
+}
+body{background:var(--off);color:var(--azul);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
 
+/* ───── SIDEBAR ───── */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--azul2);z-index:100;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,.06)}
+.sb-brand{padding:22px 22px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:11px;flex-shrink:0}
+.sb-brand svg{width:26px;flex-shrink:0}
+.sb-brand-txt{line-height:1.2}
+.sb-brand-name{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff}
+.sb-brand-sub{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:2px}
+.sb-nav{flex:1;overflow-y:auto;padding:14px 12px 28px}
+.sb-nav::-webkit-scrollbar{width:6px}
+.sb-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+.sb-group{margin-bottom:3px}
+.sb-group-head{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:9px;cursor:pointer;transition:background .15s;user-select:none}
+.sb-group-head:hover{background:rgba(255,255,255,.05)}
+.sb-group-head.active{background:rgba(0,102,255,.16)}
+.sb-num{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:rgba(0,102,255,.7);width:18px;flex-shrink:0}
+.sb-group-head.active .sb-num{color:#5BA4FF}
+.sb-label{flex:1;font-size:13px;font-weight:600;color:rgba(255,255,255,.82)}
+.sb-group-head.active .sb-label{color:#fff}
+.sb-chev{width:11px;height:11px;flex-shrink:0;transition:transform .25s;opacity:.5}
+.sb-group.open .sb-chev{transform:rotate(90deg)}
+.sb-sub{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.sb-group.open .sb-sub{max-height:520px}
+.sb-sub a{display:block;padding:7px 13px 7px 42px;font-size:12px;color:rgba(255,255,255,.5);text-decoration:none;border-radius:7px;transition:all .15s}
+.sb-sub a:hover{color:#fff;background:rgba(255,255,255,.04)}
+.sb-sub a.active{color:#5BA4FF;font-weight:600}
+
+/* ───── MAIN ───── */
+.main{margin-left:var(--sidebar-w)}
+.topbar{position:sticky;top:0;z-index:50;height:54px;background:rgba(247,249,252,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--borda);display:flex;align-items:center;padding:0 40px;gap:14px}
+.tb-crumb{font-size:12px;color:var(--cinza);font-weight:500}
+.tb-crumb b{color:var(--azul);font-weight:700}
+.tb-status{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--vivo);background:rgba(0,102,255,.07);border:1px solid rgba(0,102,255,.18);padding:5px 13px;border-radius:20px}
+.tb-status .dot{width:7px;height:7px;border-radius:50%;background:var(--vivo);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 40px 120px}
+
+/* ───── HERO ───── */
+.hero{background:var(--azul2);margin:0 -40px 0;padding:64px 40px 56px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:48px 48px}
+.hero::after{content:'';position:absolute;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(0,102,255,.16) 0%,transparent 70%);top:-120px;right:-80px;pointer-events:none}
+.hero-in{position:relative;z-index:2;max-width:740px}
+.hero-kick{display:flex;align-items:center;gap:9px;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.42);margin-bottom:18px}
+.hero-kick span{width:26px;height:1px;background:rgba(255,255,255,.25)}
+.hero h1{font-family:'Montserrat',sans-serif;font-size:clamp(30px,4vw,46px);font-weight:800;line-height:1.05;letter-spacing:-.03em;color:#fff;margin-bottom:16px}
+.hero h1 em{font-style:normal;color:rgba(255,255,255,.34)}
+.hero p{font-size:14px;color:rgba(255,255,255,.55);max-width:560px;line-height:1.8;margin-bottom:28px}
+.hero-meta{display:flex;gap:10px;flex-wrap:wrap}
+.hm{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 15px;font-size:11px;color:rgba(255,255,255,.62)}
+.hm b{color:#fff;font-weight:700}
+
+/* ───── SECTIONS ───── */
+.sec{padding:56px 0 8px;scroll-margin-top:70px}
+.sec-head{margin-bottom:28px}
+.sk{display:flex;align-items:center;gap:9px;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--vivo);margin-bottom:10px}
+.sk::before{content:'';width:18px;height:2px;background:var(--vivo)}
+.st{font-family:'Montserrat',sans-serif;font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.025em;color:var(--azul);line-height:1.1;margin-bottom:8px}
+.sl{font-size:13px;color:var(--cinza);max-width:600px;line-height:1.7}
+
+.sub{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--azul);margin:30px 0 14px;display:flex;align-items:center;gap:9px;scroll-margin-top:70px}
+.sub::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--vivo)}
+
+/* ───── CARDS ───── */
+.card{background:#fff;border:1px solid var(--borda);border-radius:14px;padding:22px 24px;margin-bottom:14px}
+.card-t{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:var(--azul);margin-bottom:8px;display:flex;align-items:center;gap:9px}
+.card p{font-size:13px;color:var(--escuro);line-height:1.7}
+.card p+p{margin-top:8px}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:880px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+
+.mini{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:18px}
+.mini-k{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--cinza);margin-bottom:8px}
+.mini-v{font-size:13px;color:var(--escuro);line-height:1.6}
+.mini-big{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:800;color:var(--vivo);line-height:1;margin-bottom:5px}
+
+/* badge */
+.bg{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:20px}
+.bg-v{background:var(--verde-bg);color:var(--verde);border:1px solid rgba(5,150,105,.2)}
+.bg-a{background:var(--amarelo-bg);color:var(--amarelo);border:1px solid rgba(180,83,9,.2)}
+.bg-r{background:var(--vermelho-bg);color:var(--vermelho);border:1px solid rgba(220,38,38,.2)}
+.bg-b{background:rgba(0,102,255,.08);color:var(--vivo);border:1px solid rgba(0,102,255,.2)}
+.bg-x{background:var(--roxo-bg);color:var(--roxo);border:1px solid rgba(124,58,237,.2)}
+
+/* tabela */
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--borda);border-radius:12px;overflow:hidden;margin-bottom:14px;font-size:12.5px}
+thead{background:var(--azul2)}
+th{padding:12px 14px;text-align:left;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.85)}
+td{padding:12px 14px;border-top:1px solid var(--borda);color:var(--escuro);vertical-align:top;line-height:1.55}
+tbody tr:nth-child(even){background:var(--off)}
+td b{color:var(--azul);font-weight:700}
+.mono{font-family:'JetBrains Mono','Courier New',monospace;font-size:11.5px;color:var(--vivo);background:rgba(0,102,255,.06);padding:1px 6px;border-radius:4px}
+
+/* lista */
+.lst{list-style:none;display:flex;flex-direction:column;gap:9px}
+.lst li{font-size:13px;color:var(--escuro);line-height:1.6;padding-left:22px;position:relative}
+.lst li::before{content:'';position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:2px;background:var(--vivo);opacity:.55}
+.lst.check li::before{content:'✓';background:none;color:var(--verde);font-weight:800;font-size:13px;top:0;width:auto;opacity:1}
+.lst.no li::before{content:'✕';background:none;color:var(--vermelho);font-weight:800;font-size:12px;top:1px;width:auto;opacity:1}
+
+/* aviso */
+.aviso{border-radius:11px;padding:15px 18px;font-size:12.5px;line-height:1.7;display:flex;gap:11px;align-items:flex-start;margin-bottom:14px}
+.aviso .ic{font-size:15px;flex-shrink:0;margin-top:1px}
+.aviso b{font-weight:700}
+.av-b{background:rgba(0,102,255,.05);border:1px solid rgba(0,102,255,.16);color:var(--escuro)}
+.av-b b{color:var(--vivo)}
+.av-a{background:var(--amarelo-bg);border:1px solid rgba(180,83,9,.18);color:#7c4a08}
+.av-a b{color:var(--amarelo)}
+.av-r{background:var(--vermelho-bg);border:1px solid rgba(220,38,38,.16);color:#991b1b}
+
+/* quote */
+.quote{background:linear-gradient(135deg,var(--azul2),#13294d);border-radius:14px;padding:26px 28px;margin-bottom:14px;position:relative;overflow:hidden}
+.quote::before{content:'"';position:absolute;top:-10px;right:18px;font-family:Georgia,serif;font-size:120px;color:rgba(255,255,255,.06);line-height:1}
+.quote p{font-family:'Montserrat',sans-serif;font-size:17px;font-weight:600;color:#fff;line-height:1.5;position:relative;z-index:2}
+.quote span{display:block;margin-top:12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(91,164,255,.9);font-weight:600;position:relative;z-index:2}
+
+/* fluxo / funil */
+.flow{display:flex;flex-direction:column;gap:0;margin-bottom:14px}
+.flow-step{display:flex;gap:16px;align-items:flex-start;position:relative;padding-bottom:18px}
+.flow-step:not(:last-child)::before{content:'';position:absolute;left:17px;top:36px;bottom:0;width:2px;background:var(--borda)}
+.flow-dot{width:36px;height:36px;border-radius:10px;background:var(--azul2);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:14px;flex-shrink:0;z-index:2}
+.flow-dot.paid{background:var(--vivo)}
+.flow-body{flex:1;padding-top:5px}
+.flow-body h4{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;color:var(--azul);margin-bottom:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.flow-body p{font-size:12.5px;color:var(--cinza);line-height:1.6}
+
+/* esteira degraus */
+.stair{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.step-card{background:#fff;border:1px solid var(--borda);border-radius:13px;padding:18px 20px;border-left:4px solid var(--vivo);position:relative}
+.step-card.s1{border-left-color:#5BA4FF}
+.step-card.s2{border-left-color:var(--vivo)}
+.step-card.s3{border-left-color:var(--vivo2)}
+.step-card.s4{border-left-color:var(--roxo)}
+.step-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.step-name{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:800;color:var(--azul)}
+.step-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+@media(max-width:680px){.step-grid{grid-template-columns:1fr}}
+.step-grid .sg-k{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--cinza);margin-bottom:4px}
+.step-grid .sg-v{font-size:12.5px;color:var(--escuro);line-height:1.55}
+
+/* marcos */
+.marcos{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+@media(max-width:880px){.marcos{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.marcos{grid-template-columns:1fr}}
+.marco{background:#fff;border:1px solid var(--borda);border-radius:13px;padding:16px 16px 18px;position:relative;border-top:3px solid var(--vivo)}
+.marco-n{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--vivo);margin-bottom:7px}
+.marco-t{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;color:var(--azul);margin-bottom:7px}
+.marco-d{font-size:12px;color:var(--escuro);line-height:1.55;margin-bottom:9px}
+.marco-s{font-size:11.5px;color:var(--cinza);font-style:italic;line-height:1.5;border-top:1px dashed var(--borda);padding-top:8px}
+.prod-block{margin-bottom:8px}
+.prod-head{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;margin:30px 0 4px}
+.prod-name{font-family:'Montserrat',sans-serif;font-size:19px;font-weight:800;color:var(--azul);letter-spacing:-.02em}
+.prod-tag{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--vivo)}
+.troca{width:100%;border-collapse:collapse;background:linear-gradient(135deg,var(--azul2),#13294d);border-radius:13px;overflow:hidden;margin:4px 0 8px}
+.troca td{padding:16px 18px;color:rgba(255,255,255,.88);font-size:12.5px;line-height:1.6;vertical-align:top;border:none;border-right:1px solid rgba(255,255,255,.08);width:33.33%}
+.troca td:last-child{border-right:none}
+.troca .tk{display:block;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#5BA4FF;margin-bottom:8px}
+@media(max-width:680px){.troca,.troca tbody,.troca tr,.troca td{display:block;width:100%}.troca td{border-right:none;border-bottom:1px solid rgba(255,255,255,.08)}}
+
+/* caixa aberta de ativos */
+.asset{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:0;margin-bottom:10px;overflow:hidden}
+.asset-h{display:flex;align-items:center;gap:10px;padding:13px 18px;background:var(--off);border-bottom:1px solid var(--borda)}
+.asset-n{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:var(--vivo);width:18px;flex-shrink:0}
+.asset-t{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;color:var(--azul)}
+.asset-b{padding:13px 18px}
+.asset-b .ck{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--cinza);margin-bottom:8px}
+.asset-tags{display:flex;flex-wrap:wrap;gap:6px}
+.asset-tags span{font-size:11.5px;color:var(--escuro);background:var(--off);border:1px solid var(--borda);border-radius:6px;padding:4px 10px}
+
+/* fluxo digital horizontal */
+.dflow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin-bottom:14px;background:linear-gradient(135deg,var(--azul2),#13294d);border-radius:13px;padding:18px;overflow:hidden}
+.dflow-step{flex:1;min-width:90px;text-align:center;position:relative;padding:6px 8px}
+.dflow-step:not(:last-child)::after{content:'→';position:absolute;right:-7px;top:50%;transform:translateY(-50%);color:#5BA4FF;font-size:15px;font-weight:700}
+.dflow-ic{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:#5BA4FF;margin-bottom:5px;letter-spacing:.04em;text-transform:uppercase}
+.dflow-step p{font-size:11px;color:rgba(255,255,255,.72);line-height:1.4}
+@media(max-width:680px){.dflow-step{flex:1 1 40%;min-width:auto}.dflow-step::after{display:none}}
+
+/* árvore de URLs */
+.tree{background:var(--azul2);border-radius:13px;padding:20px 22px;margin-bottom:14px;font-family:'Menlo','Consolas',monospace;font-size:12.5px;line-height:1.9;overflow-x:auto}
+.tree .root{color:#5BA4FF;font-weight:700}
+.tree .br{color:rgba(255,255,255,.3)}
+.tree .pg{color:rgba(255,255,255,.85)}
+.tree .nw{color:#7FE3A1}
+.tree .cm{color:rgba(255,255,255,.4);font-style:italic}
+
+/* chips de entidade */
+.ent{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+.ent span{font-size:12px;font-weight:600;color:var(--azul);background:rgba(0,102,255,.07);border:1px solid rgba(0,102,255,.18);border-radius:7px;padding:5px 11px}
+.ent.dor span{background:var(--amarelo-bg);border-color:rgba(180,83,9,.2);color:var(--amarelo)}
+.ent.com span{background:var(--verde-bg);border-color:rgba(5,150,105,.2);color:var(--verde)}
+
+/* schema tags */
+.schema{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+.schema code{font-family:'Menlo','Consolas',monospace;font-size:11.5px;color:var(--vivo2);background:var(--off);border:1px solid var(--borda);border-radius:6px;padding:4px 9px}
+
+/* tabela de produção / matriz */
+.matrix th:first-child{width:22%}
+
+/* roadmap */
+.rm{display:flex;flex-direction:column;gap:11px;margin-bottom:14px}
+.rm-item{display:flex;gap:14px;background:#fff;border:1px solid var(--borda);border-radius:12px;padding:15px 18px;align-items:flex-start}
+.rm-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--borda);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;cursor:pointer;transition:all .15s;font-size:12px;color:transparent;font-weight:800;user-select:none}
+.rm-check.done{background:var(--verde);border-color:var(--verde);color:#fff}
+.rm-body{flex:1}
+.rm-body h4{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;color:var(--azul);margin-bottom:3px}
+.rm-body p{font-size:12px;color:var(--cinza);line-height:1.55}
+.rm-tag{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:20px;flex-shrink:0;margin-top:2px}
+
+/* pill row */
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+.pill{font-size:12px;color:var(--escuro);background:var(--off);border:1px solid var(--borda);border-radius:20px;padding:5px 13px}
+.pill.no{background:var(--vermelho-bg);border-color:rgba(220,38,38,.16);color:#991b1b;text-decoration:line-through;text-decoration-color:rgba(220,38,38,.4)}
+
+/* link cards */
+.lnk{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--borda);border-radius:11px;padding:13px 16px;text-decoration:none;transition:all .15s}
+.lnk:hover{border-color:var(--vivo);transform:translateX(3px)}
+.lnk-ic{width:34px;height:34px;border-radius:9px;background:var(--off);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.lnk-tx{flex:1}
+.lnk-tx h4{font-size:13px;font-weight:700;color:var(--azul);margin-bottom:1px}
+.lnk-tx p{font-size:11px;color:var(--cinza)}
+
+.footer{margin-top:60px;padding:30px 0;border-top:1px solid var(--borda);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.footer p{font-size:11px;color:var(--cinza)}
+
+@media(max-width:980px){
+  :root{--sidebar-w:0px}
+  .sidebar{transform:translateX(-100%);transition:transform .3s}
+  .sidebar.open{transform:translateX(0);width:288px;box-shadow:0 0 40px rgba(0,0,0,.3)}
+  .main{margin-left:0}
+  .menu-btn{display:flex !important}
+}
+.menu-btn{display:none;width:34px;height:34px;border-radius:8px;border:1px solid var(--borda);background:#fff;align-items:center;justify-content:center;cursor:pointer}
+
+/* ───── V2 ADIÇÕES ───── */
+.mvv{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:880px){.mvv{grid-template-columns:1fr}}
+.mvv-card{background:#fff;border:1px solid var(--borda);border-radius:14px;padding:22px 24px;border-top:3px solid var(--vivo)}
+.mvv-card h4{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--vivo);margin-bottom:10px}
+.mvv-card p{font-size:13.5px;color:var(--escuro);line-height:1.75}
+.mvv-card p+p{margin-top:10px;color:var(--cinza);font-size:12.5px}
+
+.roma{background:linear-gradient(135deg,#0A2540,#0066FF);border-radius:16px;padding:38px 34px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden}
+.roma::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:40px 40px}
+.roma-k{position:relative;z-index:2;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:16px}
+.roma h2{position:relative;z-index:2;font-family:'Montserrat',sans-serif;font-size:clamp(26px,4vw,42px);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.1;margin-bottom:14px}
+.roma p{position:relative;z-index:2;font-size:13px;color:rgba(255,255,255,.65);max-width:520px;margin:0 auto;line-height:1.75}
+
+.valores{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px}
+@media(max-width:760px){.valores{grid-template-columns:1fr}}
+.valor{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:16px 18px;border-left:3px solid var(--vivo2)}
+.valor h5{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--azul);margin-bottom:6px}
+.valor p{font-size:12.5px;color:var(--escuro);line-height:1.6}
+
+/* avatar humano */
+.avatar-hero{background:linear-gradient(135deg,var(--azul2),#13294d);border-radius:16px;padding:30px 32px;margin-bottom:14px}
+.avatar-hero .ah-k{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(91,164,255,.9);margin-bottom:10px}
+.avatar-hero h3{font-family:'Montserrat',sans-serif;font-size:30px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:6px}
+.avatar-hero .ah-sub{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:20px;line-height:1.7}
+.avatar-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:760px){.avatar-nums{grid-template-columns:1fr 1fr}}
+.an{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px}
+.an-k{font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.42);margin-bottom:4px}
+.an-v{font-family:'Montserrat',sans-serif;font-size:16px;font-weight:800;color:#fff}
+
+.fala{background:var(--off);border-left:3px solid var(--vivo);border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:9px}
+.fala p{font-size:13.5px;color:var(--azul);line-height:1.65;font-style:italic}
+
+/* método VOS */
+.vos{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+@media(max-width:760px){.vos{grid-template-columns:1fr}}
+.vos-c{background:#fff;border:1px solid var(--borda);border-radius:14px;padding:22px;text-align:center;position:relative}
+.vos-l{font-family:'Montserrat',sans-serif;font-size:44px;font-weight:800;color:rgba(0,102,255,.14);line-height:1;margin-bottom:4px}
+.vos-c h4{font-family:'Montserrat',sans-serif;font-size:16px;font-weight:800;color:var(--azul);margin-bottom:8px;letter-spacing:.02em}
+.vos-c p{font-size:12.5px;color:var(--cinza);line-height:1.6}
+
+/* prospecção */
+.pros{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:18px 20px;margin-bottom:10px;border-left:4px solid var(--verde)}
+.pros h4{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;color:var(--azul);margin-bottom:6px;display:flex;align-items:center;gap:9px}
+.pros p{font-size:12.5px;color:var(--escuro);line-height:1.65}
+
+.script{background:var(--azul2);border-radius:13px;padding:22px 24px;margin-bottom:14px}
+.script .sc-k{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#5BA4FF;margin-bottom:12px}
+.script p{font-size:13.5px;color:rgba(255,255,255,.9);line-height:1.8;font-style:italic}
+.script .sc-n{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-size:11.5px;color:rgba(255,255,255,.5);font-style:normal;line-height:1.6}
+
+/* timeline roadmap */
+.tl{position:relative;padding-left:28px;margin-bottom:14px}
+.tl::before{content:'';position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:var(--borda)}
+.tl-item{position:relative;padding-bottom:22px}
+.tl-item::before{content:'';position:absolute;left:-25px;top:5px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--vivo);z-index:2}
+.tl-item.done::before{background:var(--verde);border-color:var(--verde)}
+.tl-item.now::before{background:var(--vivo);box-shadow:0 0 0 5px rgba(0,102,255,.14)}
+.tl-d{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--vivo);margin-bottom:4px}
+.tl-t{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:var(--azul);margin-bottom:5px}
+.tl-p{font-size:12.5px;color:var(--escuro);line-height:1.65}
+
+/* blocos comparativos */
+.chg{background:#fff;border:1px solid var(--borda);border-radius:12px;overflow:hidden;margin-bottom:14px}
+.chg-row{display:flex;gap:0;border-bottom:1px solid var(--borda)}
+.chg-row:last-child{border-bottom:none}
+.chg-tag{width:96px;flex-shrink:0;padding:13px 14px;font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;display:flex;align-items:flex-start;justify-content:center;padding-top:15px}
+.chg-tag.add{background:var(--verde-bg);color:var(--verde)}
+.chg-tag.mod{background:var(--amarelo-bg);color:var(--amarelo)}
+.chg-tag.del{background:var(--vermelho-bg);color:var(--vermelho)}
+.chg-b{flex:1;padding:13px 16px}
+.chg-b h5{font-family:'Montserrat',sans-serif;font-size:12.5px;font-weight:700;color:var(--azul);margin-bottom:3px}
+.chg-b p{font-size:12px;color:var(--cinza);line-height:1.6}
+
+/* prova formatos */
+.prova{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:18px 20px;margin-bottom:10px}
+.prova-h{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+.prova-n{width:26px;height:26px;border-radius:8px;background:var(--vivo);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;flex-shrink:0}
+.prova-h h4{font-family:'Montserrat',sans-serif;font-size:13.5px;font-weight:700;color:var(--azul)}
+.prova p{font-size:12.5px;color:var(--escuro);line-height:1.65;margin-bottom:9px}
+.prova-ex{background:var(--off);border-radius:8px;padding:11px 14px;font-size:12.5px;color:var(--azul);font-style:italic;line-height:1.6;border-left:2px solid var(--vivo)}
+
+/* nao fazer */
+.nofazer{background:var(--vermelho-bg);border:1px solid rgba(220,38,38,.18);border-radius:13px;padding:20px 22px;margin-bottom:14px}
+.nofazer h4{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--vermelho);margin-bottom:12px}
+.nofazer ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.nofazer li{font-size:13px;color:#991b1b;line-height:1.6;padding-left:22px;position:relative}
+.nofazer li::before{content:'✕';position:absolute;left:0;color:var(--vermelho);font-weight:800;font-size:12px}
+
+</style></head>
+<body>
+
+<!-- ═══════ SIDEBAR ═══════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#0066FF"/><path d="M9 10l7 8 7-8M16 18v6" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="sb-brand-txt">
+      <div class="sb-brand-name">YM</div>
+      <div class="sb-brand-sub">Ecossistema v2.0</div>
+    </div>
+  </div>
+  <nav class="sb-nav" id="sbnav"></nav>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="menu-btn" id="menubtn">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h12M2 12h12" stroke="#0A2540" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </div>
+    <div class="tb-crumb">Central Operacional · <b id="crumb">Identidade</b></div>
+    <div class="tb-status"><span class="dot"></span>v2.0 · Congelado</div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- ═══════ HERO ═══════ -->
+    <div class="hero">
+      <div class="hero-in">
+        <div class="hero-kick"><span></span>YM Marketing &amp; Negócios · Belo Horizonte/MG</div>
+        <h1>A central operacional da YM.<br><em>Identidade, mercado, produto e execução — em um só lugar.</em></h1>
+        <p>Documento oficial v2.0. Consolida identidade, mercado, produtos, comercial, marketing, prospecção, operação e roadmap. Os conceitos estão congelados. A execução está aberta — e será revisada em outubro/2026 com dados de campo.</p>
+        <div class="hero-meta">
+          <div class="hm">Fundação da empresa · <b>10/03/2026</b></div>
+          <div class="hm">Versão · <b>2.0 — 09/07/2026</b></div>
+          <div class="hm">Lançamento · <b>23/07/2026</b></div>
+          <div class="hm">Roma · <b>Crescer sem depender de você</b></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ 01 · IDENTIDADE ═══════ -->
+    <section class="sec" id="identidade" data-crumb="Identidade">
+      <div class="sec-head">
+        <div class="sk">Seção 01</div>
+        <h2 class="st">Identidade</h2>
+        <p class="sl">Por que a YM existe, para onde ela vai e o que ela não negocia. Onde houver conflito com qualquer outro documento, prevalece esta seção.</p>
+      </div>
+
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div><b>Régua de leitura.</b> A YM foi fundada em <b>10/03/2026</b>. Este documento é escrito no <b>4º mês de vida da empresa</b>. Toda avaliação de maturidade, prova e resultado deve considerar isso. Não há lacuna de prova: <b>há estágio</b>.<br><br>Os <b>conceitos</b> desta seção estão congelados. A <b>execução</b> permanece aberta e será revisada em outubro/2026, com dados de campo.</div>
+      </div>
+
+      <h3 class="sub" id="id-manifesto">Manifesto</h3>
+      <div class="quote">
+        <p>O problema quase nunca é falta de esforço.<br>É esforço aplicado na ordem errada.</p>
+        <span>Tese pública · porta de entrada de toda comunicação da YM</span>
+      </div>
+
+      <div class="grid3">
+        <div class="mini"><div class="mini-k">O inimigo</div><div class="mini-v">A desordem estrutural: construir fora de sequência. Improviso, fragmentação, pressa de aparecer, execução sem diagnóstico.</div></div>
+        <div class="mini"><div class="mini-k">A virada</div><div class="mini-v">Sair do esforço desordenado e enxergar a causa real do que trava — com a ordem certa de resolver.</div></div>
+        <div class="mini"><div class="mini-k">A prova</div><div class="mini-v">Entregas premium reais (padrão Nayara Cortez), o Método VOS aplicado e a própria trajetória da fundadora.</div></div>
+      </div>
+
+      <h3 class="sub" id="id-mvv">Missão · Visão · Propósito</h3>
+      <div class="mvv">
+        <div class="mvv-card">
+          <h4>Missão</h4>
+          <p>Fortalecer negócios que já existem — mostrando a causa do que trava, a ordem de resolver e o que não precisa ser feito agora. Estratégia simples, aplicável e acessível, sem fórmulas caras ou promessas irreais.</p>
+        </div>
+        <div class="mvv-card">
+          <h4>Visão</h4>
+          <p>Ser reconhecida como a consultoria que devolve ordem a quem cresce no improviso — formando empreendedores capazes de decidir com autonomia, sem depender de ninguém para saber por onde começar.</p>
+          <p>No longo prazo, contribuir para um mercado onde negócio nenhum precise adivinhar.</p>
+        </div>
+      </div>
+      <div class="mvv-card" style="border-top-color:var(--roxo)">
+        <h4 style="color:var(--roxo)">Propósito</h4>
+        <p>Democratizar o acesso à estratégia — transformando conhecimento em oportunidade e ajudando negócios reais a sobreviver, crescer e prosperar. Quase tudo falha por ordem errada. O propósito da YM é corrigir a ordem para que o esforço vire resultado, construindo bases que continuam funcionando depois que saímos.</p>
+        <p><b>Sustentabilidade vale mais que intensidade.</b></p>
+      </div>
+
+      <div class="aviso av-b" style="margin-top:14px">
+        <span class="ic">◆</span>
+        <div><b>Como Propósito e Posicionamento convivem.</b> O Propósito é o <b>porquê</b> (democratizar acesso). O Posicionamento é o <b>como</b> (consultoria estratégica, escopo fechado, seletiva). Não há contradição: <b>o Raio-X Estratégico é o Propósito virado produto</b> — ele existe para que quem não pode pagar uma consultoria tenha acesso ao diagnóstico. Missão fala de intenção; posicionamento fala de execução.</div>
+      </div>
+
+      <h3 class="sub" id="id-valores">Valores · o que não negociamos</h3>
+      <div class="valores">
+        <div class="valor"><h5>Compromisso com quem constrói</h5><p>Acreditar no potencial de quem está começando ou crescendo com poucos recursos, oferecendo caminhos possíveis e reais.</p></div>
+        <div class="valor"><h5>Ordem acima de complexidade</h5><p>Transformar estratégia em algo simples, compreensível e aplicável — mesmo para quem nunca estudou o tema.</p></div>
+        <div class="valor"><h5>Ética e integridade</h5><p>Trabalhar com transparência, sem promessas irreais, sem manipulação e sempre com responsabilidade sobre o impacto gerado no cliente.</p></div>
+        <div class="valor"><h5>Estratégia com propósito</h5><p>Cada ação precisa ter sentido — não é sobre postar por postar, mas sobre gerar resultado, direção e crescimento.</p></div>
+        <div class="valor"><h5>Crescimento conjunto</h5><p>O crescimento do cliente é o crescimento do negócio. Relacionamentos de longo prazo são mais importantes que ganhos rápidos.</p></div>
+        <div class="valor"><h5>Praticidade</h5><p>Entregar soluções que o empreendedor consegue aplicar na rotina, sem depender de estruturas complexas ou altos investimentos.</p></div>
+        <div class="valor" style="border-left-color:var(--roxo)"><h5>Educação e autonomia</h5><p>Capacitar o empreendedor para que ele entenda o que está fazendo, saiba avaliar serviços e não fique refém de terceiros.</p></div>
+        <div class="valor" style="border-left-color:var(--verde)"><h5>Prova acima de promessa</h5><p>O mercado está saturado de promessa. A YM mostra o trabalho, publica o diagnóstico e deixa o artefato falar. Nunca dizemos que somos boas — mostramos o que o método faz.</p></div>
+      </div>
+
+      <h3 class="sub" id="id-roma">Roma · o destino</h3>
+      <div class="roma">
+        <div class="roma-k">Roma da YM · congelada em 09/07/2026</div>
+        <h2>Crescer sem depender de você.</h2>
+        <p>Não é o mapa. Não é o diagnóstico. Não é a clareza. É o estado do negócio depois: crescendo sem que tudo passe pelas mãos do dono.</p>
+      </div>
+
+      <table>
+        <thead><tr><th style="width:18%">Critério DSA</th><th style="width:12%">Nota</th><th>Avaliação</th></tr></thead>
+        <tbody>
+          <tr><td><b>D — Destino</b></td><td><span class="bg bg-v">10/10</span></td><td>Não é mapa, diagnóstico, ordem ou clareza. É o estado final. O avatar consegue imaginar a cena: tirar duas semanas de férias e o faturamento não cair. Zero veículo.</td></tr>
+          <tr><td><b>S — Simples</b></td><td><span class="bg bg-v">10/10</span></td><td>Quatro palavras, nenhuma dispensável. <span class="mono">Crescer</span> (resultado) <span class="mono">sem</span> (virada) <span class="mono">depender</span> (dor) <span class="mono">de você</span> (o gargalo, dito na língua dela). Cabe em bio, placa, headline e camiseta.</td></tr>
+          <tr><td><b>A — Atrativa</b></td><td><span class="bg bg-v">10/10</span></td><td>Ataca a dor-mãe (fragmentação), a dor do gargalo e a aspiração de autonomia ao mesmo tempo. E <b>não promete número</b> — num mercado saturado de promessa, é atrativa justamente por não prometer.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div><b>Por que "depender de você" e não "ser o gargalo".</b> "Gargalo" é vocabulário de consultor. O avatar não diz "eu sou o gargalo" — ele diz <b>"se eu não olhar, ninguém olha"</b>. "Sem depender de você" é essa frase invertida. É a técnica do abre-aspas aplicada corretamente: sai da boca dele, não da nossa.</div>
+      </div>
+
+      <div class="aviso av-a">
+        <span class="ic">⚑</span>
+        <div><b>A leitura dupla.</b> "Sem depender de você" também significa <b>"sem depender de mim"</b>. A YM constrói base que se sustenta sozinha depois que ela sai. A Roma é a única frase do sistema que serve tanto para o cliente quanto para a consultora — e é isso que a torna verdadeira.</div>
+      </div>
+
+      <h3 class="sub" id="id-arquitetura">Arquitetura da Roma</h3>
+      <table>
+        <thead><tr><th style="width:26%">Nível</th><th>Formulação</th><th style="width:26%">Onde vive</th></tr></thead>
+        <tbody>
+          <tr><td><b>Roma · bandeira</b></td><td><b>Crescer sem depender de você</b></td><td>Bio, site, assinatura, camiseta</td></tr>
+          <tr><td>Roma expandida</td><td>Crescer sem depender de você — com base que sustenta, não com mais esforço</td><td>Home, apresentação institucional</td></tr>
+          <tr><td>Roma da esteira · 12 meses</td><td>Um negócio que cresce sem depender de você</td><td>Fundação → Ativação → Crescimento</td></tr>
+          <tr><td>Roma do lançamento</td><td>Saber a causa e a ordem antes de gastar mais um real</td><td>Aula ORDEM CERTA</td></tr>
+          <tr><td>Roma do Raio-X · 7 dias</td><td>A causa do que trava, a ordem de resolver e o que parar de fazer</td><td>Página do Raio-X</td></tr>
+          <tr><td>Manifesto · a porta</td><td>O problema quase nunca é falta de esforço. É esforço aplicado na ordem errada.</td><td>Todo conteúdo</td></tr>
+          <tr><td>Método · o veículo</td><td>Ver · Ordenar · Sustentar</td><td>Institucional, registro</td></tr>
+        </tbody>
+      </table>
+
+      <div class="aviso av-b">
+        <span class="ic">✓</span>
+        <div><b>Coerência do sistema.</b> Manifesto: <i>o problema é a ordem</i>. Método: <i>ver, ordenar, sustentar</i>. Produto: <i>diagnóstico → base → implantação → acompanhamento</i>. Roma: <i>crescer sem depender de você</i>. Propósito: <i>autonomia</i>. Leia de cima para baixo — não há uma peça fora do lugar.</div>
+      </div>
+
+      <h3 class="sub" id="id-metodo">Método VOS</h3>
+      <div class="vos">
+        <div class="vos-c"><div class="vos-l">V</div><h4>VER</h4><p>Separar o que dói do que causa. Sintoma não é causa — e é por isso que resolver um problema faz nascer outro.</p></div>
+        <div class="vos-c"><div class="vos-l">O</div><h4>ORDENAR</h4><p>Em que ordem as coisas precisam existir. Sequência com justificativa — e a lista do que <b>não</b> fazer agora.</p></div>
+        <div class="vos-c"><div class="vos-l">S</div><h4>SUSTENTAR</h4><p>A estrutura se mantém sozinha depois que saímos. Base que não depende da YM nem do dono.</p></div>
+      </div>
+
+      <div class="aviso av-a">
+        <span class="ic">⚑</span>
+        <div><b>Registro do Método VOS.</b> Metodologia não é patenteável no Brasil. O que se protege é: <b>(1)</b> a marca do método — <span class="mono">Método VOS</span>, <span class="mono">Raio-X Estratégico</span> e <span class="mono">YM Marketing &amp; Negócios</span> no INPI; <b>(2)</b> o código-fonte <span class="mono">motor_diagnostico_ym.js</span> por direito autoral, versionado e datado; <b>(3)</b> a documentação (este arquivo) com data certa. <span class="bg bg-a">Ação da Yasmin · 10/07/2026</span></div>
+      </div>
+
+      <h3 class="sub" id="id-linguagem">Linguagem de marca</h3>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-t"><span class="bg bg-v">Usar</span></div>
+          <div class="pills">
+            <span class="pill">ordem</span><span class="pill">causa</span><span class="pill">sequência</span><span class="pill">base</span><span class="pill">prioridade</span><span class="pill">sustentar</span><span class="pill">apagar incêndio</span><span class="pill">arrumar a casa</span><span class="pill">fazer a conta fechar</span><span class="pill">tirar do achismo</span><span class="pill">o que não fazer</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-t"><span class="bg bg-r">Evitar</span></div>
+          <div class="pills">
+            <span class="pill no">transformação</span><span class="pill no">jornada</span><span class="pill no">disruptivo</span><span class="pill no">mindset</span><span class="pill no">protagonismo</span><span class="pill no">humanização</span><span class="pill no">clareza (como muleta)</span><span class="pill no">pequenos negócios</span><span class="pill no">PMEs</span><span class="pill no">gargalo (para o cliente)</span>
+          </div>
+        </div>
+      </div>
+      <div class="aviso av-a">
+        <span class="ic">⚑</span>
+        <div><b>Duas regras finas.</b> <b>(1)</b> "Pequenas empresas/PMEs" só aparecem como <i>keyword de infraestrutura</i> (URL, title, schema, GBP), nunca na superfície de marca — ali usamos <i>negócios, marcas, profissionais, empreendedores</i>. <b>(2)</b> "Gargalo" é palavra <i>interna</i>: usamos entre nós para definir o ICP, nunca com o cliente. Com ele, dizemos <i>"depender de você"</i>.</div>
+      </div>
+    </section>
+
+    <!-- ═══════ 02 · MERCADO ═══════ -->
+    <section class="sec" id="mercado" data-crumb="Mercado">
+      <div class="sec-head">
+        <div class="sk">Seção 02</div>
+        <h2 class="st">Mercado</h2>
+        <p class="sl">Para quem construímos, o que dói, o que desejam e o que os faz comprar. O avatar desta versão é uma pessoa — com nome, endereço e falas próprias.</p>
+      </div>
+
+      <h3 class="sub" id="mercado-nicho">Nicho e subnicho</h3>
+      <table>
+        <thead><tr><th style="width:24%">Camada</th><th>Definição</th></tr></thead>
+        <tbody>
+          <tr><td><b>Nicho</b></td><td>Consultoria estratégica de negócios</td></tr>
+          <tr><td><b>Subnicho</b></td><td>Negócios de serviço com operação rodando e dono no centro de todas as decisões</td></tr>
+          <tr><td><b>Subnicho específico</b></td><td><b>O profissional técnico que virou dono de negócio sem nunca ter virado gestor</b></td></tr>
+          <tr><td>Tipo de subnicho</td><td>Área de atuação + ganhar dinheiro (híbrido)</td></tr>
+          <tr><td>Força do nicho</td><td><span class="bg bg-v">8,5 / 10</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div><b>Por que este recorte.</b> É biográfico, não setorial. Cabe dentista, fisioterapeuta, arquiteto, advogado, podóloga, terapeuta, nutricionista, consultor. E nomeia a <b>causa</b> da desordem: a pessoa aprendeu a fazer, nunca aprendeu a ordenar — porque ninguém ensina sequência em faculdade de fisioterapia. <b>O nicho deriva do manifesto</b>, não briga com ele. E quem não é da saúde e se reconhece entra do mesmo jeito: definir avatar é causar identificação, não excluir.</div>
+      </div>
+
+      <h3 class="sub" id="mercado-indicadores">Avaliação do nicho — 3 indicadores</h3>
+      <table>
+        <thead><tr><th style="width:32%">Indicador</th><th style="width:14%">Status</th><th>Leitura</th></tr></thead>
+        <tbody>
+          <tr><td><b>1 · A expert teve resultado?</b></td><td><span class="bg bg-v">Sim</span></td><td>16 anos Atento/AeC: instrutora → Customer Experience → supervisão regional → coordenação de melhoria contínua. O padrão de carreira é sempre o mesmo: <b>sair de executar a ponta para estruturar o sistema</b>. É a prova viva da tese. Só não foi narrada em público.</td></tr>
+          <tr><td><b>2 · Gerou resultado para clientes?</b></td><td><span class="bg bg-a">Sim, com ressalva</span></td><td>Nayara Cortez, Bem Estar Podologia, Estúdio Mover, Easy Chic, Lumos. <b>Há prova de qualidade de entrega. Ainda não há métrica de resultado do cliente.</b> Esta é a lacuna a fechar em agosto.</td></tr>
+          <tr><td><b>3 · Existem pessoas pedindo?</b></td><td><span class="bg bg-a">Parcial</span></td><td>Para o diagnóstico consultivo da Yasmin: sim. Para um produto digital comprado por VSL, por quem nunca ouviu falar dela: sem evidência ainda. <b>É o que os 14 dias de captação e a prospecção de rua vão responder.</b></td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="sub" id="mercado-avatar">Avatar — Marcela Ribeiro</h3>
+      <div class="avatar-hero">
+        <div class="ah-k">Avatar principal · pessoa, não perfil</div>
+        <h3>Marcela Ribeiro</h3>
+        <p class="ah-sub">39 anos. Fisioterapeuta. Dona da Vitta Fisioterapia e Pilates, no Barreiro — sala comercial no segundo andar, placa na fachada, estacionamento na frente.<br>Onde ela está na terça-feira às 15h: <b>atendendo. Sempre atendendo.</b></p>
+        <div class="avatar-nums">
+          <div class="an"><div class="an-k">Faturamento</div><div class="an-v">R$ 34 mil/mês</div></div>
+          <div class="an"><div class="an-k">Pró-labore</div><div class="an-v">R$ 8.500</div></div>
+          <div class="an"><div class="an-k">Equipe</div><div class="an-v">3 pessoas</div></div>
+          <div class="an"><div class="an-k">Crescimento 25→26</div><div class="an-v">9%</div></div>
+          <div class="an"><div class="an-k">Tempo de casa</div><div class="an-v">5 anos</div></div>
+          <div class="an"><div class="an-k">Instagram</div><div class="an-v">4.100 seg.</div></div>
+          <div class="an"><div class="an-k">Google Meu Negócio</div><div class="an-v">31 avaliações</div></div>
+          <div class="an"><div class="an-k">Site</div><div class="an-v">Linktree</div></div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-t">A rotina</div>
+          <p>Chega às 6h50 pra abrir. Atende das 7h às 12h. Almoça em 25 minutos, na copa, olhando o celular. Atende das 13h30 às 20h.</p>
+          <p>Entre um paciente e outro: aprova um orçamento no WhatsApp, resolve troca de horário, responde direct perguntando preço, aprova a arte que a prima faz no Canva, transfere o pagamento do fornecedor de macas.</p>
+          <p>Às 20h30 senta na recepção vazia, abre o notebook, olha a planilha. Depois abre o Instagram. Depois fecha os dois. Chega em casa às 21h15 — o filho de 9 anos já jantou.</p>
+          <p>Sábado atende meio período. Domingo "adianta coisa do consultório".</p>
+        </div>
+        <div class="card">
+          <div class="card-t">Como ela se sente</div>
+          <p>Não é insegurança. Marcela é boa e sabe que é boa — pacientes voltam, indicam, agradecem.</p>
+          <p>O sentimento é <b>exaustão com suspeita</b>. Ela desconfia que está fazendo tudo errado e não consegue provar. Vê fisioterapeutas mais novas com clínicas maiores e não sente inveja — sente uma pergunta: <i>"o que elas sabem que eu não sei?"</i></p>
+          <p>E a resposta que ela dá a si mesma, sempre, é: <i>"elas devem entender de marketing."</i></p>
+          <p><b>Essa resposta está errada. E é ela que a mantém comprando marketing.</b></p>
+        </div>
+      </div>
+
+      <h3 class="sub" id="mercado-gastos">O que ela já comprou</h3>
+      <table>
+        <thead><tr><th>O que</th><th style="width:16%">Quanto</th><th>O que aconteceu</th></tr></thead>
+        <tbody>
+          <tr><td>Social media (7 meses)</td><td>R$ 5.600</td><td>Feed bonito. Zero paciente rastreável. Cancelou com vergonha.</td></tr>
+          <tr><td>Impulsionamento</td><td>~R$ 1.800</td><td>Chegaram 60 direct. Nenhum agendou.</td></tr>
+          <tr><td>Curso "Marketing para Fisio"</td><td>R$ 897</td><td>Assistiu 40%.</td></tr>
+          <tr><td>Consultoria de gestão para clínicas</td><td>R$ 4.500</td><td>Recebeu uma planilha e 3 reuniões. A planilha está no Drive, sem preencher desde o mês 2.</td></tr>
+          <tr><td>Recepcionista nova (esperando que "resolvesse")</td><td>R$ 2.100/mês</td><td>A recepcionista esperava direção. Marcela não tinha direção pra dar.</td></tr>
+          <tr><td colspan="3"><b>Total: cerca de R$ 13 mil em 3 anos.</b> Ela não fala esse número em voz alta. Nem pro marido.</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="sub" id="mercado-falas">As falas dela · técnica abre-aspas</h3>
+      <div class="aviso av-b" style="margin-bottom:14px">
+        <span class="ic">⚑</span>
+        <div>Toda copy da YM deve sair <b>daqui</b>, não do vocabulário de consultoria. Se uma frase não pode ser dita por Marcela, ela não vai para o Instagram.</div>
+      </div>
+      <div class="fala"><p>"Eu sei que tá tudo errado. Eu só não sei por onde começar, porque parece que uma coisa depende da outra."</p></div>
+      <div class="fala"><p>"Eu já paguei muita gente pra me falar o que eu já sabia."</p></div>
+      <div class="fala"><p>"Não é que eu não queira investir. É que eu não quero jogar dinheiro fora de novo."</p></div>
+      <div class="fala"><p>"Se eu não olhar, ninguém olha."</p></div>
+      <div class="fala"><p>"Eu não preciso que ninguém me diga o que fazer. Eu preciso que alguém me diga o que <b>não</b> fazer."</p></div>
+
+      <h3 class="sub" id="mercado-naoaguenta">O que ela não aguenta mais ouvir</h3>
+      <div class="pills">
+        <span class="pill no">você precisa se posicionar</span><span class="pill no">precisa aparecer mais</span><span class="pill no">faz reels que o algoritmo entrega</span><span class="pill no">você tem que delegar</span><span class="pill no">falta processo</span><span class="pill no">é questão de mindset</span><span class="pill no">você tá crescendo, é só ajustar</span>
+      </div>
+      <div class="aviso av-a">
+        <span class="ic">⚑</span>
+        <div>Todas verdadeiras. Todas inúteis. <b>Nenhuma diz por onde começar.</b> É exatamente aí que a YM entra — e é por isso que a YM nunca repete nenhuma delas.</div>
+      </div>
+
+      <h3 class="sub" id="mercado-desejo">O que ela quer e não sabe nomear</h3>
+      <div class="quote">
+        <p>Ela não quer clareza — ela vê tudo com nitidez dolorosa.<br>Ela quer que alguém competente olhe as 12 coisas erradas e diga:<br>"9 dessas você ignora. Estas 3, nesta ordem, e por este motivo."</p>
+        <span>Ela quer permissão para não fazer</span>
+      </div>
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div>E ela quer que a permissão venha de <b>alguém que ela respeite</b>. Não vai aceitar de guru de Instagram. Vai aceitar de quem abrir o notebook e mostrar o negócio dela por dentro. <b>Ela não compra por empatia. Compra por competência demonstrada.</b></div>
+      </div>
+
+      <h3 class="sub" id="mercado-dores">As 10 dores</h3>
+      <table>
+        <thead><tr><th style="width:5%">#</th><th style="width:24%">Dor</th><th>Versão profunda · o que realmente acontece</th></tr></thead>
+        <tbody>
+          <tr><td><b>1</b></td><td><b>Fragmentação<br><span style="font-weight:400;color:var(--cinza)">a dor-mãe</span></b></td><td>São 22h. Ela tem 12 coisas na lista. Todas verdadeiras, todas urgentes, todas conectadas. Sabe que se fizer as 12, resolve. Sabe que não vai conseguir. E não sabe quais 3 escolher, porque cada uma parece pré-requisito da outra. Então não faz nenhuma, faz um post e vai dormir com raiva de si mesma.</td></tr>
+          <tr><td><b>2</b></td><td>Apagar incêndio como modo de vida</td><td>Ela bloqueou terça de manhã pra pensar no negócio. Às 8h40 a recepcionista bate na porta. 9h20: a fisio horista quer trocar escala. 10h: o fornecedor errou o pedido. Meio-dia, o bloco acabou e ela não pensou em nada. Isso acontece <b>toda terça</b>.</td></tr>
+          <tr><td><b>3</b></td><td>Dinheiro queimado em solução solta</td><td>R$ 13 mil em 3 anos. Cada fornecedor resolveu um pedaço, nenhum resolveu o conjunto — porque cada um foi contratado pra atacar o sintoma que doía mais naquele mês. Ela não desconfia do fornecedor. Desconfia de si mesma como compradora.</td></tr>
+          <tr><td><b>4</b></td><td>Crescer sem base</td><td>Ela pensa em abrir uma segunda sala. Faz a conta, o número fecha. E aí imagina duplicar a bagunça atual e sente frio no estômago. Não abre porque sabe que a primeira só funciona porque ela está dentro dela.</td></tr>
+          <tr><td><b>5</b></td><td>Tudo depende dela</td><td>Toda decisão de R$ 200 pra cima passa por ela. O orçamento passa por ela. O post passa por ela. A escala passa por ela. Delegou três vezes, três vezes voltou pro colo dela, e agora não delega mais porque delegar custa mais caro que fazer.</td></tr>
+          <tr><td><b>6</b></td><td>Retrabalho constante</td><td>A equipe refaz o mesmo orçamento três vezes porque não existe padrão. O Instagram já teve quatro identidades visuais em dois anos. Cada nova solução exige jogar fora a anterior. Ela trabalha muito e constrói pouco.</td></tr>
+          <tr><td><b>7</b></td><td>Decisão sem causa</td><td>O faturamento caiu em março. Ela decidiu impulsionar post. Não sabia se o problema era captação, conversão, ticket ou sazonalidade. Escolheu captação porque foi o mais fácil de comprar. Nunca soube se acertou.</td></tr>
+          <tr><td><b>8</b></td><td>Estagnação disfarçada de estabilidade</td><td>De fora, ela é caso de sucesso: clínica própria, equipe, agenda. De dentro, cresceu 9% e trabalhou mais. Está correndo pra ficar no mesmo lugar e não pode dizer isso pra ninguém, porque todo mundo acha que ela venceu.</td></tr>
+          <tr><td><b>9</b></td><td>Aversão a desperdício virou paralisia</td><td>Não é falta de dinheiro. É que cada compra errada ainda dói. Ela avalia qualquer proposta procurando o furo — e sempre acha um, porque sempre tem. Isso a protege de gastar mal e a impede de gastar bem.</td></tr>
+          <tr><td><b>10</b></td><td>Solidão de direção</td><td>Sócio não existe. Marido não entende. A equipe não pode ver dúvida nela. Colegas são concorrentes. Ela decide sozinha, e o custo de errar sai do bolso e da reputação dela. <b>Não quer terceirizar a decisão. Quer alguém competente na sala quando decide.</b></td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="sub" id="mercado-aspiracoes">As 10 aspirações</h3>
+      <table>
+        <thead><tr><th style="width:5%">#</th><th style="width:26%">Desejo racional</th><th style="width:32%">Desejo emocional por trás</th><th>Frase dela</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Saber o que fazer primeiro</td><td>Permissão para ignorar 9 das 12 coisas sem culpa</td><td>"Só me fala por onde eu começo. Eu executo."</td></tr>
+          <tr><td>2</td><td>Previsibilidade</td><td>Poder planejar a vida, não só o mês</td><td>"Quero saber como vai ser abril quando ainda for fevereiro."</td></tr>
+          <tr><td>3</td><td>Que funcione sem ela</td><td>Tirar férias e o faturamento não cair</td><td>"Quero que isso funcione sem eu estar dentro."</td></tr>
+          <tr><td>4</td><td>Segurança na decisão</td><td>Fim do "torço pra ter acertado"</td><td>"Quero decidir sabendo por quê."</td></tr>
+          <tr><td>5</td><td>Esforço virar resultado</td><td>Justiça — ela trabalha demais para o que colhe</td><td>"Não quero trabalhar mais. Quero que o que eu já faço conte."</td></tr>
+          <tr><td>6</td><td>Crescer com controle</td><td>Provar que é dona de negócio, não fisio com CNPJ</td><td>"Quero crescer sem sentir que vai desabar."</td></tr>
+          <tr><td>7</td><td>Não desperdiçar mais</td><td>Recuperar confiança no próprio julgamento de compra</td><td>"Quero acertar dessa vez."</td></tr>
+          <tr><td>8</td><td>Alguém de nível olhando junto</td><td>Fim da solidão — dividir a decisão, não terceirizar</td><td>"Quero alguém que discuta comigo, não que concorde comigo."</td></tr>
+          <tr><td>9</td><td>Base que sustenta</td><td>Legado. Algo que existe fora dela.</td><td>"Quero construir uma coisa que não seja eu."</td></tr>
+          <tr><td>10</td><td>Sair do achismo</td><td>Dignidade intelectual — ela é boa, quer ser tratada como boa</td><td>"Me mostra o que eu não tô vendo."</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="sub" id="mercado-resumo">Resumo do avatar · 4 linhas</h3>
+      <div class="quote">
+        <p>Marcela tem 39 anos, fatura R$ 34 mil e não cresce há dois anos. Enxerga os 12 problemas do próprio negócio com nitidez e não resolve nenhum, porque todos parecem pré-requisito uns dos outros. Já gastou R$ 13 mil comprando soluções soltas que atacaram sintoma e nunca causa. Não precisa de mais alguém dizendo o que fazer — precisa de alguém competente que diga em que ordem, e o que <b>não</b> fazer agora.</p>
+        <span>Exercício do manual · base da Roma</span>
+      </div>
+
+      <h3 class="sub" id="mercado-icp">ICP — quem atendemos</h3>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-t"><span class="bg bg-b">Principal</span></div>
+          <p><b>O profissional técnico que virou dono.</b> Opera o próprio negócio e tudo passa por ele. Toca tudo, faz muita coisa e não sai do lugar. Tem faturamento, não tem ordem. Cresce no improviso e teme que quebre se escalar.</p>
+          <p style="color:var(--cinza);font-size:12px">Encarnação prospectável: <b>Marcela</b>. Fisioterapia, pilates, odontologia, estética, nutrição, psicologia, podologia.</p>
+        </div>
+        <div class="card">
+          <div class="card-t"><span class="bg bg-x">Secundário</span></div>
+          <p><b>Consultoria ou serviço técnico B2B</b> (advogado, arquiteto, contador, consultor). Forte no ofício, frágil na máquina de captar e converter. Compra a Fundação com mais facilidade — já entende valor de método.</p>
+          <p style="color:var(--cinza);font-size:12px">Canal preferencial: <b>LinkedIn</b>.</p>
+        </div>
+      </div>
+
+      <h3 class="sub" id="mercado-nao">Quem NÃO queremos atender</h3>
+      <div class="card">
+        <ul class="lst no">
+          <li>Quem quer só execução pontual (um post, um criativo, tráfego avulso).</li>
+          <li>Quem busca resultado imediato sem mexer na base.</li>
+          <li>Quem não tem nenhuma operação rodando — não há o que reordenar.</li>
+          <li>Quem já tem diagnóstico e só quer mão de obra barata.</li>
+        </ul>
+      </div>
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div><b>Esta lista é peça de marketing, não letra miúda.</b> Publicar quem não atendemos é a prova de autoridade mais barata e mais rara que existe. Vai ao ar no site e vira conteúdo.</div>
+      </div>
+
+      <h3 class="sub" id="mercado-objecoes">As 4 objeções-raiz</h3>
+      <table>
+        <thead><tr><th style="width:22%">Objeção</th><th>Empatia + argumento lógico</th><th style="width:26%">Evidência recomendada</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>"Já tentei isso."</b></td>
+            <td>Você tentou <b>análise</b>. Alguém listou seus problemas e foi embora. Análise não é ordem. Diagnóstico que não ordena é lista de defeitos com nome bonito.</td>
+            <td>Lado a lado: um "diagnóstico" genérico (lista de problemas) × a página 5 do Dashboard (ordem certa de correção).</td>
+          </tr>
+          <tr>
+            <td><b>"É caro."</b></td>
+            <td>Não é o valor. É que você não sabe se vai virar mais um arquivo. R$ 97 é o preço de uma sessão sua. Se o relatório não disser nada novo, você perdeu R$ 97 e ganhou a confirmação. Se disser, economizou os próximos R$ 5 mil na direção errada. <b>É uma aposta em que o pior caso é neutro.</b></td>
+            <td>Ancoragem: diagnóstico consultivo de mercado custa R$ 1.500–4.000. "A diferença é que o meu roda em motor, não em hora de consultor."</td>
+          </tr>
+          <tr>
+            <td><b>"Parece teoria."</b></td>
+            <td>O relatório termina com três coisas: o gargalo nomeado em uma frase, a ordem com justificativa, e a lista do que <b>parar</b> de fazer. Nenhuma é conceito. Todas são instrução.</td>
+            <td>Print da seção "Ordem certa" e da seção "O que NÃO fazer agora". Duas telas, sem legenda.</td>
+          </tr>
+          <tr>
+            <td><b>"Meu cenário é diferente."</b></td>
+            <td>Seu negócio é único. Seu gargalo não. Em todos os negócios lidos, a causa estava em um dos 7 pilares. O motor não te dá a resposta dos outros — ele procura a <b>sua</b> dentro de uma estrutura testada.</td>
+            <td>Carrossel dos 7 pilares na linguagem do dono. "O seu está em um destes."</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="aviso av-r">
+        <span class="ic">⚠</span>
+        <div><b>A objeção mais perigosa não está na lista acima: <i>"consultoria vai me dar teoria e sumir".</i></b> Ela é a única que <b>o Raio-X automatizado reforça em vez de enfraquecer</b> — um produto digital de R$ 97 que entrega um relatório e não tem humano no loop <i>parece exatamente</i> teoria que some.<br><br><b>Antídoto (já existe e não está sendo usado):</b> a existência da <b>Ativação</b> prova que a YM implanta. A cláusula <b>"Não inclui"</b>, publicada, prova escopo fechado. <b>Publique a esteira inteira, com preços e com o que não fazemos.</b> Transparência comercial não é gentileza — é defesa.</div>
+      </div>
+    </section>
+
+    <!-- ═══════ 03 · PRODUTOS ═══════ -->
+    <section class="sec" id="produtos" data-crumb="Produtos">
+      <div class="sec-head">
+        <div class="sk">Seção 03</div>
+        <h2 class="st">Produtos</h2>
+        <p class="sl">Quatro ofertas encaixadas. Cada degrau entrega algo que torna o próximo óbvio. Ninguém empurra — o diagnóstico aponta.</p>
+      </div>
+
+      <h3 class="sub" id="produtos-oferta">A oferta em segundos</h3>
+      <div class="quote">
+        <p>Antes de gastar mais tempo, dinheiro e energia, descubra o que realmente trava o seu negócio — e em que ordem resolver.</p>
+        <span>Frase-âncora · a que vende em segundos</span>
+      </div>
+
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div><b>O Raio-X é o Propósito virado produto.</b> Ele não é "isca comercial" nem "produto de entrada barato". Ele existe para que quem não pode pagar uma consultoria tenha acesso ao diagnóstico. É a missão de democratizar o acesso à estratégia, operando. <b>Comunicar assim, sempre.</b></div>
+      </div>
+
+      <h3 class="sub" id="produtos-esteira">A escada de produtos</h3>
+      <div class="stair">
+        <div class="step-card s1">
+          <div class="step-top"><span class="step-name">1 · Raio-X Estratégico</span><span class="bg bg-b">Produto digital · R$ 97</span></div>
+          <div class="step-grid">
+            <div><div class="sg-k">O que compra</div><div class="sg-v">Uma análise inteligente da empresa: diagnóstico em relatório HTML/PDF, com dashboard executivo.</div></div>
+            <div><div class="sg-k">Destino que entrega</div><div class="sg-v">Sai do achismo. Sabe a causa, a ordem e o que <b>parar</b> de fazer.</div></div>
+            <div><div class="sg-k">Como funciona</div><div class="sg-v">Questionário → Motor VOS → relatório. Sem reunião obrigatória.</div></div>
+            <div><div class="sg-k">Objetivo</div><div class="sg-v">Acesso, volume, caixa e qualificação.</div></div>
+          </div>
+        </div>
+        <div class="step-card s2">
+          <div class="step-top"><span class="step-name">2 · Fundação</span><span class="bg bg-b">A partir de R$ 2.500 · até 8x</span></div>
+          <div class="step-grid">
+            <div><div class="sg-k">O que compra</div><div class="sg-v">A base na ordem certa: marca, posicionamento, estratégia, comunicação, presença digital.</div></div>
+            <div><div class="sg-k">Destino que entrega</div><div class="sg-v">Para de improvisar. Tem base que sustenta o crescimento.</div></div>
+            <div><div class="sg-k">Gatilho de entrada</div><div class="sg-v">"Sei o que preciso, mas não tenho a base montada."</div></div>
+            <div><div class="sg-k">Objetivo</div><div class="sg-v">Construir toda a base estratégica.</div></div>
+          </div>
+        </div>
+        <div class="step-card s3">
+          <div class="step-top"><span class="step-name">3 · Ativação</span><span class="bg bg-b">A partir de R$ 4.500 · até 8x</span></div>
+          <div class="step-grid">
+            <div><div class="sg-k">O que compra</div><div class="sg-v">A base colocada para funcionar no mercado.</div></div>
+            <div><div class="sg-k">Destino que entrega</div><div class="sg-v">Sai do papel. A estrutura começa a gerar movimento.</div></div>
+            <div><div class="sg-k">Gatilho de entrada</div><div class="sg-v">"Tenho a base, falta colocar para rodar."</div></div>
+            <div><div class="sg-k">Objetivo</div><div class="sg-v">Implantar a base construída na Fundação.</div></div>
+          </div>
+        </div>
+        <div class="step-card s4">
+          <div class="step-top"><span class="step-name">4 · Crescimento</span><span class="bg bg-x">R$ 2.500/mês · não vendável como entrada</span></div>
+          <div class="step-grid">
+            <div><div class="sg-k">O que compra</div><div class="sg-v">Acompanhamento recorrente para sustentar e escalar.</div></div>
+            <div><div class="sg-k">Destino que entrega</div><div class="sg-v">Cresce com consistência, sem voltar ao caos.</div></div>
+            <div><div class="sg-k">Gatilho de entrada</div><div class="sg-v">"Está funcionando — quero manter e ampliar."</div></div>
+            <div><div class="sg-k">Objetivo</div><div class="sg-v">Acompanhar continuamente a evolução.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div><b>A distinção, em uma linha.</b> Fundação <b>constrói</b> a base · Ativação <b>implanta</b> a base · Crescimento <b>acompanha</b> a evolução. O cliente compra evolução por marcos — o tempo é consequência.</div>
+      </div>
+
+      <h3 class="sub" id="produtos-ferramentas">Ferramentas YM · o 5º ativo</h3>
+      <div class="card">
+        <div class="card-t"><span class="bg bg-x">Em construção · não vendável ainda</span></div>
+        <p>A YM não é só o Raio-X. É um <b>ecossistema de soluções tecnológicas que dão ordem e sustentação a negócios que querem crescer</b>. As Ferramentas YM são os ativos digitais que nascem da operação e passam a existir sozinhos.</p>
+        <p><b>Já existem, internamente:</b> Motor de Diagnóstico (<span class="mono">motor_diagnostico_ym.js</span>), Dashboard Executivo, Template Universal de insumos, Suíte de páginas auxiliares.</p>
+        <div class="aviso av-a" style="margin:12px 0 0">
+          <span class="ic">⚑</span>
+          <div><b>Regra de maturação.</b> Ferramenta só vira produto <b>depois</b> de ser usada em 5 clientes reais. Nada é lançado como ferramenta antes de ter sido, primeiro, entrega de consultoria. <b>Não construir ferramenta nova até dezembro/2026.</b></div>
+        </div>
+      </div>
+
+      <h3 class="sub" id="produtos-preco">Preço · congelado</h3>
+      <table>
+        <thead><tr><th>Produto</th><th>Modelo</th><th style="width:20%">Preço</th><th>Objetivo</th></tr></thead>
+        <tbody>
+          <tr><td><b>Raio-X Estratégico</b></td><td>Produto digital</td><td><b>R$ 97</b></td><td>Acesso, volume, caixa e qualificação.</td></tr>
+          <tr><td><b>Fundação</b></td><td>Projeto · até 8x sem juros</td><td>a partir de <b>R$ 2.500</b></td><td>Construir a base estratégica.</td></tr>
+          <tr><td><b>Ativação</b></td><td>Projeto · até 8x sem juros</td><td>a partir de <b>R$ 4.500</b></td><td>Implantar a base.</td></tr>
+          <tr><td><b>Crescimento</b></td><td>Recorrente mensal</td><td>a partir de <b>R$ 2.500/mês</b></td><td>Acompanhar a evolução.</td></tr>
+        </tbody>
+      </table>
+      <div class="aviso av-a">
+        <span class="ic">⚑</span>
+        <div><b>Política comercial.</b> Preço público (transparência comercial). Parcelamento lidera a comunicação na esteira. Raio-X sem desconto — o preço baixo é o próprio filtro.<br><br><b>Nota de comunicação:</b> R$ 97 não é o preço do valor, é o preço do <b>risco</b>. Preço baixo cria a objeção "deve ser genérico". <b>Nunca comece por "R$ 97".</b> Sempre: entregável → ancoragem → preço como surpresa.</div>
+      </div>
+
+      <h3 class="sub" id="produtos-ponte">Ponte entre produtos</h3>
+      <div class="flow">
+        <div class="flow-step"><div class="flow-dot paid">→</div><div class="flow-body"><h4>Raio-X → Fundação</h4><p>O relatório termina apontando o degrau certo. Quem recebe "sua base não está montada" já sabe o próximo passo. A R$ 97, o diagnóstico qualifica e aquece o lead para o ticket maior.</p></div></div>
+        <div class="flow-step"><div class="flow-dot">→</div><div class="flow-body"><h4>Fundação → Ativação</h4><p>Base construída pede para funcionar. "Está montada — falta rodar."</p></div></div>
+        <div class="flow-step"><div class="flow-dot">→</div><div class="flow-body"><h4>Ativação → Crescimento</h4><p>O que roda precisa ser sustentado. Recorrência entra como manutenção do que já existe — nunca como entrada.</p></div></div>
+      </div>
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div><b>Regra da ponte.</b> Ninguém empurra o degrau seguinte. O diagnóstico aponta. Cada degrau entrega algo que torna o próximo óbvio. <b>Trava de ordem:</b> Crescimento não é vendável como entrada.</div>
+      </div>
+    </section>
+
+    <!-- ═══════ 04 · COMERCIAL ═══════ -->
+    <section class="sec" id="comercial" data-crumb="Comercial">
+      <div class="sec-head">
+        <div class="sk">Seção 04</div>
+        <h2 class="st">Comercial</h2>
+        <p class="sl">Duas jornadas de venda coexistem: a digital (Raio-X) e a de campo (prospecção → Fundação). A v1.0 só tinha a primeira.</p>
+      </div>
+
+      <h3 class="sub" id="comercial-duas">As duas jornadas</h3>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-t"><span class="bg bg-b">Jornada digital</span></div>
+          <p><b>Raio-X · R$ 97 · escala</b></p>
+          <p>Conteúdo nomeia a dor → perfil/link → página do Raio-X → checkout → questionário → relatório automático → ponte para a Fundação.</p>
+          <p style="color:var(--cinza);font-size:12px">Roda sem intervenção humana. É o motor de volume. <b>Depende de audiência — que a YM ainda não tem.</b></p>
+        </div>
+        <div class="card">
+          <div class="card-t"><span class="bg bg-v">Jornada de campo</span></div>
+          <p><b>Prospecção → Fundação · R$ 2.500 · prova</b></p>
+          <p>Mini-diagnóstico feito <b>antes</b> da abordagem → visita ou direct → entrega do artefato → conversa → Raio-X completo ou Fundação.</p>
+          <p style="color:var(--cinza);font-size:12px">Não depende de audiência. Produz cliente em 3 semanas. <b>É a jornada prioritária até setembro/2026.</b></p>
+        </div>
+      </div>
+      <div class="aviso av-r">
+        <span class="ic">⚠</span>
+        <div><b>Correção estrutural da v1.0.</b> A v1.0 assumia que o dominó-raiz era o checkout automático. Não é. <b>O dominó-raiz é demanda.</b> Você pode ter motor perfeito, dashboard de 7 páginas e checkout funcionando — e vender zero, porque não existe ninguém do outro lado da tela. <b>A jornada de campo vem primeiro. A digital escala o que a de campo provar.</b></div>
+      </div>
+
+      <h3 class="sub" id="comercial-jornada">Jornada digital · detalhe</h3>
+      <div class="flow">
+        <div class="flow-step"><div class="flow-dot">1</div><div class="flow-body"><h4>Descoberta</h4><p>Cruza com a YM no Instagram, LinkedIn ou por indicação. Conteúdo que nomeia a dor.</p></div></div>
+        <div class="flow-step"><div class="flow-dot">2</div><div class="flow-body"><h4>Identificação</h4><p>Chega ao site e reconhece a própria dor no que a YM descreve.</p></div></div>
+        <div class="flow-step"><div class="flow-dot paid">3</div><div class="flow-body"><h4>Compra do Raio-X <span class="bg bg-b">R$ 97</span></h4><p>Compra no checkout. Sem reunião, sem fricção humana.</p></div></div>
+        <div class="flow-step"><div class="flow-dot">4</div><div class="flow-body"><h4>Questionário</h4><p>Responde o quiz estruturado que alimenta o Motor VOS.</p></div></div>
+        <div class="flow-step"><div class="flow-dot">5</div><div class="flow-body"><h4>Entrega</h4><p>Recebe o relatório com o Dashboard Executivo e o diagnóstico completo.</p></div></div>
+        <div class="flow-step"><div class="flow-dot">6</div><div class="flow-body"><h4>Ponte para a esteira</h4><p>O relatório aponta a Fundação. Reunião é opcional (upsell).</p></div></div>
+      </div>
+
+      <div class="aviso av-a">
+        <span class="ic">⚑</span>
+        <div><b>Entrega manual nos primeiros 20.</b> Até que a demanda seja provada, o Raio-X é entregue <b>manualmente</b>: a Yasmin roda o motor localmente e envia. <b>Não é gambiarra — é ordem certa.</b> Automatizar antes de validar venda é construir base antes de saber se alguém quer o prédio. Feito é melhor que perfeito.</div>
+      </div>
+
+      <h3 class="sub" id="comercial-pagamento">Pagamento</h3>
+      <div class="grid2">
+        <div class="mini"><div class="mini-k">Raio-X · fase 1 (até 20 vendas)</div><div class="mini-v">Link de pagamento simples (Pix/cartão). Entrega manual em até 48h. <span class="bg bg-v">Não bloqueia o lançamento</span></div></div>
+        <div class="mini"><div class="mini-k">Raio-X · fase 2 (após validação)</div><div class="mini-v">Checkout automático com redirecionamento ao questionário. <span class="bg bg-a">Ação da Yasmin · credencial bancária</span></div></div>
+        <div class="mini"><div class="mini-k">Fundação / Ativação</div><div class="mini-v">Ticket alto fechado em conversa, com link/cobrança (até 8x sem juros). Yasmin no loop — é venda consultiva.</div></div>
+        <div class="mini"><div class="mini-k">Crescimento</div><div class="mini-v">Recorrência mensal. Só depois de Fundação + Ativação.</div></div>
+      </div>
+
+      <h3 class="sub" id="comercial-proposta">Proposta &amp; contrato</h3>
+      <table>
+        <thead><tr><th style="width:22%">Produto</th><th>Instrumento</th></tr></thead>
+        <tbody>
+          <tr><td><b>Raio-X</b></td><td>Dispensa contrato longo. A própria página com escopo fechado e o comprovante bastam. Baixa fricção é a regra.</td></tr>
+          <tr><td><b>Fundação / Ativação / Crescimento</b></td><td>Proposta enxuta com a tabela "entra com / entregamos / sai com" + marcos + <b>o que não inclui</b> + preço/parcelas. Contrato simples de escopo fechado.<br><b>O "não inclui" é a cláusula que protege o preço — e é a peça de marketing mais forte da YM.</b></td></tr>
+        </tbody>
+      </table>
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div><b>Não bloqueia o lançamento.</b> A proposta/contrato da esteira pode ser montada <b>com o primeiro cliente da Fundação</b>. O conteúdo já existe — é a seção Produtos virada documento.</div>
+      </div>
+    </section>
+
+    <!-- ═══════ 05 · MARKETING ═══════ -->
+    <section class="sec" id="marketing" data-crumb="Marketing">
+      <div class="sec-head">
+        <div class="sk">Seção 05</div>
+        <h2 class="st">Marketing</h2>
+        <p class="sl">Uma história, três vozes. A voz define o conteúdo; o canal apenas distribui.</p>
+      </div>
+
+      <h3 class="sub" id="marketing-canais">Arquitetura dos canais</h3>
+      <table>
+        <thead><tr><th style="width:20%">Canal</th><th style="width:18%">Voz</th><th style="width:16%">Tempo narrativo</th><th>Papel</th></tr></thead>
+        <tbody>
+          <tr><td><b>LinkedIn Yasmin</b></td><td>"Eu vi" (1ª pessoa)</td><td>A virada</td><td>Revela. Autoridade de diagnóstico. Canal-líder da Yasmin. Asset mais crítico: <b>"Eu não vim do marketing"</b>.</td></tr>
+          <tr><td><b>Instagram YM</b></td><td>"Veja como" (2ª pessoa)</td><td>A resolução</td><td>Constrói. Utilidade. Autoridade + Educação + Conversão.</td></tr>
+          <tr><td><b>Site / Página YM</b></td><td>"Aconteceu" (3ª pessoa)</td><td>A prova</td><td>Comprova. Casos e resultado.</td></tr>
+          <tr><td>LinkedIn YM</td><td>"Você" institucional</td><td>Resolução</td><td>Estrutura comercial. Apoio ao site, não protagonista.</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="sub" id="marketing-territorios">Territórios de conteúdo · Instagram</h3>
+      <div class="grid4">
+        <div class="mini"><div class="mini-big">30%</div><div class="mini-k">Quebra de crença</div></div>
+        <div class="mini"><div class="mini-big">25%</div><div class="mini-k">Diagnóstico</div></div>
+        <div class="mini"><div class="mini-big">20%</div><div class="mini-k">Bastidores</div></div>
+        <div class="mini"><div class="mini-big">15%</div><div class="mini-k">Casos e prova</div></div>
+        <div class="mini"><div class="mini-big">10%</div><div class="mini-k">Educação</div></div>
+      </div>
+
+      <h3 class="sub" id="marketing-sistema">Sistema de conteúdo · 1 aprendizado → 3 ângulos</h3>
+      <div class="dflow">
+        <div class="dflow-step"><div class="dflow-ic">Aprendizado</div><p>UM aprendizado real da operação</p></div>
+        <div class="dflow-step"><div class="dflow-ic">Yasmin</div><p>"Eu vi" — reflexão em 1ª pessoa</p></div>
+        <div class="dflow-step"><div class="dflow-ic">YM Instagram</div><p>"Veja como" — virado ferramenta</p></div>
+        <div class="dflow-step"><div class="dflow-ic">YM Página</div><p>"Aconteceu" — virado caso</p></div>
+      </div>
+      <div class="aviso av-a">
+        <span class="ic">⚑</span>
+        <div>Parte-se sempre de <b>um aprendizado real</b>, nunca de três conteúdos inventados. Sem operação, não há conteúdo. É mais um motivo para a prospecção vir antes.</div>
+      </div>
+
+      <h3 class="sub" id="marketing-pilares">Pilares editoriais &amp; CTA</h3>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-t">Pilares</div>
+          <ul class="lst">
+            <li>Causa antes de canal.</li>
+            <li>Sequência como ativo.</li>
+            <li>Custo do improviso.</li>
+            <li>O que NÃO fazer (lacuna de mercado).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-t">CTA padrão</div>
+          <p>Todo conteúdo de fundo conduz a um único próximo passo: <b>o Raio-X Estratégico</b>. Nunca dois CTAs concorrentes.</p>
+          <p><b>Comunica-se pela dor; entrega-se pela causa.</b></p>
+          <p style="color:var(--cinza);font-size:12px">Exceção durante o lançamento (10/07–23/07): o CTA é a <b>aula ORDEM CERTA</b>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ 06 · MARKETING DE PROVA ═══════ -->
+    <section class="sec" id="prova" data-crumb="Marketing de Prova">
+      <div class="sec-head">
+        <div class="sk">Seção 06 · nova em v2.0</div>
+        <h2 class="st">Marketing de Prova</h2>
+        <p class="sl">O mercado está saturado de promessa. A YM não diz que é boa — mostra o método operando e deixa o artefato falar.</p>
+      </div>
+
+      <div class="quote">
+        <p>Não fale do diagnóstico.<br>Diagnostique em público.</p>
+        <span>Princípio de comunicação da YM</span>
+      </div>
+
+      <h3 class="sub" id="prova-porque">Por que isso não é escolha de tom</h3>
+      <div class="card">
+        <p>É consequência lógica do produto. Se é verdade que <b>"a partir do momento em que as pessoas veem o diagnóstico, elas compram o resto"</b>, então o problema comercial da YM não é <i>convencer</i>. É <b>mostrar</b>.</p>
+        <p>E aqui está a contradição que a v1.0 não resolvia: <b>o Raio-X está desenhado como produto fechado atrás de um checkout.</b> A pessoa só vê a qualidade <i>depois</i> de pagar. Mas a qualidade <b>é</b> o argumento de venda.</p>
+      </div>
+      <div class="aviso av-r">
+        <span class="ic">⚠</span>
+        <div><b>O ativo que vende está trancado do lado de dentro do que ele deveria vender.</b> Correção: publicar diagnósticos. Um por semana. Reais, autorizados, anonimizados quando preciso. Não o produto — a <b>evidência do produto</b>.</div>
+      </div>
+
+      <h3 class="sub" id="prova-como">Dizer "sou boa" × ser a própria prova</h3>
+      <table>
+        <thead><tr><th style="width:44%"><span class="bg bg-r">Nunca fazer</span></th><th><span class="bg bg-v">Sempre fazer</span></th></tr></thead>
+        <tbody>
+          <tr><td>"Tenho 16 anos de experiência"</td><td>"Em 2019 eu tinha uma operação com 40% de retrabalho. Isto foi o que eu mudei, <b>nesta ordem</b>."</td></tr>
+          <tr><td>"Meu diagnóstico é sensacional"</td><td><i>[publica um diagnóstico inteiro, de graça, e não comenta]</i></td></tr>
+          <tr><td>"Eu entendo de negócio"</td><td>"Olha o que eu descobri lendo 5 negócios seguidos: 4 tinham o gargalo no mesmo pilar."</td></tr>
+          <tr><td>"Sou estratégica"</td><td>"Eu fiz o Raio-X da minha própria empresa. Vou ler o que ele disse de errado sobre mim."</td></tr>
+        </tbody>
+      </table>
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div><b>A diferença não é humildade.</b> É que a coluna da direita mostra <b>o método operando</b> e a da esquerda mostra <b>a pessoa se descrevendo</b>. Isso se chama <b>autoridade demonstrada por artefato</b>.<br><br>Regra derivada: <b>a Yasmin pode falar do próprio resultado, desde que o resultado seja um dado, nunca um adjetivo.</b></div>
+      </div>
+
+      <h3 class="sub" id="prova-formatos">Os 5 formatos de prova</h3>
+
+      <div class="prova">
+        <div class="prova-h"><div class="prova-n">1</div><h4>O Diagnóstico Público</h4></div>
+        <p>Um por semana. Um negócio real (com autorização, anonimizado ou composto). O Raio-X roda <b>na frente de todo mundo</b>. Publica o dashboard, aponta o gargalo, dá a sequência. <b>Conversão zero. CTA zero.</b></p>
+        <div class="prova-ex">"Rodei o Raio-X num estúdio de pilates. Nota de posicionamento: 7,2. Nota de conversão: 2,8. Eles estavam contratando social media."</div>
+      </div>
+
+      <div class="prova">
+        <div class="prova-h"><div class="prova-n">2</div><h4>Observatório YM · o dado que você descobriu</h4></div>
+        <p>O formato mais poderoso, porque a autoridade é do <b>dado</b>, não da Yasmin. Ela é só a pessoa que contou.</p>
+        <div class="prova-ex">"Li 6 negócios de serviço seguidos. Em 5, a causa estava no mesmo pilar: Oferta &amp; Conversão. <b>Nenhum dos 5 estava trabalhando nesse pilar.</b> Todos os 5 estavam trabalhando em conteúdo."</div>
+      </div>
+
+      <div class="prova">
+        <div class="prova-h"><div class="prova-n">3</div><h4>Bastidor do Método</h4></div>
+        <p>Mostrar o motor. O código versionado. A regra sendo ajustada porque um caso real divergiu. <b>Admitir erro do próprio produto é a prova de competência mais alta que existe</b> — ninguém que está blefando faz isso.</p>
+        <div class="prova-ex">"O motor errou. Ele disse que a causa era visibilidade. Eu olhei e era oferta. Fui lá e mudei a regra. Versão 1.2."</div>
+      </div>
+
+      <div class="prova">
+        <div class="prova-h"><div class="prova-n">4</div><h4>O Raio-X da própria YM</h4></div>
+        <p>O arquivo <span class="mono">raiox_ym_marketing</span> já existe. <b>Publicar inteiro, com os pontos fracos.</b> É ser a própria prova sem dizer "sou boa" — é dizer <i>"eu aplico em mim o que vendo"</i>.</p>
+        <div class="prova-ex">"O motor disse que a YM tem nota 3,1 em prova social. Ele está certo. Eu construí tudo, menos cliente falando."</div>
+      </div>
+
+      <div class="prova" style="border-left:4px solid var(--amarelo)">
+        <div class="prova-h"><div class="prova-n" style="background:var(--amarelo)">5</div><h4>O cliente falando <span class="bg bg-a">a partir de agosto</span></h4></div>
+        <p>O único formato que a YM ainda não tem — e o mais desejado. Vem de aplicar o método com clientes reais e pedir depoimento <b>sobre o que mudou</b>, nunca sobre a Yasmin. Não tem atalho.</p>
+        <div class="prova-ex">Meta: <b>5 depoimentos em vídeo até 31/08/2026.</b></div>
+      </div>
+
+      <div class="aviso av-a">
+        <span class="ic">⚑</span>
+        <div><b>Permissão temporária, com prazo.</b> O manual é explícito: <i>"no Lançamento Semente você pode ser a sua própria prova. Mostre que você é o avatar transformado."</i> Isso é <b>permissão de estágio</b>, não preferência. A YM tem 4 meses e nenhum cliente transformado ainda. <b>Por 60–90 dias, a Yasmin é a prova. A partir de setembro, o cliente é.</b></div>
+      </div>
+    </section>
+
+    <!-- ═══════ 07 · PROSPECÇÃO ═══════ -->
+    <section class="sec" id="prospeccao" data-crumb="Prospecção &amp; Rua">
+      <div class="sec-head">
+        <div class="sk">Seção 07 · nova em v2.0</div>
+        <h2 class="st">Prospecção &amp; Rua</h2>
+        <p class="sl">A v1.0 tinha schema.org, GEO e mapa semântico — e nenhuma linha sobre como conseguir o primeiro cliente. Esta seção existe para corrigir isso.</p>
+      </div>
+
+      <div class="aviso av-r">
+        <span class="ic">⚠</span>
+        <div><b>O diagnóstico mais duro deste documento.</b> A YM tem um vício de <b>construir estrutura para adiar a rua</b>. Cada vez que a exposição se aproxima, nasce um novo documento: Ecossistema, Dashboard, Mapa Semântico, GEO, Motor v1.1. Tudo excelente. Tudo verdadeiro. <b>Tudo entre a Yasmin e o primeiro estranho que vai dizer não.</b><br><br>Não é mais um documento que falta. <b>É um cliente que ainda não foi abordado frio.</b></div>
+      </div>
+
+      <h3 class="sub" id="pros-porque">Por que rua antes de audiência</h3>
+      <table>
+        <thead><tr><th style="width:30%">Critério</th><th style="width:35%">Audiência orgânica</th><th>Prospecção ativa</th></tr></thead>
+        <tbody>
+          <tr><td>Tempo até o 1º cliente</td><td>6 a 12 meses</td><td><b>3 semanas</b></td></tr>
+          <tr><td>Depende de algoritmo</td><td>Sim</td><td>Não</td></tr>
+          <tr><td>Permite <b>mostrar</b> o diagnóstico antes de vender</td><td>Não — compete com o feed</td><td><b>Sim — abre o notebook e cala</b></td></tr>
+          <tr><td>Gera insumo para o conteúdo</td><td>Não</td><td><b>Sim — cada visita vira post</b></td></tr>
+          <tr><td>Valida o Motor com casos reais</td><td>Não</td><td><b>Sim</b></td></tr>
+        </tbody>
+      </table>
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div>A YM não precisa de 5.000 seguidores. Precisa de <b>10 diagnósticos entregues e 3 clientes falando</b>.</div>
+      </div>
+
+      <h3 class="sub" id="pros-mapa">Onde Marcela está · mapa de prospecção</h3>
+
+      <div class="pros">
+        <h4>🗺️ Google Maps <span class="bg bg-v">canal mais eficiente</span></h4>
+        <p>Buscar "fisioterapia BH", "pilates BH", "clínica odontológica BH", "podologia Contagem". <b>Filtro:</b> 20 a 80 avaliações, sem site, GMB desatualizado, fotos antigas.<br><b>GMB mal cuidado = negócio com operação e sem estrutura. É o ICP exato — e é público.</b> 50 leads qualificados em 40 minutos.</p>
+      </div>
+
+      <div class="pros">
+        <h4>🎓 MOVE+ SEBRAE <span class="bg bg-v">maior ativo, já em curso</span></h4>
+        <p>Você o listou como tarefa de gestão. Ele é, na verdade, <b>sua sala de aula cheia de avatares</b>. Cada colega de turma é uma Marcela.<br><b>Não vá lá aprender. Vá lá diagnosticar de graça e sair com três casos.</b> Meta: 8 abordagens, 3 mini-diagnósticos, 1 depoimento.</p>
+      </div>
+
+      <div class="pros">
+        <h4>🚪 Físico · Barreiro, Buritis, Gutierrez, Betim, Contagem</h4>
+        <p>Clínicas de fisio, pilates, odonto, estética, nutrição. <b>Visita presencial. Não vender.</b> Entregar um mini-diagnóstico impresso, feito <b>antes</b> da visita. Meta: 15 visitas.</p>
+      </div>
+
+      <div class="pros">
+        <h4>📱 Instagram · direct de observação</h4>
+        <p>Perfis com 2k–10k seguidores, postagem irregular, bio com Linktree, sem CTA claro. <b>Direct com observação específica, nunca pitch.</b></p>
+      </div>
+
+      <div class="pros">
+        <h4>🤝 Indicação de cliente atual</h4>
+        <p>Nayara, Estúdio Mover, Bem Estar Podologia, Easy Chic, Lumos.<br>Pergunta única: <i>"Quem você conhece que tá no mesmo lugar que você estava?"</i></p>
+      </div>
+
+      <div class="pros">
+        <h4>🏛️ Conselhos de classe · CREFITO-4, CRO-MG, CRN-9</h4>
+        <p>Eventos e grupos. Oferecer <b>palestra gratuita</b>, nunca venda. Autoridade por doação de conhecimento.</p>
+      </div>
+
+      <h3 class="sub" id="pros-script">O script da rua · não é venda</h3>
+      <div class="script">
+        <div class="sc-k">Abordagem presencial · 40 segundos</div>
+        <p>"Oi, tudo bem? Meu nome é Yasmin, eu leio negócio e defino ordem de construção. Eu olhei o Google e o Instagram de vocês antes de vir e fiz uma análise de uma página. Não estou vendendo nada — quero te entregar isso e ouvir se faz sentido. Leva 4 minutos."</p>
+        <div class="sc-n"><b>Depois:</b> entrega o papel. <b>Cala.</b> Deixa o artefato falar. Se ela perguntar o preço, responda com pergunta: <i>"Antes do preço — você já sabe qual é a causa do que trava, ou você sabe os sintomas?"</i></div>
+      </div>
+
+      <h3 class="sub" id="pros-metas">Metas de campo · 10/07 a 23/07</h3>
+      <div class="grid4">
+        <div class="mini"><div class="mini-big">30</div><div class="mini-k">Abordagens</div></div>
+        <div class="mini"><div class="mini-big">10</div><div class="mini-k">Mini-diagnósticos entregues</div></div>
+        <div class="mini"><div class="mini-big">3</div><div class="mini-k">Casos com autorização</div></div>
+        <div class="mini"><div class="mini-big">1</div><div class="mini-k">Venda de Fundação</div></div>
+      </div>
+      <table>
+        <thead><tr><th>Fonte</th><th style="width:16%">Quantos</th><th>Como</th></tr></thead>
+        <tbody>
+          <tr><td>Google Maps</td><td>15</td><td>Mini-diagnóstico feito antes da abordagem</td></tr>
+          <tr><td>MOVE+ SEBRAE</td><td>8</td><td>Colegas de turma. Diagnóstico gratuito.</td></tr>
+          <tr><td>Indicação de clientes</td><td>4</td><td>"Quem você conhece que tá onde você estava?"</td></tr>
+          <tr><td>Instagram</td><td>3</td><td>Direct com observação específica</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="sub" id="pros-sebrae">SEBRAE · a jogada de 3 tempos</h3>
+      <div class="flow">
+        <div class="flow-step"><div class="flow-dot">1</div><div class="flow-body"><h4>Julho–Agosto · MOVE+ <span class="bg bg-b">em curso</span></h4><p>Participar. Prospectar dentro da turma. Melhorar a própria gestão. Aproximar-se dos consultores e do time do SEBRAE.</p></div></div>
+        <div class="flow-step"><div class="flow-dot">2</div><div class="flow-body"><h4>Agosto · Prova acumulada</h4><p>20+ diagnósticos entregues, 5 depoimentos, 2 Fundações fechadas, Método VOS registrado.</p></div></div>
+        <div class="flow-step"><div class="flow-dot paid">3</div><div class="flow-body"><h4>Setembro · Edital de consultoria</h4><p>Inscrição com <b>prova, não com apresentação</b>. Metodologia registrada, motor versionado e datado, casos reais, depoimentos.</p></div></div>
+      </div>
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div>O SEBRAE não é canal de venda. É <b>canal de credenciamento</b>. Ele valida a YM perante um mercado que não conhece a Yasmin. Vale mais que 10 mil seguidores.</div>
+      </div>
+    </section>
+
+    <!-- ═══════ 08 · OPERAÇÃO ═══════ -->
+    <section class="sec" id="operacao" data-crumb="Operação">
+      <div class="sec-head">
+        <div class="sk">Seção 08</div>
+        <h2 class="st">Operação</h2>
+        <p class="sl">Como o Método VOS vira diagnóstico reproduzível. O motor executa; a autoria do método é da Yasmin.</p>
+      </div>
+
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div><b>Princípio da operação.</b> Esta arquitetura existe para tornar o conhecimento <b>escalável sem perder a autoria intelectual do método</b>. O Motor não substitui a Yasmin — é o Método VOS <b>codificado como regra executável</b>. A IA não diagnostica: recebe o diagnóstico pronto do Motor e apenas <b>o redige</b>. Trocar o modelo de IA não muda o diagnóstico.</div>
+      </div>
+
+      <h3 class="sub" id="op-arquitetura">Arquitetura do Raio-X · Motor v1.1</h3>
+      <div class="dflow">
+        <div class="dflow-step"><div class="dflow-ic">Questionário</div><p>Coleta estruturada capta o negócio</p></div>
+        <div class="dflow-step"><div class="dflow-ic">Motor VOS</div><p>Engine determinístico: notas, padrões, causa-raiz, sequência</p></div>
+        <div class="dflow-step"><div class="dflow-ic">IA redatora</div><p>Veste o diagnóstico do Motor em relatório</p></div>
+        <div class="dflow-step"><div class="dflow-ic">Relatório</div><p>Dashboard + 13 seções, padrão Nayara</p></div>
+      </div>
+      <div class="aviso av-a">
+        <span class="ic">⚑</span>
+        <div><b>O conhecimento mora no Motor, não no prompt.</b> <span class="mono">motor_diagnostico_ym.js</span> (v1.1, versionado) é o ativo intelectual: aplica o piso de patrimônio (todo negócio tem ativos), distingue ausência de evidência de ausência de ativo, e devolve por pilar <b>nota + evidências positivas + lacunas + confiança</b>. A IA recebe <b>somente</b> esse objeto. Há redator local de fallback: se a IA falhar, o relatório ainda sai do Motor.</div>
+      </div>
+
+      <h3 class="sub" id="op-pilares">Os 7 pilares · linguagem do Motor × linguagem do dono</h3>
+      <table>
+        <thead><tr><th style="width:36%">Termo do Motor</th><th>Linguagem do dono (Dashboard)</th></tr></thead>
+        <tbody>
+          <tr><td>Posicionamento</td><td>Como as pessoas entendem o que você faz</td></tr>
+          <tr><td>Estratégia de Conteúdo</td><td>O que você publica e como aparece</td></tr>
+          <tr><td>Prova Social</td><td>O que mostra que seu trabalho funciona</td></tr>
+          <tr><td>Visibilidade Local &amp; Google</td><td>Como te encontram quando procuram</td></tr>
+          <tr><td>Oferta &amp; Conversão</td><td>Como seu negócio vende</td></tr>
+          <tr><td>Captação &amp; Previsibilidade</td><td>Como novos clientes chegam</td></tr>
+          <tr><td>Autoridade Técnica Real</td><td>O valor real que você já tem</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="sub" id="op-fluxo">Fluxo do Raio-X</h3>
+      <div class="flow">
+        <div class="flow-step"><div class="flow-dot">1</div><div class="flow-body"><h4>Captura <span class="bg bg-b">automático</span></h4><p>O questionário coleta a dor declarada + dados do negócio. <i>Gate: campos mínimos preenchidos.</i></p></div></div>
+        <div class="flow-step"><div class="flow-dot paid">2</div><div class="flow-body"><h4>Ver <span class="bg bg-x">motor · método VOS</span></h4><p>O motor separa sintoma de causa. <i>Gate: causa-raiz nomeada em 1 frase.</i></p></div></div>
+        <div class="flow-step"><div class="flow-dot paid">3</div><div class="flow-body"><h4>Veredito <span class="bg bg-x">motor · método VOS</span></h4><p>Causa + ordem errada atual. <i>Gate: sequência atual mapeada como errada.</i></p></div></div>
+        <div class="flow-step"><div class="flow-dot paid">4</div><div class="flow-body"><h4>Ordenar <span class="bg bg-x">motor · método VOS</span></h4><p>Sequência correta priorizada + o que NÃO fazer. <i>Gate: prioridades ordenadas.</i></p></div></div>
+        <div class="flow-step"><div class="flow-dot">5</div><div class="flow-body"><h4>Entrega</h4><p>Dashboard + relatório (padrão Nayara) + ponte para a Fundação. <i>Gate: clareza acionável + padrão visual.</i></p></div></div>
+      </div>
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div><b>Onde a Yasmin entra.</b> Não em cada diagnóstico — no <b>critério que o Motor executa</b>. Ela valida e evolui as regras (pesos, limiares, padrões de cruzamento, lógica de causa-raiz) à medida que casos reais acumulam. Cada evolução é uma <b>nova versão rastreável</b>. O julgamento individual foi destilado em regra reproduzível; a autoria permanece dela.</div>
+      </div>
+
+      <h3 class="sub" id="op-dashboard">Dashboard Executivo · padrão oficial</h3>
+      <div class="card">
+        <p><b>É a camada executiva de leitura do Raio-X</b> — um painel que o empreendedor entende em menos de 10 segundos: onde está, o que funciona, o que trava, a maturidade, a prioridade e o próximo passo. Não simplifica a análise; simplifica a <b>compreensão</b>.</p>
+      </div>
+      <div class="aviso av-a">
+        <span class="ic">⚑</span>
+        <div><b>Regra inviolável de integridade.</b> O Dashboard consome <b>somente</b> os dados que o Motor já emite. Não cria pilar, não calcula score novo, não gera diagnóstico. <b>Se um dado não existe no Motor, não aparece no Dashboard.</b></div>
+      </div>
+      <table>
+        <thead><tr><th style="width:24%">Página</th><th>Mostra</th><th style="width:26%">Fonte no Motor</th></tr></thead>
+        <tbody>
+          <tr><td>1 · Visão geral</td><td>Saúde geral, maturidade, causa-raiz, KPIs</td><td><span class="mono">media_geral · status_digital · veredito</span></td></tr>
+          <tr><td>2 · Saúde dos pilares</td><td>Barra por pilar, linguagem traduzida, confiança</td><td><span class="mono">pilares[].nota · .confianca</span></td></tr>
+          <tr><td>3 · Forças</td><td>O que está forte, ativos reais</td><td><span class="mono">pontos_fortes · ativos_reais</span></td></tr>
+          <tr><td>4 · Gargalos</td><td>Gargalo principal, sintoma × causa</td><td><span class="mono">veredito.causa_raiz</span></td></tr>
+          <tr><td><b>5 · Prioridades</b></td><td><b>Ordem certa de correção + o que NÃO fazer</b></td><td><span class="mono">veredito.ordem_certa</span></td></tr>
+          <tr><td>6 · Plano de 90 dias</td><td>Timeline de 3 fases + projeção</td><td><span class="mono">ordem_certa · media_geral</span></td></tr>
+          <tr><td>7 · Próxima etapa</td><td>Degrau recomendado (sem preço)</td><td><span class="mono">proximo_degrau</span></td></tr>
+        </tbody>
+      </table>
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div><b>A página 5 é o produto.</b> "Ordem certa + o que NÃO fazer" é o único entregável que nenhum concorrente vende — porque ninguém ganha dinheiro dizendo ao cliente o que ele deve parar de comprar. <b>É o print que vai no Instagram.</b></div>
+      </div>
+
+      <h3 class="sub" id="op-humano">Onde a intervenção humana acontece</h3>
+      <table>
+        <thead><tr><th style="width:24%">Etapa</th><th style="width:32%">Quem executa</th><th>Natureza</th></tr></thead>
+        <tbody>
+          <tr><td>Raio-X</td><td>Motor (Método VOS)</td><td>Reproduzível · volume e qualificação</td></tr>
+          <tr><td>Reunião de interpretação</td><td>Yasmin (se contratada)</td><td>Opcional · upsell</td></tr>
+          <tr><td>Fundação</td><td>Yasmin assina marca e posicionamento</td><td>Consultivo · julgamento de negócio</td></tr>
+          <tr><td>Ativação</td><td>Método + YM</td><td>Consultivo · implantação</td></tr>
+          <tr><td>Crescimento</td><td>Yasmin · acompanhamento por ciclo</td><td>Consultivo · direção recorrente</td></tr>
+        </tbody>
+      </table>
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div>A presença humana <b>migra da entrada para a esteira</b>: o Raio-X gera volume; estratégia, posicionamento e decisões de negócio — onde o julgamento é insubstituível — concentram-se da Fundação em diante.</div>
+      </div>
+
+      <h3 class="sub" id="op-entrega">Entrega &amp; padrão de qualidade</h3>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-t">Padrão não-negociável</div>
+          <p>O arquivo da <b>Nayara Cortez</b> é o benchmark visual e estrutural. O motor gera o relatório nesse padrão; a esteira clona e preenche — <b>nunca recria do zero</b>.</p>
+        </div>
+        <div class="card">
+          <div class="card-t">Nunca rediagnostica</div>
+          <p>Durante a execução, causa nova significa <b>Raio-X incompleto</b> — e o caso volta a alimentar a evolução do método. Sequência fixa da Fundação: Marca → Posicionamento → Estratégia → Comunicação → Presença digital.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ 09 · PRESENÇA ═══════ -->
+    <section class="sec" id="presenca" data-crumb="Presença &amp; Autoridade">
+      <div class="sec-head">
+        <div class="sk">Seção 09</div>
+        <h2 class="st">Presença &amp; Autoridade</h2>
+        <p class="sl">Fonte única de verdade para SEO, GEO, arquitetura do site, mapa semântico e regras de produção de qualquer ativo.</p>
+      </div>
+
+      <div class="aviso av-a">
+        <span class="ic">⚑</span>
+        <div><b>Nota de prioridade — mudança da v1.0.</b> Esta seção é <b>infraestrutura de longo prazo</b>, não bloqueador de lançamento. SEO/GEO/schema só produzem retorno com tráfego, e a YM não tem tráfego. <b>Executar em setembro, depois da prova de campo.</b> Nada aqui atrasa o dia 23/07.</div>
+      </div>
+
+      <h3 class="sub" id="pres-categoria">Categoria mental</h3>
+      <div class="quote">
+        <p>Consultoria que devolve ordem a negócios que crescem no improviso — diagnóstico, estrutura e evolução em fases, com método próprio.</p>
+        <span>Posição de busca · não "agência", não "marketing digital"</span>
+      </div>
+
+      <h3 class="sub" id="pres-entidades">Mapa semântico · entidades da marca</h3>
+      <div class="mini-k" style="margin-bottom:8px">Entidades-núcleo (sempre presentes)</div>
+      <div class="ent"><span>consultoria estratégica</span><span>diagnóstico empresarial</span><span>estruturação de negócios</span><span>crescimento consistente</span><span>previsibilidade</span><span>organização comercial</span><span>método</span><span>ordem</span><span>causa</span><span>sequência</span><span>maturidade do negócio</span><span>Belo Horizonte</span><span>Minas Gerais</span></div>
+      <div class="mini-k" style="margin:16px 0 8px">Entidades de dor (topo de funil)</div>
+      <div class="ent dor"><span>empresa travada</span><span>negócio não sai do lugar</span><span>falta de previsibilidade</span><span>apagar incêndio</span><span>tudo depende de mim</span><span>crescer sem base</span></div>
+      <div class="mini-k" style="margin:16px 0 8px">Entidades comerciais (fundo de funil)</div>
+      <div class="ent com"><span>raio-x estratégico</span><span>método VOS</span><span>diagnóstico para empresa travada</span><span>consultoria para empresa de serviço</span><span>consultoria em Belo Horizonte</span></div>
+
+      <h3 class="sub" id="pres-schema">Schema · metadados · GEO</h3>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-t">Schema.org por tipo de página</div>
+          <div class="schema"><code>Organization</code><code>LocalBusiness</code><code>ProfessionalService</code><code>Service</code><code>Product</code><code>FAQPage</code><code>Article</code><code>BreadcrumbList</code><code>Person</code><code>sameAs</code></div>
+        </div>
+        <div class="card">
+          <div class="card-t">GEO · ser citável por IAs</div>
+          <ul class="lst">
+            <li>Entidade de marca idêntica em site, GBP, LinkedIn e Instagram.</li>
+            <li>Páginas objetivas por problema, com respostas diretas.</li>
+            <li>Formatos citáveis: definições, FAQs, frameworks, checklists.</li>
+            <li>Método nomeado (<b>VOS</b>) + contexto local.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="sub" id="pres-gbp">Google Business Profile</h3>
+      <table>
+        <thead><tr><th style="width:24%">Elemento</th><th>Decisão</th></tr></thead>
+        <tbody>
+          <tr><td>Categoria principal</td><td><b>Business Management Consultant</b> (consultoria). <b>Nunca</b> "agência de marketing".</td></tr>
+          <tr><td>Serviços</td><td>Diagnóstico empresarial, consultoria estratégica, estruturação comercial, planejamento de crescimento.</td></tr>
+          <tr><td>Produtos</td><td>Raio-X Estratégico, Fundação, Ativação, Crescimento.</td></tr>
+          <tr><td>Local</td><td>Reforçar Belo Horizonte e Minas Gerais em descrição, posts e citações.</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="sub" id="pres-producao">Regra de produção de qualquer ativo</h3>
+      <div class="card">
+        <ul class="lst check">
+          <li>Usa a categoria mental "ordem para crescer", não linguagem de agência.</li>
+          <li>Nenhuma frase que Marcela não diria.</li>
+          <li>Repete as entidades-núcleo em linguagem natural.</li>
+          <li>Tem H1 específico + hierarquia H2/H3 correta.</li>
+          <li>Aponta para um único próximo passo.</li>
+          <li>Respeita a ordem de UX: dor → consequência → método → prova → oferta → risco reduzido → CTA.</li>
+          <li>Mostra artefato, não adjetivo.</li>
+          <li>Padrão visual Nayara (Montserrat/Inter, paleta YM).</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════ 10 · ROADMAP ═══════ -->
+    <section class="sec" id="roadmap" data-crumb="Roadmap">
+      <div class="sec-head">
+        <div class="sk">Seção 10</div>
+        <h2 class="st">Roadmap</h2>
+        <p class="sl">A ordem certa, aplicada à própria YM. Datas reais, a partir de 09/07/2026.</p>
+      </div>
+
+      <div class="nofazer">
+        <h4>O que NÃO fazer agora</h4>
+        <ul>
+          <li>Lançar o Raio-X em 10/07 para uma lista vazia. Vender zero e concluir que o produto não vende, quando o problema é que ninguém foi convidado.</li>
+          <li>Congelar o Ecossistema antes de ter 20 diagnósticos rodados. Congelar antes de coletar dados é congelar hipótese.</li>
+          <li>Construir checkout automático antes da primeira venda.</li>
+          <li>Executar SEO / GEO / schema antes de existir tráfego.</li>
+          <li>Construir uma nova Ferramenta YM antes de dezembro.</li>
+          <li><b>Escrever mais um documento.</b></li>
+        </ul>
+      </div>
+
+      <h3 class="sub" id="rm-timeline">Cronograma</h3>
+      <div class="tl">
+        <div class="tl-item now">
+          <div class="tl-d">10/07 · sexta · AMANHÃ</div>
+          <div class="tl-t">Lançar a EMPRESA — não o produto</div>
+          <div class="tl-p">
+            <b>1.</b> Publicar MVV (arte pronta + 3 ajustes de texto) no Instagram e LinkedIn.<br>
+            <b>2.</b> Publicar <b>"Eu não vim do marketing"</b> — LinkedIn, texto puro, sem imagem. Resolve autoridade, diferenciação e o indicador 1 do nicho.<br>
+            <b>3.</b> Anunciar a aula <b>ORDEM CERTA</b> para 23/07 e abrir inscrição.<br>
+            <b>4.</b> Iniciar registro: INPI (YM, Raio-X Estratégico, Método VOS) + depósito autoral do motor.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-d">10/07 → 23/07 · 14 dias</div>
+          <div class="tl-t">Duas frentes simultâneas</div>
+          <div class="tl-p">
+            <b>Frente A · Captação.</b> 1 conteúdo por dia. Mensagem central: o Manifesto. CTA único: a aula.<br>
+            <b>Frente B · Rua.</b> 30 abordagens · 10 mini-diagnósticos entregues · 3 casos com autorização.<br>
+            <span class="bg bg-r">Esta é a única parte que não pode falhar.</span>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-d">23/07 · quinta</div>
+          <div class="tl-t">AULA ORDEM CERTA — o lançamento real</div>
+          <div class="tl-p">
+            90 min. Abertura ("Eu não vim do marketing") → dor nomeada → quebra de crença → Método VOS e os 7 pilares → <b>diagnóstico ao vivo de 2–3 negócios de inscritos</b> → oferta.<br>
+            <b>Oferta: Fundação (R$ 2.500, 8x). Downsell: Raio-X (R$ 97).</b><br>
+            <i>O bloco de diagnóstico ao vivo é o produto. Não pode ser cortado se o tempo apertar.</i>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-d">24/07 → 31/07</div>
+          <div class="tl-t">Entrega manual</div>
+          <div class="tl-p">Raio-X entregue à mão para os primeiros 20. Yasmin roda o motor localmente e envia. Cada relatório = uma evolução do Motor (Hipótese 7 validando na prática).</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-d">Agosto</div>
+          <div class="tl-t">Colheita</div>
+          <div class="tl-p">
+            Coletar <b>5 depoimentos em vídeo</b> — sobre o que mudou, nunca sobre a Yasmin.<br>
+            Publicar 4 Diagnósticos Públicos + 2 posts do Observatório YM.<br>
+            Fechar 1–2 Fundações. Amadurecer escopo de Ativação com os primeiros clientes.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-d">Setembro</div>
+          <div class="tl-t">Edital de consultoria SEBRAE</div>
+          <div class="tl-p">Inscrição com: Método VOS registrado · motor versionado e datado · 20+ diagnósticos entregues · 5 depoimentos · 2 Fundações · MVV publicado · site no ar.<br><b>Chegar com prova, não com apresentação.</b><br>Em paralelo: executar SEO/GEO/schema, agora que existe tráfego.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-d">Outubro</div>
+          <div class="tl-t">Congelamento definitivo · v3.0</div>
+          <div class="tl-p">Aqui — e só aqui — o Ecossistema vira versão final, com os dados de 3 meses de rua dentro dele. Checkout automático. Site completo.<br><i>Congelar em julho é congelar hipótese. Congelar em outubro é congelar aprendizado.</i></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-d">Dezembro</div>
+          <div class="tl-t">Ferramentas YM</div>
+          <div class="tl-p">Só depois de cada ferramenta ter sido usada em 5 clientes reais.</div>
+        </div>
+      </div>
+
+      <h3 class="sub" id="rm-metas">Meta do lançamento · 23/07</h3>
+      <table>
+        <thead><tr><th>Métrica</th><th style="width:20%">Meta</th><th>Racional</th></tr></thead>
+        <tbody>
+          <tr><td>Inscritos na lista</td><td>120</td><td>Captação orgânica + rua, base pequena, 14 dias</td></tr>
+          <tr><td>Presença ao vivo</td><td>30–35</td><td>~28%, padrão de lista fria pequena</td></tr>
+          <tr><td><b>Vendas Fundação</b></td><td><b>2</b></td><td>R$ 5.000</td></tr>
+          <tr><td>Vendas Raio-X (downsell)</td><td>12–18</td><td>R$ 1.164 – R$ 1.746</td></tr>
+          <tr><td><b>Faturamento</b></td><td><b>~R$ 6.500</b></td><td></td></tr>
+        </tbody>
+      </table>
+      <div class="aviso av-b">
+        <span class="ic">◆</span>
+        <div><b>Mas a meta real não é dinheiro.</b> Pelo manual, o semente existe para validar a oferta com <b>uma</b> venda, validar a entrega e gerar os primeiros resultados.<br><br>
+        <b>1 venda de Fundação</b> = lançamento bem-sucedido.<br>
+        <b>2 vendas</b> = a YM tem produto.<br>
+        <b>0 Fundação + 15 Raio-X</b> = a Fundação está mal posicionada, o Raio-X está validado, e você aprendeu mais do que faturou.<br><br>
+        E o subproduto mais valioso: <b>12 a 18 relatórios reais alimentando a evolução do Motor.</b> Isso vale mais que os R$ 6.500.</div>
+      </div>
+
+      <h3 class="sub" id="rm-checklist">Checklist do lançamento</h3>
+      <div class="rm" id="rm-launch"></div>
+    </section>
+
+    <!-- ═══════ 11 · BIBLIOTECA ═══════ -->
+    <section class="sec" id="biblioteca" data-crumb="Biblioteca">
+      <div class="sec-head">
+        <div class="sk">Seção 11</div>
+        <h2 class="st">Biblioteca</h2>
+        <p class="sl">Arquivos, contatos e referências da operação.</p>
+      </div>
+
+      <h3 class="sub" id="bib-arquivos">Arquivos de referência</h3>
+      <div class="grid2">
+        <div class="lnk"><div class="lnk-ic">★</div><div class="lnk-tx"><h4>raiox_nayaracortez</h4><p>Padrão de entrega não-negociável</p></div></div>
+        <div class="lnk"><div class="lnk-ic">◈</div><div class="lnk-tx"><h4>raiox_ym_marketing</h4><p>Raio-X da própria YM — <b>publicar</b></p></div></div>
+        <div class="lnk"><div class="lnk-ic">⚙</div><div class="lnk-tx"><h4>motor_diagnostico_ym.js</h4><p>v1.1 · ativo intelectual · registrar</p></div></div>
+        <div class="lnk"><div class="lnk-ic">▦</div><div class="lnk-tx"><h4>template_universal_ym</h4><p>Insumos e formulários</p></div></div>
+        <div class="lnk"><div class="lnk-ic">◇</div><div class="lnk-tx"><h4>spo_ym_marketing</h4><p>Procedimento operacional</p></div></div>
+        <div class="lnk"><div class="lnk-ic">▤</div><div class="lnk-tx"><h4>Suíte Nayara</h4><p>instagram · posicionamento · gmb · funil · branding</p></div></div>
+      </div>
+
+      <h3 class="sub" id="bib-contatos">Contatos &amp; canais</h3>
+      <div class="grid4">
+        <div class="mini"><div class="mini-k">WhatsApp</div><div class="mini-v">55 31 97507-3862</div></div>
+        <div class="mini"><div class="mini-k">Instagram</div><div class="mini-v">@ym_marketingenegocios</div></div>
+        <div class="mini"><div class="mini-k">E-mail</div><div class="mini-v">ymmarketingenegocios@gmail.com</div></div>
+        <div class="mini"><div class="mini-k">Site</div><div class="mini-v">ymnegocios.com.br</div></div>
+      </div>
+
+      <h3 class="sub" id="bib-identidade">Identidade visual</h3>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-t">Cores</div>
+          <div class="pills"><span class="pill">#0A2540</span><span class="pill">#0066FF</span><span class="pill">#3D47C4</span><span class="pill">#F7F9FC</span><span class="pill">#E4EAF2</span><span class="pill">#6B7A99</span></div>
+        </div>
+        <div class="card">
+          <div class="card-t">Tipografia</div>
+          <p><b>Montserrat</b> (títulos, 800) · <b>Inter</b> (corpo).</p>
+        </div>
+      </div>
+
+      <h3 class="sub" id="bib-historico">Histórico</h3>
+      <div class="card">
+        <p><b>Empresa fundada em 10/03/2026.</b> Este documento é escrito no 4º mês de operação.</p>
+        <p><b>Fundadora: Yasmin Menezes</b> — 16 anos de trajetória (Atento/AeC): instrutora de treinamento → Customer Experience → supervisão regional → coordenação de melhoria contínua/CSOps. MBA em Marketing Digital.</p>
+        <p><b>Padrão de carreira:</b> sempre se moveu de executar a ponta para estruturar o sistema. <i>É a prova viva da tese da YM — e o conteúdo mais importante que ainda não foi publicado.</i></p>
+        <p style="color:var(--cinza);font-size:12px">Também sócia da H2PL (universo isolado, fora do ecossistema da competência).</p>
+      </div>
+    </section>
+
+    <div class="footer">
+      <p>Ecossistema Institucional YM · documento oficial <b>v2.0</b> · 09/07/2026 · Belo Horizonte/MG</p>
+      <p>Conceitos congelados · execução aberta até outubro/2026</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const NAV = [
+  {id:'identidade',n:'01',label:'Identidade',subs:[['id-manifesto','Manifesto'],['id-mvv','Missão · Visão · Propósito'],['id-valores','Valores'],['id-roma','Roma'],['id-arquitetura','Arquitetura da Roma'],['id-metodo','Método VOS'],['id-linguagem','Linguagem de marca']]},
+  {id:'mercado',n:'02',label:'Mercado',subs:[['mercado-nicho','Nicho e subnicho'],['mercado-indicadores','3 indicadores'],['mercado-avatar','Avatar · Marcela'],['mercado-gastos','O que ela já comprou'],['mercado-falas','As falas dela'],['mercado-dores','As 10 dores'],['mercado-aspiracoes','As 10 aspirações'],['mercado-resumo','Resumo em 4 linhas'],['mercado-icp','ICP'],['mercado-nao','Quem NÃO atendemos'],['mercado-objecoes','Objeções']]},
+  {id:'produtos',n:'03',label:'Produtos',subs:[['produtos-oferta','A oferta em segundos'],['produtos-esteira','Escada de produtos'],['produtos-ferramentas','Ferramentas YM'],['produtos-preco','Preço'],['produtos-ponte','Ponte entre produtos']]},
+  {id:'comercial',n:'04',label:'Comercial',subs:[['comercial-duas','As duas jornadas'],['comercial-jornada','Jornada digital'],['comercial-pagamento','Pagamento'],['comercial-proposta','Proposta · Contrato']]},
+  {id:'marketing',n:'05',label:'Marketing',subs:[['marketing-canais','Arquitetura dos canais'],['marketing-territorios','Territórios'],['marketing-sistema','Sistema de conteúdo'],['marketing-pilares','Pilares · CTA']]},
+  {id:'prova',n:'06',label:'Marketing de Prova',subs:[['prova-porque','Por que prova'],['prova-como','Prova × promessa'],['prova-formatos','Os 5 formatos']]},
+  {id:'prospeccao',n:'07',label:'Prospecção &amp; Rua',subs:[['pros-porque','Rua antes de audiência'],['pros-mapa','Mapa de prospecção'],['pros-script','Script da rua'],['pros-metas','Metas de campo'],['pros-sebrae','SEBRAE']]},
+  {id:'operacao',n:'08',label:'Operação',subs:[['op-arquitetura','Motor v1.1'],['op-pilares','Os 7 pilares'],['op-fluxo','Fluxo do Raio-X'],['op-dashboard','Dashboard Executivo'],['op-humano','Intervenção humana'],['op-entrega','Entrega · Qualidade']]},
+  {id:'presenca',n:'09',label:'Presença &amp; Autoridade',subs:[['pres-categoria','Categoria mental'],['pres-entidades','Mapa semântico'],['pres-schema','Schema · GEO'],['pres-gbp','Google Business'],['pres-producao','Regra de produção']]},
+  {id:'roadmap',n:'10',label:'Roadmap',subs:[['rm-timeline','Cronograma'],['rm-metas','Meta do lançamento'],['rm-checklist','Checklist']]},
+  {id:'biblioteca',n:'11',label:'Biblioteca',subs:[['bib-arquivos','Arquivos'],['bib-contatos','Contatos'],['bib-identidade','Identidade visual'],['bib-historico','Histórico']]},
+];
+
+const sbnav = document.getElementById('sbnav');
+NAV.forEach(g=>{
+  const grp=document.createElement('div');grp.className='sb-group';grp.dataset.id=g.id;
+  grp.innerHTML=`<div class="sb-group-head" data-target="${g.id}">
+    <span class="sb-num">${g.n}</span><span class="sb-label">${g.label}</span>
+    <svg class="sb-chev" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div><div class="sb-sub">${g.subs.map(s=>`<a href="#${s[0]}">${s[1]}</a>`).join('')}</div>`;
+  sbnav.appendChild(grp);
+});
+
+document.querySelectorAll('.sb-group-head').forEach(h=>{
+  h.addEventListener('click',()=>{
+    const grp=h.closest('.sb-group');
+    const wasOpen=grp.classList.contains('open');
+    document.querySelectorAll('.sb-group').forEach(x=>x.classList.remove('open'));
+    if(!wasOpen)grp.classList.add('open');
+    document.getElementById(h.dataset.target).scrollIntoView({behavior:'smooth'});
+  });
+});
+document.querySelectorAll('.sb-sub a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    if(window.innerWidth<=980)document.getElementById('sidebar').classList.remove('open');
+  });
+});
+document.getElementById('menubtn').addEventListener('click',()=>{
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+const secs=[...document.querySelectorAll('.sec')];
+const crumb=document.getElementById('crumb');
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const id=e.target.id;
+      crumb.textContent=e.target.dataset.crumb||id;
+      document.querySelectorAll('.sb-group-head').forEach(h=>h.classList.toggle('active',h.dataset.target===id));
+      document.querySelectorAll('.sb-group').forEach(g=>g.classList.toggle('open',g.dataset.id===id));
+    }
+  });
+},{rootMargin:'-45% 0px -50% 0px'});
+secs.forEach(s=>obs.observe(s));
+document.querySelector('.sb-group').classList.add('open');
+
+const LAUNCH=[
+  ['Data inegociável marcada · 23/07','O exercício mais importante do manual. Sem data, nada acontece.','bg-r','ITEM ZERO'],
+  ['Publicar MVV (Missão · Visão · Valores)','A arte já existe. Aplicar os 3 ajustes de texto e publicar em Instagram + LinkedIn.','bg-r','10/07'],
+  ['Publicar "Eu não vim do marketing"','LinkedIn, texto puro. Resolve autoridade, diferenciação e o indicador 1 do nicho de uma vez.','bg-r','10/07'],
+  ['Registrar marca e método (INPI)','YM Marketing & Negócios · Raio-X Estratégico · Método VOS. + depósito autoral do motor.','bg-a','AÇÃO SUA'],
+  ['Página de inscrição da aula','Uma página, um campo (nome + WhatsApp), um botão. Sem vídeo, sem rolagem infinita.','bg-b','10/07'],
+  ['Grupo de WhatsApp de aquecimento','Lançamento semente vive de WhatsApp, não de e-mail.','bg-b','10/07'],
+  ['Roteiro da aula ORDEM CERTA escrito','90 min. Escrito, não decorado. O bloco de diagnóstico ao vivo é o produto.','bg-b','até 20/07'],
+  ['3 casos fatiados como evidência','Nayara, Bem Estar Podologia, Estúdio Mover. Já existem — só falta fatiar.','bg-v','até 20/07'],
+  ['30 abordagens de rua','15 Google Maps · 8 MOVE+ SEBRAE · 4 indicação · 3 Instagram.','bg-r','10/07–23/07'],
+  ['10 mini-diagnósticos entregues','Feitos ANTES da abordagem. Entrega o papel e cala.','bg-r','10/07–23/07'],
+  ['14 conteúdos de captação','1 por dia. Mensagem central: o Manifesto. CTA único: a aula.','bg-b','10/07–23/07'],
+  ['Link de cobrança da Fundação (8x)','Ticket alto fechado em conversa. Não precisa de checkout automático.','bg-a','AÇÃO SUA'],
+  ['Link de pagamento simples do Raio-X','Pix/cartão. Entrega manual em 48h. NÃO bloqueia o lançamento.','bg-a','AÇÃO SUA'],
+  ['Site em 5 páginas (não 12)','Home · Sobre · Raio-X · Fundação · Aula. Feito é melhor que perfeito.','bg-x','até 23/07'],
+  ['Checkout automático','Só depois da primeira venda validada. NÃO é o dominó-raiz.','bg-x','SETEMBRO'],
+  ['SEO · GEO · Schema · GBP','Infraestrutura de longo prazo. Só produz retorno com tráfego.','bg-x','SETEMBRO'],
+];
+const rmL=document.getElementById('rm-launch');
+LAUNCH.forEach((item,i)=>{
+  const div=document.createElement('div');div.className='rm-item';
+  div.innerHTML=`<div class="rm-check" data-i="${i}">✓</div>
+    <div class="rm-body"><h4>${item[0]}</h4><p>${item[1]}</p></div>
+    <span class="rm-tag bg ${item[2]}">${item[3]}</span>`;
+  rmL.appendChild(div);
+});
+document.querySelectorAll('.rm-check').forEach(c=>{
+  c.addEventListener('click',()=>c.classList.toggle('done'));
+});
+</script>
+</body>
+</html>
