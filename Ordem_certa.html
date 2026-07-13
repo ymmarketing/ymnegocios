@@ -3,96 +3,218 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ORDEM CERTA · aula gratuita ao vivo</title>
-<meta name="description" content="Por que você resolve um problema e nasce outro no mesmo lugar. Aula ao vivo e gratuita. Quinta, 23/07, 20h.">
-<meta property="og:title" content="ORDEM CERTA · aula gratuita ao vivo">
-<meta property="og:description" content="Os 7 lugares onde a causa do seu negócio se esconde. Quinta, 23/07, 20h.">
-<meta property="og:type" content="website">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<meta name="description" content="ORDEM CERTA — aula ao vivo e gratuita sobre por que você resolve um problema e nasce outro no mesmo lugar, e qual é a sequência que destrava o crescimento.">
+<title>ORDEM CERTA · Aula ao vivo e gratuita — YM Marketing &amp; Negócios</title>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --azul:#0A2540; --azul2:#0D1B35; --vivo:#0066FF; --vivo2:#3D47C4;
+  --azul:#0A2540; --azul2:#0D1B35; --azul3:#0F2444;
+  --vivo:#0066FF; --vivo2:#3D47C4; --claro:#5BA4FF;
   --branco:#fff; --off:#F7F9FC; --borda:#E4EAF2; --escuro:#2D3A50;
-  --cinza:#65738F; --wpp:#25D366;
+  --cinza:#65738F; --cinza2:rgba(255,255,255,.62); --wpp:#25D366;
+  --laranja:#FF7A3D;
 }
-html,body{height:100%}
+html{scroll-behavior:smooth}
+html,body{min-height:100%}
 body{
-  background:var(--azul2);color:#fff;font-family:'Inter',sans-serif;line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  min-height:100dvh;display:flex;flex-direction:column;
-  position:relative;overflow-x:hidden;
+  background:var(--azul2);color:#fff;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  line-height:1.6;-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden;
 }
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:38px 38px;pointer-events:none;z-index:0}
 :focus-visible{outline:3px solid var(--vivo);outline-offset:3px;border-radius:6px}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
+.z{position:relative;z-index:1}
 
-.wrap{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;max-width:560px;margin:0 auto}
+/* ===== HEADER / LOGO ===== */
+.top{display:flex;justify-content:center;padding:26px 24px 0}
+.logo{display:flex;align-items:center;gap:10px}
+.logo svg{width:28px}
+.logo span{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;letter-spacing:.12em;color:#fff}
 
-.logo{display:flex;align-items:center;gap:10px;margin-bottom:44px}
-.logo svg{width:30px}
-.logo span{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:800;letter-spacing:.12em;color:#fff}
-
-.tag{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#5BA4FF;background:rgba(0,102,255,.12);border:1px solid rgba(0,102,255,.28);padding:9px 17px;border-radius:100px;margin-bottom:30px}
-.tag .dot{width:6px;height:6px;border-radius:50%;background:#5BA4FF;animation:pulse 2s infinite}
+/* ===== HERO ===== */
+.hero{max-width:640px;margin:0 auto;text-align:center;padding:40px 24px 20px}
+.tag{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono','Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--claro);background:rgba(0,102,255,.12);border:1px solid rgba(0,102,255,.28);padding:9px 17px;border-radius:100px;margin-bottom:28px}
+.tag .dot{width:6px;height:6px;border-radius:50%;background:var(--claro);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-h1{font-family:'Montserrat',sans-serif;font-size:clamp(30px,7vw,46px);font-weight:800;line-height:1.04;letter-spacing:-.035em;margin-bottom:22px}
-h1 .g{color:var(--cinza)}
-
-.sub{font-size:17px;color:rgba(255,255,255,.66);max-width:430px;margin-bottom:40px;line-height:1.7}
+h1{font-family:'Montserrat',sans-serif;font-size:clamp(31px,7.5vw,50px);font-weight:800;line-height:1.03;letter-spacing:-.035em;margin-bottom:22px}
+h1 .g{color:var(--laranja)}
+.sub{font-size:17.5px;color:var(--cinza2);max-width:480px;margin:0 auto 34px;line-height:1.7}
 .sub b{color:#fff;font-weight:600}
 
 .cta{
   display:inline-flex;align-items:center;justify-content:center;gap:11px;
-  background:var(--wpp);color:#0A2540;
+  background:var(--wpp);color:#08351a;
   font-family:'Montserrat',sans-serif;font-size:17px;font-weight:800;
-  padding:20px 40px;border-radius:14px;text-decoration:none;
-  transition:transform .15s,box-shadow .15s;
-  box-shadow:0 12px 34px rgba(37,211,102,.28);
+  padding:19px 38px;border-radius:14px;text-decoration:none;border:none;cursor:pointer;
+  transition:transform .15s,box-shadow .15s;box-shadow:0 12px 34px rgba(37,211,102,.30);
 }
-.cta:hover{transform:translateY(-2px);box-shadow:0 16px 42px rgba(37,211,102,.36)}
+.cta:hover{transform:translateY(-2px);box-shadow:0 16px 42px rgba(37,211,102,.40)}
 .cta svg{width:22px;height:22px}
+.cta.solid{background:var(--vivo);color:#fff;box-shadow:0 12px 34px rgba(0,102,255,.34)}
+.cta.solid:hover{box-shadow:0 16px 42px rgba(0,102,255,.44)}
+.cta-note{font-family:'JetBrains Mono','Courier New',monospace;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.36);margin-top:16px}
 
-.cta-note{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.34);margin-top:18px}
-
-.when{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin-top:44px;font-size:14px;color:rgba(255,255,255,.6)}
+.when{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:38px}
+.when div{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--cinza2);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:10px 18px;border-radius:100px}
 .when b{color:#fff;font-weight:700}
 
-.foot{position:relative;z-index:1;text-align:center;padding:22px;font-size:11.5px;color:rgba(255,255,255,.32)}
+/* ===== SECTIONS ===== */
+.sec{max-width:640px;margin:0 auto;padding:52px 24px}
+.eyebrow{font-family:'JetBrains Mono','Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--claro);margin-bottom:14px;text-align:center}
+h2{font-family:'Montserrat',sans-serif;font-size:clamp(23px,5vw,30px);font-weight:800;line-height:1.15;letter-spacing:-.025em;text-align:center;margin-bottom:16px}
+.sec-lead{text-align:center;color:var(--cinza2);font-size:16px;max-width:460px;margin:0 auto 34px;line-height:1.7}
+
+/* mirror / pain */
+.mirror{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:26px 26px 8px;max-width:520px;margin:0 auto}
+.mirror .line{display:flex;gap:13px;align-items:flex-start;padding-bottom:18px}
+.mirror .line .m{color:var(--laranja);font-family:'Montserrat',sans-serif;font-weight:800;flex-shrink:0;font-size:15px;line-height:1.5}
+.mirror .line p{font-size:15.5px;color:rgba(255,255,255,.82);line-height:1.6}
+.verdict{text-align:center;margin-top:28px;font-size:17px;color:#fff;font-weight:600}
+.verdict .g{color:var(--laranja)}
+
+/* learn — o que você leva */
+.learn{display:grid;gap:14px;max-width:520px;margin:0 auto}
+.learn .item{display:flex;gap:15px;align-items:flex-start;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px 22px}
+.learn .n{width:30px;height:30px;border-radius:9px;background:var(--vivo);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:800;flex-shrink:0}
+.learn h3{font-family:'Montserrat',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:4px;line-height:1.3}
+.learn p{font-size:14.5px;color:var(--cinza2);line-height:1.55}
+
+/* forwho */
+.forwho{max-width:520px;margin:0 auto;display:grid;gap:12px}
+.forwho .row{display:flex;gap:12px;align-items:flex-start;font-size:15.5px;line-height:1.55;padding:2px 0}
+.forwho .row .ic{flex-shrink:0;font-weight:800;font-family:'Montserrat',sans-serif}
+.forwho .yes .ic{color:var(--wpp)}
+.forwho .no .ic{color:#65738F}
+.forwho .yes{color:rgba(255,255,255,.9)}
+.forwho .no{color:rgba(255,255,255,.5)}
+.forwho .div{height:1px;background:rgba(255,255,255,.08);margin:14px 0}
+
+/* host */
+.host{background:linear-gradient(160deg,var(--azul3),var(--azul2));border:1px solid rgba(91,164,255,.18);border-radius:18px;padding:34px 28px;max-width:520px;margin:0 auto;text-align:center}
+.host .av{width:70px;height:70px;border-radius:50%;background:linear-gradient(140deg,var(--vivo),var(--vivo2));display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:26px;font-weight:800;color:#fff;margin:0 auto 18px;letter-spacing:.02em}
+.host h3{font-family:'Montserrat',sans-serif;font-size:19px;font-weight:800;margin-bottom:4px}
+.host .role{font-family:'JetBrains Mono','Courier New',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--claro);margin-bottom:16px}
+.host p{font-size:15px;color:var(--cinza2);line-height:1.68}
+.host p+p{margin-top:12px}
+.host p b{color:#fff;font-weight:600}
+
+/* final cta */
+.final{text-align:center;max-width:560px;margin:0 auto;padding:56px 24px 40px}
+.final h2{margin-bottom:14px}
+.final .sec-lead{margin-bottom:30px}
+.scarce{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--cinza2);margin-top:22px}
+.scarce .d{width:7px;height:7px;border-radius:50%;background:var(--laranja);animation:pulse 2s infinite}
+
+.foot{text-align:center;padding:30px 22px 40px;font-size:11.5px;color:rgba(255,255,255,.30);border-top:1px solid rgba(255,255,255,.06);margin-top:20px}
+
+/* sticky mobile cta */
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(13,27,53,.92);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.1);padding:12px 18px;display:none;justify-content:center}
+.sticky a{width:100%;max-width:420px}
+@media(max-width:680px){.sticky{display:flex}body{padding-bottom:82px}}
+
+hr.sep{border:none;height:1px;background:rgba(255,255,255,.07);max-width:520px;margin:0 auto}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-
+<div class="top z">
   <div class="logo">
     <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0066FF"/><path d="M9 10l7 8 7-8M16 18v6" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <span>YM</span>
   </div>
-
-  <div class="tag"><span class="dot"></span>Quinta · 23/07 · 20h · ao vivo</div>
-
-  <h1>O problema quase nunca é falta de esforço.<br><span class="g">É esforço aplicado na ordem errada.</span></h1>
-
-  <p class="sub">Aula ao vivo e gratuita sobre por que você <b>resolve um problema e nasce outro no mesmo lugar</b> — e qual é a sequência que destrava.</p>
-
-  <a class="cta" href="https://chat.whatsapp.com/G9TIOLn75rp58qmWm9HllM">
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2Zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.9.9-2.7-.2-.3A8 8 0 1 1 12 20Zm4.4-6c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.1-.3.1-.5 0-.7-.3-1.4-.7-2-1.4-.5-.5-.8-1.1-.9-1.3-.1-.2 0-.4.1-.5l.4-.4c.1-.1.2-.3.2-.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2 1 2.4c.1.1 1.6 2.5 4 3.5.5.2 1 .4 1.3.5.6.2 1.1.2 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1-.1-.1-.2-.2-.4-.3Z"/></svg>
-    Entrar no grupo da aula
-  </a>
-
-  <div class="cta-note">É por lá que eu envio o link · gratuito</div>
-
-  <div class="when">
-    <div>📅 <b>23 de julho</b></div>
-    <div>🕗 <b>20h</b></div>
-    <div>📍 <b>Ao vivo</b></div>
-  </div>
-
 </div>
 
-<div class="foot">YM Marketing &amp; Negócios · Belo Horizonte/MG</div>
+<!-- HERO -->
+<header class="hero z">
+  <div class="tag"><span class="dot"></span>Aula ao vivo · Quinta 23/07 · 20h</div>
+  <h1>Você resolve um problema<br>e nasce outro no mesmo lugar.<br><span class="g">Não é falta de esforço.</span></h1>
+  <p class="sub">É esforço aplicado <b>na ordem errada</b>. Nesta aula gratuita eu mostro por que isso acontece — e qual é a sequência que finalmente destrava o crescimento do seu negócio.</p>
+  <a class="cta" href="#garantir">
+    Quero minha vaga gratuita
+  </a>
+  <div class="cta-note">Gratuito · vagas limitadas · sem gravação</div>
+  <div class="when">
+    <div>📅 <b>23 de julho</b></div>
+    <div>🕗 <b>20h</b> (Brasília)</div>
+    <div>📍 <b>Ao vivo, online</b></div>
+  </div>
+</header>
+
+<!-- MIRROR / SE ISSO PARECE FAMILIAR -->
+<section class="sec z">
+  <div class="eyebrow">Se isso parece familiar</div>
+  <h2>Você já contratou.<br>E continua no mesmo lugar.</h2>
+  <div class="mirror">
+    <div class="line"><span class="m">—</span><p>Você resolve um problema e, semanas depois, nasce outro exatamente no mesmo lugar.</p></div>
+    <div class="line"><span class="m">—</span><p>Já gastou dinheiro em social media, tráfego, curso, consultoria — e não sabe dizer o que de fato funcionou.</p></div>
+    <div class="line"><span class="m">—</span><p>Você sabe que tem coisa errada. O que você não sabe é <b style="color:#fff">por onde começar</b> — porque tudo parece depender de tudo.</p></div>
+  </div>
+  <p class="verdict">Não procuramos culpado. <span class="g">Você não fez nada errado.</span> Fez na ordem errada — e essa aula é sobre a ordem certa.</p>
+</section>
+
+<hr class="sep">
+
+<!-- O QUE VOCÊ LEVA -->
+<section class="sec z">
+  <div class="eyebrow">O que você leva dessa aula</div>
+  <h2>Sai com clareza, não com<br>mais uma lista de tarefas</h2>
+  <div class="learn">
+    <div class="item"><span class="n">1</span><div><h3>Por que o problema volta</h3><p>O motivo estrutural de você resolver algo e a mesma dor reaparecer — e como enxergar isso no seu próprio negócio.</p></div></div>
+    <div class="item"><span class="n">2</span><div><h3>A diferença entre sintoma e causa</h3><p>Como parar de gastar energia (e dinheiro) atacando o que dói, em vez do que causa a dor.</p></div></div>
+    <div class="item"><span class="n">3</span><div><h3>A sequência que destrava</h3><p>O método Ver → Ordenar → Sustentar: em que ordem as coisas precisam ser construídas para o crescimento parar de escorregar.</p></div></div>
+    <div class="item"><span class="n">4</span><div><h3>O que NÃO fazer agora</h3><p>Talvez o mais valioso: quais frentes você tem permissão de ignorar hoje — para focar nas 2 ou 3 que realmente sustentam o resto.</p></div></div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- PARA QUEM É -->
+<section class="sec z">
+  <div class="eyebrow">Antes de reservar sua vaga</div>
+  <h2>Essa aula é pra você?</h2>
+  <div class="forwho">
+    <div class="row yes"><span class="ic">✓</span><span>Você é dono de um negócio que já roda — clínica, consultório, serviço, loja — e sente que corre muito e sai pouco do lugar.</span></div>
+    <div class="row yes"><span class="ic">✓</span><span>Você tem faturamento, mas não tem previsibilidade nem clareza do próximo passo.</span></div>
+    <div class="row yes"><span class="ic">✓</span><span>Você quer entender a causa antes de comprar a próxima solução.</span></div>
+    <div class="div"></div>
+    <div class="row no"><span class="ic">✕</span><span>Você busca fórmula mágica ou resultado da noite pro dia.</span></div>
+    <div class="row no"><span class="ic">✕</span><span>Você quer só mais um truque de algoritmo, sem mexer na base.</span></div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- HOST -->
+<section class="sec z">
+  <div class="eyebrow">Quem conduz</div>
+  <div class="host">
+    <div class="av">YM</div>
+    <h3>Yasmin Menezes</h3>
+    <div class="role">Consultora de Posicionamento Estratégico</div>
+    <p>16 anos construindo do operacional ao estratégico — marketing, experiência do cliente, processos e estruturação de negócios. Hoje ajudo negócios a enxergar o que trava o crescimento e a colocar cada peça na ordem certa.</p>
+    <p>Nessa aula eu não vou te dizer que <b>você precisa se posicionar</b> ou <b>aparecer mais</b>. Todo mundo já disse isso — e não adiantou. Vou te mostrar por onde <b>realmente</b> se começa.</p>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final z" id="garantir">
+  <div class="eyebrow">Garanta sua vaga</div>
+  <h2>ORDEM CERTA — ao vivo e gratuita</h2>
+  <p class="sec-lead">Quinta, 23 de julho, às 20h. Deixe seu contato e receba o link da aula. É por ali que eu envio o acesso e o lembrete.</p>
+  <a class="cta solid" id="ctaFinal" href="https://wa.me/5531975073862?text=Quero%20garantir%20minha%20vaga%20na%20aula%20ORDEM%20CERTA%20do%20dia%2023%2F07.">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2Zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.9.9-2.7-.2-.3A8 8 0 1 1 12 20Zm4.4-6c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.1-.3.1-.5 0-.7-.3-1.4-.7-2-1.4-.5-.5-.8-1.1-.9-1.3-.1-.2 0-.4.1-.5l.4-.4c.1-.1.2-.3.2-.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2 1 2.4c.1.1 1.6 2.5 4 3.5.5.2 1 .4 1.3.5.6.2 1.1.2 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1-.1-.1-.2-.2-.4-.3Z"/></svg>
+    Garantir minha vaga no WhatsApp
+  </a>
+  <div class="cta-note">Sem grupo com estranhos · você fala direto comigo</div>
+  <div class="scarce"><span class="d"></span>Aula ao vivo, sem gravação — quem não está, perde</div>
+</section>
+
+<div class="foot z">YM Marketing &amp; Negócios · Belo Horizonte/MG · @ym_marketingenegocios</div>
+
+<!-- STICKY MOBILE -->
+<div class="sticky">
+  <a class="cta solid" href="#garantir">Quero minha vaga gratuita →</a>
+</div>
 
 </body>
 </html>
