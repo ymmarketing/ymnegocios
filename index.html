@@ -6,9 +6,15 @@
 <title>Consultoria estratégica em Belo Horizonte · YM</title>
 <meta name="description" content="Você resolve um problema e nasce outro no mesmo lugar. Não é azar — é sintoma. Descubra a causa e a ordem antes de gastar mais um real.">
 <meta property="og:title" content="Você resolve um problema e nasce outro no mesmo lugar.">
-<meta property="og:description" content="Não é azar. É que você está tratando sintoma. Raio-X Estratégico · R$ 97">
+<meta property="og:description" content="Não é azar. É que você está tratando sintoma. Descubra a causa e a ordem certa com o Raio-X Estratégico.">
 <meta property="og:type" content="website">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<meta property="og:locale" content="pt_BR">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Yasmin Menezes · YM Marketing & Negócios">
+<meta name="geo.region" content="BR-MG">
+<meta name="geo.placename" content="Belo Horizonte">
+<link rel="canonical" href="https://ymnegocios.com.br/">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -20,195 +26,311 @@ html{scroll-behavior:smooth}
      permanece em --cinza-deco, para eyebrows e elementos não-textuais. */
   --cinza:#65738F; --cinza-deco:#6B7A99;
   --verde:#059669; --vermelho:#DC2626; --amarelo:#B45309;
+  --shadow-sm:0 2px 8px rgba(10,37,64,.05);
+  --shadow-md:0 10px 30px rgba(10,37,64,.08);
+  --shadow-lg:0 20px 50px rgba(10,37,64,.12);
+  --shadow-blue:0 16px 44px rgba(0,102,255,.18);
 }
 body{background:var(--branco);color:var(--azul);font-family:'Inter',sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
 :focus-visible{outline:3px solid var(--vivo);outline-offset:3px;border-radius:4px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-.shell{max-width:760px;margin:0 auto;padding:0 22px}
+.shell{max-width:780px;margin:0 auto;padding:0 22px}
 
-/* ═══ BANNER DE EVENTO ═══ */
-.evt{background:var(--vivo);color:#fff;position:relative}
+/* ═══ EYEBROW · rótulo de seção com marca ═══ */
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--vivo);margin-bottom:16px;display:inline-flex;align-items:center;gap:9px;justify-content:center}
+.eyebrow::before{content:'';width:22px;height:1px;background:var(--vivo);opacity:.5}
+.eyebrow::after{content:'';width:22px;height:1px;background:var(--vivo);opacity:.5}
+
+/* títulos de seção centralizados por padrão */
+h2{font-family:'Montserrat',sans-serif;font-size:clamp(25px,4.6vw,35px);font-weight:800;letter-spacing:-.028em;line-height:1.1;margin-bottom:16px}
+.sect-p{font-size:15.5px;color:var(--cinza);line-height:1.8;max-width:540px;margin-left:auto;margin-right:auto}
+/* wrapper que centraliza cabeçalho de seção */
+.sec-head{text-align:center;max-width:600px;margin:0 auto 34px}
+
+/* ═══ BANNER DE EVENTO · alta prioridade visual ═══ */
+.evt{background:linear-gradient(100deg,#0047B3 0%,var(--vivo) 55%,#2E6BFF 100%);color:#fff;position:relative;box-shadow:0 4px 20px rgba(0,71,179,.28);border-bottom:2px solid rgba(255,255,255,.22);overflow:hidden}
+.evt::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:34px 34px;pointer-events:none}
 .evt.hidden{display:none}
-.evt-in{max-width:760px;margin:0 auto;padding:13px 46px 13px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.evt-tag{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.72);display:flex;align-items:center;gap:7px;width:100%}
-.evt-tag .dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 2s infinite}
+.evt-in{max-width:780px;margin:0 auto;padding:15px 48px 16px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;position:relative;z-index:1}
+.evt-tag{font-size:10.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#fff;display:inline-flex;align-items:center;gap:8px;width:auto;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);padding:5px 13px;border-radius:100px;backdrop-filter:blur(4px)}
+.evt-tag .dot{width:7px;height:7px;border-radius:50%;background:#FFD84D;box-shadow:0 0 0 0 rgba(255,216,77,.7);animation:evtPulse 1.8s infinite}
+@keyframes evtPulse{0%{box-shadow:0 0 0 0 rgba(255,216,77,.7)}70%{box-shadow:0 0 0 7px rgba(255,216,77,0)}100%{box-shadow:0 0 0 0 rgba(255,216,77,0)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.evt-body{flex:1;min-width:200px}
-.evt-body h3{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:800;letter-spacing:.02em;line-height:1.2}
-.evt-body p{font-size:12px;color:rgba(255,255,255,.75);margin-top:2px}
-.evt-cta{background:#fff;color:var(--vivo);font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;padding:10px 18px;border-radius:8px;text-decoration:none;white-space:nowrap;transition:transform .15s}
-.evt-cta:hover{transform:translateY(-1px)}
-.evt-x{position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.55);font-size:17px;cursor:pointer;padding:6px;line-height:1}
-.evt-x:hover{color:#fff}
+.evt-body{flex:1;min-width:210px}
+.evt-body h3{font-family:'Montserrat',sans-serif;font-size:19px;font-weight:900;letter-spacing:.01em;line-height:1.12;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.evt-body h3 .evt-live{font-size:9.5px;font-weight:800;letter-spacing:.1em;background:#FFD84D;color:#5A3D00;padding:3px 9px;border-radius:5px;text-transform:uppercase;white-space:nowrap}
+.evt-body p{font-size:13px;color:rgba(255,255,255,.9);margin-top:4px;font-weight:500}
+.evt-cta{background:#fff;color:#0047B3;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:900;padding:13px 24px;border-radius:9px;text-decoration:none;white-space:nowrap;transition:transform .15s,box-shadow .15s;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.evt-cta:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.26)}
+.evt-x{position:absolute;right:16px;top:16px;transform:none;background:rgba(255,255,255,.14);border:none;color:rgba(255,255,255,.8);font-size:15px;cursor:pointer;width:26px;height:26px;border-radius:50%;line-height:1;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .15s}
+.evt-x:hover{color:#fff;background:rgba(255,255,255,.28)}
+@media(max-width:600px){.evt-body h3{font-size:16px}.evt-cta{width:100%;text-align:center;padding:12px 20px}}
 
 /* ═══ NAV ═══ */
 nav{border-bottom:1px solid var(--borda);position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);z-index:40}
-.nav-in{max-width:760px;margin:0 auto;padding:15px 22px;display:flex;align-items:center;justify-content:space-between}
+.nav-in{max-width:780px;margin:0 auto;padding:15px 22px;display:flex;align-items:center;justify-content:space-between}
 .logo{display:flex;align-items:center;gap:9px;text-decoration:none}
 .logo svg{width:24px}
 .logo span{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;letter-spacing:.1em;color:var(--azul)}
-.nav-cta{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;color:var(--vivo);text-decoration:none;border:1.5px solid var(--vivo);padding:8px 15px;border-radius:8px;transition:all .15s}
-.nav-cta:hover{background:var(--vivo);color:#fff}
+.nav-cta{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;color:#fff;background:var(--vivo);text-decoration:none;padding:10px 18px;border-radius:9px;transition:all .15s;box-shadow:0 4px 14px rgba(0,102,255,.25)}
+.nav-cta:hover{background:#0052cc;transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,102,255,.32)}
 
 /* ═══ HERO / DOR ═══ */
-.hero{padding:72px 0 20px}
-h1{font-family:'Montserrat',sans-serif;font-size:clamp(30px,6.5vw,50px);font-weight:800;line-height:1.02;letter-spacing:-.035em;margin-bottom:18px}
+.hero{padding:84px 0 24px;text-align:center}
+h1{font-family:'Montserrat',sans-serif;font-size:clamp(32px,6.8vw,54px);font-weight:900;line-height:1.02;letter-spacing:-.038em;margin-bottom:22px}
 h1 .fade{color:var(--cinza)}
-.hero .lede{font-size:16px;color:var(--cinza);max-width:480px;line-height:1.75}
+.hero .lede{font-size:17px;color:var(--cinza);max-width:520px;line-height:1.75;margin:0 auto}
 .hero .lede b{color:var(--azul);font-weight:600}
 
 /* ═══ MINI RAIO-X · assinatura ═══ */
-.mrx{margin:34px 0 78px;background:var(--azul2);border-radius:18px;overflow:hidden;position:relative}
-.mrx::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:36px 36px;pointer-events:none}
-.mrx-bar{height:3px;background:rgba(255,255,255,.08);position:relative;z-index:2}
-.mrx-fill{height:100%;background:var(--vivo);width:0;transition:width .4s cubic-bezier(.4,0,.2,1)}
-.mrx-in{padding:30px 28px 32px;position:relative;z-index:2}
-.mrx-step{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:rgba(91,164,255,.85);margin-bottom:18px;text-transform:uppercase}
-.mrx-q{font-family:'Montserrat',sans-serif;font-size:clamp(19px,3.6vw,24px);font-weight:700;color:#fff;line-height:1.25;margin-bottom:22px;letter-spacing:-.015em}
-.mrx-opts{display:flex;flex-direction:column;gap:9px}
+.mrx{margin:40px auto 90px;max-width:620px;background:var(--azul2);border-radius:22px;overflow:hidden;position:relative;box-shadow:var(--shadow-lg)}
+.mrx::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:38px 38px;pointer-events:none}
+.mrx::after{content:'';position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(0,102,255,.22) 0%,transparent 70%);top:-150px;right:-110px;pointer-events:none}
+.mrx-bar{height:4px;background:rgba(255,255,255,.08);position:relative;z-index:2}
+.mrx-fill{height:100%;background:linear-gradient(90deg,var(--vivo),#4d94ff);width:0;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.mrx-in{padding:34px 30px 36px;position:relative;z-index:2}
+.mrx-step{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:rgba(91,164,255,.9);margin-bottom:18px;text-transform:uppercase}
+.mrx-q{font-family:'Montserrat',sans-serif;font-size:clamp(20px,3.8vw,25px);font-weight:800;color:#fff;line-height:1.25;margin-bottom:24px;letter-spacing:-.02em}
+.mrx-opts{display:flex;flex-direction:column;gap:10px}
 .opt{display:block;position:relative}
 .opt input{position:absolute;opacity:0;width:0;height:0}
-.opt span{display:block;padding:15px 17px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.11);border-radius:11px;font-size:14.5px;color:rgba(255,255,255,.82);cursor:pointer;transition:all .15s;line-height:1.45}
-.opt span:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.24)}
+.opt span{display:block;padding:16px 18px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;font-size:14.5px;color:rgba(255,255,255,.85);cursor:pointer;transition:all .15s;line-height:1.45}
+.opt span:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.28);transform:translateX(3px)}
 .opt input:focus-visible+span{outline:3px solid var(--vivo);outline-offset:2px}
-.opt input:checked+span{background:rgba(0,102,255,.16);border-color:var(--vivo);color:#fff}
+.opt input:checked+span{background:rgba(0,102,255,.18);border-color:var(--vivo);color:#fff}
 
 /* start */
-.mrx-start{padding:44px 28px;text-align:center;position:relative;z-index:2}
-.mrx-start p{font-size:14.5px;color:rgba(255,255,255,.6);margin-bottom:22px;line-height:1.7}
-.btn-start{background:var(--vivo);color:#fff;border:none;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:800;padding:16px 30px;border-radius:11px;cursor:pointer;transition:transform .15s;letter-spacing:.01em}
-.btn-start:hover{transform:translateY(-2px)}
-.mrx-nofric{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:rgba(255,255,255,.32)!important;margin:18px 0 0!important;text-transform:uppercase}
+.mrx-start{padding:52px 30px;text-align:center;position:relative;z-index:2}
+.mrx-start p{font-size:15px;color:rgba(255,255,255,.68);margin-bottom:26px;line-height:1.7}
+.btn-start{background:linear-gradient(135deg,var(--vivo),#3384ff);color:#fff;border:none;font-family:'Montserrat',sans-serif;font-size:14.5px;font-weight:800;padding:17px 34px;border-radius:12px;cursor:pointer;transition:transform .15s,box-shadow .15s;letter-spacing:.01em;box-shadow:0 10px 26px rgba(0,102,255,.36)}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(0,102,255,.45)}
+.mrx-nofric{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:rgba(255,255,255,.34)!important;margin:20px 0 0!important;text-transform:uppercase}
 
 /* resultado */
-.mrx-res{padding:34px 28px;position:relative;z-index:2}
-.res-k{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:14px}
-.res-h{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:8px}
-.res-pilar{font-family:'Montserrat',sans-serif;font-size:clamp(21px,4.4vw,30px);font-weight:800;color:#fff;line-height:1.15;margin-bottom:24px;letter-spacing:-.02em}
-.res-bars{display:flex;flex-direction:column;gap:11px;margin-bottom:26px}
+.mrx-res{padding:38px 30px;position:relative;z-index:2}
+.res-k{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:rgba(255,255,255,.42);text-transform:uppercase;margin-bottom:14px}
+.res-h{font-size:14px;color:rgba(255,255,255,.62);margin-bottom:8px}
+.res-pilar{font-family:'Montserrat',sans-serif;font-size:clamp(22px,4.6vw,31px);font-weight:800;color:#fff;line-height:1.15;margin-bottom:26px;letter-spacing:-.02em}
+.res-bars{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
 .rb{display:flex;align-items:center;gap:13px}
-.rb-n{flex:1;font-size:13px;color:rgba(255,255,255,.62)}
-.rb-t{width:112px;height:6px;background:rgba(255,255,255,.09);border-radius:3px;overflow:hidden}
-.rb-f{height:100%;border-radius:3px;width:0;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.rb-n{flex:1;font-size:13px;color:rgba(255,255,255,.64)}
+.rb-t{width:112px;height:7px;background:rgba(255,255,255,.09);border-radius:4px;overflow:hidden}
+.rb-f{height:100%;border-radius:4px;width:0;transition:width .7s cubic-bezier(.4,0,.2,1)}
 .rb-v{width:26px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:rgba(255,255,255,.5)}
 .rb.low .rb-n{color:#fff;font-weight:600}
 .rb.low .rb-v{color:#FF8A80}
-.res-nota{background:rgba(255,255,255,.05);border-left:2px solid var(--vivo);border-radius:0 9px 9px 0;padding:14px 17px;font-size:13px;color:rgba(255,255,255,.68);line-height:1.65;margin-bottom:24px}
+.res-nota{background:rgba(255,255,255,.05);border-left:3px solid var(--vivo);border-radius:0 10px 10px 0;padding:16px 19px;font-size:13px;color:rgba(255,255,255,.7);line-height:1.65;margin-bottom:26px}
 .res-nota b{color:#fff;font-weight:600}
-.btn-full{display:block;width:100%;text-align:center;background:var(--vivo);color:#fff;font-family:'Montserrat',sans-serif;font-size:14.5px;font-weight:800;padding:17px;border-radius:11px;text-decoration:none;transition:transform .15s;border:none;cursor:pointer}
-.btn-full:hover{transform:translateY(-2px)}
-.res-out{display:block;text-align:center;margin-top:15px;font-size:12.5px;color:rgba(255,255,255,.38);text-decoration:none}
-.res-out:hover{color:rgba(255,255,255,.7)}
+.btn-full{display:block;width:100%;text-align:center;background:linear-gradient(135deg,var(--vivo),#3384ff);color:#fff;font-family:'Montserrat',sans-serif;font-size:14.5px;font-weight:800;padding:18px;border-radius:12px;text-decoration:none;transition:transform .15s,box-shadow .15s;border:none;cursor:pointer;box-shadow:0 10px 26px rgba(0,102,255,.36)}
+.btn-full:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(0,102,255,.45)}
+.res-out{display:block;text-align:center;margin-top:16px;font-size:12.5px;color:rgba(255,255,255,.4);text-decoration:none}
+.res-out:hover{color:rgba(255,255,255,.72)}
 .hidden{display:none!important}
 
-/* ═══ MANIFESTO ═══ */
-.mani{padding:64px 0;border-top:1px solid var(--borda)}
-.mani p{font-family:'Montserrat',sans-serif;font-size:clamp(21px,4vw,31px);font-weight:700;line-height:1.28;letter-spacing:-.025em;max-width:600px}
-.mani p .g{color:var(--cinza)}
+/* ═══ MANIFESTO · virada da narrativa (fundo escuro, full-bleed) ═══ */
+.mani{padding:0;border:none;margin:0}
+.mani-inner{background:var(--azul);color:#fff;border-radius:24px;padding:clamp(48px,7vw,80px) clamp(28px,5vw,56px);position:relative;overflow:hidden;text-align:center;box-shadow:var(--shadow-lg)}
+.mani-inner::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:44px 44px;pointer-events:none}
+.mani-inner::after{content:'';position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(0,102,255,.18) 0%,transparent 70%);bottom:-200px;left:-120px;pointer-events:none}
+.mani-mark{position:relative;z-index:2;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(91,164,255,.9);margin-bottom:24px}
+.mani p{position:relative;z-index:2;font-family:'Montserrat',sans-serif;font-size:clamp(23px,4.4vw,36px);font-weight:800;line-height:1.24;letter-spacing:-.028em;max-width:660px;margin:0 auto}
+.mani p .g{color:rgba(255,255,255,.5)}
 
-/* ═══ CONTA · sem design ═══ */
-.conta{padding:64px 0;border-top:1px solid var(--borda)}
-.eyebrow{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--cinza);margin-bottom:16px}
-h2{font-family:'Montserrat',sans-serif;font-size:clamp(23px,4.4vw,33px);font-weight:800;letter-spacing:-.028em;line-height:1.12;margin-bottom:16px}
-.sect-p{font-size:15.5px;color:var(--cinza);line-height:1.8;max-width:530px}
-.conta-box{background:var(--azul2);border-radius:14px;padding:30px 26px;margin:26px 0 22px;font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:2.15;color:rgba(255,255,255,.75);overflow-x:auto}
-.conta-box .row{display:flex;justify-content:space-between;gap:20px;min-width:290px}
-.conta-box .rule{border-top:1px solid rgba(255,255,255,.16);margin:9px 0}
-.conta-box .tot{color:#fff;font-weight:700}
-.conta-box .gap{height:16px}
-.conta-box .dim{color:rgba(255,255,255,.42)}
-.conta-punch{font-family:'Montserrat',sans-serif;font-size:clamp(18px,3.4vw,25px);font-weight:800;line-height:1.32;letter-spacing:-.02em}
-.conta-punch .g{color:var(--cinza);display:block}
+/* wrapper de seções em fundo alternado */
+.band{background:var(--off);border-radius:24px;padding-left:clamp(20px,4vw,44px);padding-right:clamp(20px,4vw,44px);margin:44px 0;border:1px solid var(--borda)}
+@media(max-width:600px){.band{margin:30px 0;border-radius:18px}}
+.band-line{border-top:1px solid var(--borda)}
 
-/* ═══ VOS ═══ */
-.vos{padding:64px 0;border-top:1px solid var(--borda)}
-.vos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--borda);border:1px solid var(--borda);border-radius:14px;overflow:hidden;margin-top:28px}
-@media(max-width:640px){.vos-grid{grid-template-columns:1fr}}
-.vos-c{background:#fff;padding:30px 22px}
-.vos-l{font-family:'Montserrat',sans-serif;font-size:60px;font-weight:900;color:var(--vivo2);line-height:.82;margin-bottom:16px;letter-spacing:-.04em}
-.vos-c h3{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:800;letter-spacing:.06em;margin-bottom:9px}
+/* ═══ CONTA · evidência de desperdício ═══ */
+.conta{padding:84px 0;text-align:center}
+.conta-box{background:var(--azul2);border-radius:18px;padding:36px 30px;margin:0 auto 26px;max-width:480px;font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:2.1;color:rgba(255,255,255,.78);text-align:left;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.conta-box::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:30px 30px;pointer-events:none}
+.conta-box .row{display:flex;justify-content:space-between;gap:20px;position:relative;z-index:1}
+.conta-box .rule{border-top:1px solid rgba(255,255,255,.18);margin:11px 0;position:relative;z-index:1}
+.conta-box .tot{color:#fff;font-weight:700;font-size:15px}
+.conta-box .tot span:last-child{color:#FF8A80}
+.conta-box .gap{height:18px}
+.conta-box .dim{color:rgba(255,255,255,.44)}
+.conta-punch{font-family:'Montserrat',sans-serif;font-size:clamp(19px,3.6vw,26px);font-weight:800;line-height:1.32;letter-spacing:-.02em;max-width:520px;margin:0 auto}
+.conta-punch .g{color:var(--vivo);display:block;margin-top:4px}
+
+/* ═══ VOS · jornada conectada ═══ */
+.vos{padding:84px 0;text-align:center}
+.vos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px;position:relative;max-width:720px;margin-left:auto;margin-right:auto}
+@media(max-width:640px){.vos-grid{grid-template-columns:1fr;gap:14px}}
+.vos-c{background:#fff;padding:34px 24px 30px;border:1px solid var(--borda);border-radius:16px;box-shadow:var(--shadow-sm);position:relative;text-align:center;transition:transform .18s,box-shadow .18s}
+.vos-c:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+/* conector da jornada (seta entre cartões, só no desktop) */
+.vos-c:not(:last-child)::after{content:'→';position:absolute;right:-13px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--vivo);font-weight:700;z-index:3}
+@media(max-width:640px){.vos-c:not(:last-child)::after{content:'↓';right:50%;top:auto;bottom:-13px;transform:translateX(50%)}}
+.vos-step{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--cinza);margin-bottom:14px}
+.vos-l{font-family:'Montserrat',sans-serif;font-size:clamp(50px,9vw,66px);font-weight:900;line-height:.82;margin-bottom:14px;letter-spacing:-.04em;background:linear-gradient(135deg,var(--vivo),var(--vivo2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.vos-c h3{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:800;letter-spacing:.06em;margin-bottom:10px;color:var(--azul)}
 .vos-c p{font-size:13.5px;color:var(--cinza);line-height:1.68}
 
-/* ═══ NÃO FAZER · sem design ═══ */
-.nofazer{padding:64px 0;border-top:1px solid var(--borda)}
-.nf-box{background:var(--azul2);border-radius:14px;padding:28px 26px;margin:26px 0 20px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.85;color:rgba(255,255,255,.8)}
-.nf-t{font-size:10.5px;letter-spacing:.14em;color:rgba(255,255,255,.38);margin-bottom:22px}
-.nf-i{display:flex;gap:13px;margin-bottom:19px}
-.nf-i:last-child{margin-bottom:0}
-.nf-x{color:#FF6B6B;flex-shrink:0;font-weight:700}
-.nf-i .sub{display:block;color:rgba(255,255,255,.42);font-size:12px;margin-top:4px}
+/* ═══ NÃO FAZER · página de relatório real ═══ */
+.nofazer{padding:84px 0;text-align:center}
+.nf-report{max-width:560px;margin:0 auto;background:#fff;border:1px solid var(--borda);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden;text-align:left}
+.nf-report-top{background:var(--azul2);padding:20px 26px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.nf-report-top .nf-doc{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.nf-report-top .nf-pg{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;color:#fff;background:rgba(255,255,255,.1);padding:5px 12px;border-radius:6px}
+.nf-box{padding:28px 26px;font-family:'Inter',sans-serif;font-size:14px;line-height:1.7;color:var(--escuro)}
+.nf-t{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--vermelho);margin-bottom:22px;text-transform:uppercase;font-weight:700}
+.nf-i{display:flex;gap:14px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--borda)}
+.nf-i:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.nf-x{color:var(--vermelho);flex-shrink:0;font-weight:700;width:22px;height:22px;background:rgba(220,38,38,.09);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.nf-i>span:last-child{font-weight:600;color:var(--azul)}
+.nf-i .sub{display:block;color:var(--cinza);font-size:13px;margin-top:5px;font-weight:400}
 
-/* ═══ OFERTA ═══ */
-.oferta{padding:64px 0;border-top:1px solid var(--borda)}
-.of-card{border:1.5px solid var(--azul);border-radius:16px;padding:32px 28px;margin-top:26px}
-.of-card h3{font-family:'Montserrat',sans-serif;font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
-.of-card>p{font-size:15px;color:var(--cinza);margin-bottom:24px;line-height:1.7}
-.of-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:26px}
-.of-list li{font-size:14px;padding-left:24px;position:relative;line-height:1.6;color:var(--escuro)}
-.of-list li::before{content:'→';position:absolute;left:0;color:var(--vivo);font-weight:700}
+/* ═══ OFERTA · destaque de valor ═══ */
+.oferta{padding:84px 0;text-align:center}
+.of-card{border:none;border-radius:20px;padding:0;margin:0 auto;max-width:520px;text-align:left;background:#fff;box-shadow:var(--shadow-lg);overflow:hidden;border:1px solid var(--borda)}
+.of-card-top{background:linear-gradient(135deg,var(--azul),var(--azul2));padding:32px 30px;color:#fff;position:relative;overflow:hidden}
+.of-card-top::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:32px 32px}
+.of-card h3{font-family:'Montserrat',sans-serif;font-size:25px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px;position:relative;z-index:1}
+.of-card-top>p{font-size:15px;color:rgba(255,255,255,.72);margin:0;line-height:1.7;position:relative;z-index:1}
+.of-card-body{padding:30px 30px 32px}
+.of-list{list-style:none;display:flex;flex-direction:column;gap:0;margin-bottom:26px}
+.of-list li{font-size:14.5px;padding:14px 0 14px 30px;position:relative;line-height:1.5;color:var(--escuro);border-bottom:1px solid var(--borda)}
+.of-list li:last-child{border-bottom:none}
+.of-list li::before{content:'';position:absolute;left:0;top:16px;width:18px;height:18px;background:var(--vivo);border-radius:5px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5'%3E%3Cpath d='M5 13l4 4L19 7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-size:13px;background-repeat:no-repeat;background-position:center}
 .of-list li b{color:var(--azul);font-weight:700}
-.of-no{background:var(--off);border-radius:11px;padding:18px 20px;margin-bottom:26px}
-.of-no-t{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--cinza);margin-bottom:11px}
-.of-no ul{list-style:none;display:flex;flex-direction:column;gap:7px}
-.of-no li{font-size:13.5px;color:var(--cinza);padding-left:20px;position:relative}
+.of-no{background:var(--off);border-radius:12px;padding:20px 22px;margin-bottom:26px;border:1px solid var(--borda)}
+.of-no-t{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--cinza);margin-bottom:12px}
+.of-no ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.of-no li{font-size:13.5px;color:var(--cinza);padding-left:22px;position:relative}
 .of-no li::before{content:'✕';position:absolute;left:0;color:var(--vermelho);font-size:11px;font-weight:700}
-.of-anchor{font-size:13px;color:var(--cinza);line-height:1.7;margin-bottom:22px;padding-left:14px;border-left:2px solid var(--borda)}
-.of-price{display:flex;align-items:baseline;gap:11px;margin-bottom:20px}
-.of-price .v{font-family:'Montserrat',sans-serif;font-size:40px;font-weight:800;letter-spacing:-.035em;line-height:1}
-.of-price .l{font-size:13px;color:var(--cinza)}
-.btn{display:block;width:100%;text-align:center;background:var(--vivo);color:#fff;font-family:'Montserrat',sans-serif;font-size:15px;font-weight:800;padding:18px;border-radius:11px;text-decoration:none;transition:transform .15s}
-.btn:hover{transform:translateY(-2px)}
+.of-anchor{font-size:13px;color:var(--cinza);line-height:1.7;margin-bottom:24px;padding:14px 18px;background:rgba(0,102,255,.04);border-left:3px solid var(--vivo);border-radius:0 10px 10px 0}
+.of-mini{font-size:12.5px;color:var(--cinza);text-align:center;margin-top:14px;line-height:1.6}
+.btn{display:block;width:100%;text-align:center;background:linear-gradient(135deg,var(--vivo),#3384ff);color:#fff;font-family:'Montserrat',sans-serif;font-size:15px;font-weight:800;padding:18px;border-radius:12px;text-decoration:none;transition:transform .15s,box-shadow .15s;box-shadow:0 10px 26px rgba(0,102,255,.32)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(0,102,255,.42)}
+
+/* ═══ DEPOIMENTOS · prova social ═══ */
+.depo{padding:84px 0}
+.depo-head{text-align:center;max-width:600px;margin:0 auto 14px}
+.depo-head h2{font-family:'Montserrat',sans-serif;font-size:clamp(25px,3.8vw,35px);font-weight:800;letter-spacing:-.025em;line-height:1.14;color:var(--azul);margin-bottom:14px}
+.depo-head p{font-size:15px;color:var(--cinza);line-height:1.7}
+.depo-honest{display:flex;align-items:center;justify-content:center;gap:9px;font-size:12.5px;color:var(--cinza);margin:0 auto 40px;background:rgba(0,102,255,.07);border:1px solid rgba(0,102,255,.16);border-radius:100px;padding:9px 20px;width:fit-content;max-width:94%;text-align:center;line-height:1.4}
+.depo-honest svg{width:15px;height:15px;flex-shrink:0;color:var(--vivo)}
+.depo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start;max-width:780px;margin:0 auto}
+@media(max-width:720px){.depo-grid{grid-template-columns:1fr;max-width:400px}}
+.dp-phone{background:#ECE5DD;border-radius:20px;overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid rgba(10,37,64,.06);display:flex;flex-direction:column;transition:transform .18s}
+.dp-phone:hover{transform:translateY(-4px)}
+.dp-bar{background:var(--azul2);color:#fff;display:flex;align-items:center;gap:11px;padding:13px 15px}
+.dp-back{color:rgba(255,255,255,.55);font-size:19px;line-height:1;margin-right:-3px}
+.dp-av{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;color:#fff}
+.dp-who{flex:1;min-width:0}
+.dp-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dp-status{font-size:11px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:5px;margin-top:2px}
+.dp-status .on{width:7px;height:7px;border-radius:50%;background:#25D366}
+.dp-chat{padding:18px 13px 14px;display:flex;flex-direction:column;gap:8px;flex:1;background-image:radial-gradient(rgba(10,37,64,.028) 1px,transparent 1px);background-size:15px 15px}
+.dp-bub{background:#D9FDD3;border-radius:13px 13px 13px 4px;align-self:flex-start;max-width:88%;padding:10px 13px 7px;font-size:14px;line-height:1.5;color:#0b1f14;box-shadow:0 1px 1px rgba(0,0,0,.05)}
+.dp-bub .meta{display:flex;align-items:center;justify-content:flex-end;gap:3px;font-size:10px;color:rgba(0,0,0,.35);margin-top:3px}
+.dp-bub .meta svg{width:14px;height:14px;color:#34B7F1}
+.dp-foot{padding:11px 15px 15px;background:#ECE5DD;border-top:1px solid rgba(10,37,64,.05)}
+.dp-ctx{font-size:12px;color:var(--cinza);text-align:center;line-height:1.45}
+.dp-ctx b{color:var(--azul);font-weight:700}
+.depo-note{text-align:center;margin:38px auto 0;font-size:13.5px;color:var(--cinza);line-height:1.6;max-width:560px}
+.depo-note b{color:var(--azul);font-weight:700}
+
+/* ═══ SERVIÇOS · esteira visual ═══ */
+.serv{padding:84px 0}
+.serv-head{text-align:center;max-width:620px;margin:0 auto 10px}
+.serv-head h2{font-family:'Montserrat',sans-serif;font-size:clamp(25px,3.8vw,35px);font-weight:800;letter-spacing:-.025em;line-height:1.14;color:var(--azul);margin-bottom:14px}
+.serv-head p{font-size:15px;color:var(--cinza);line-height:1.7}
+/* Trava de Ordem */
+.serv-trava{max-width:600px;margin:28px auto 44px;background:linear-gradient(135deg,var(--azul),var(--azul2));border-radius:18px;padding:28px 30px;color:#fff;position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
+.serv-trava::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+.serv-trava-k{position:relative;font-size:10.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#5BA4FF;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.serv-trava-k::before{content:'';width:16px;height:16px;flex-shrink:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235BA4FF' stroke-width='2'%3E%3Crect x='4' y='10' width='16' height='11' rx='2.5'/%3E%3Cpath d='M8 10V6.8a4 4 0 018 0V10' stroke-linecap='round'/%3E%3C/svg%3E");background-size:contain;background-repeat:no-repeat}
+.serv-trava p{position:relative;font-size:14.5px;line-height:1.7;color:rgba(255,255,255,.88)}
+.serv-trava b{color:#fff;font-weight:700}
+/* esteira: trilha vertical conectando os níveis */
+.serv-track{max-width:660px;margin:0 auto;position:relative}
+.serv-track::before{content:'';position:absolute;left:34px;top:20px;bottom:60px;width:2px;background:linear-gradient(var(--vivo),var(--borda));z-index:0}
+@media(max-width:620px){.serv-track::before{display:none}}
+.serv-nivel{position:relative;margin-bottom:28px;z-index:1}
+.serv-nivel-h{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.serv-nivel-n{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:900;color:#fff;background:var(--vivo);min-width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 16px rgba(0,102,255,.3);border:3px solid #fff}
+.serv-nivel-t{font-family:'Montserrat',sans-serif;font-size:16px;font-weight:800;color:var(--azul);letter-spacing:-.01em;line-height:1.2}
+.serv-nivel-t span{display:block;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;color:var(--cinza);letter-spacing:0;margin-top:3px;line-height:1.45}
+.serv-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-left:62px}
+@media(max-width:620px){.serv-cards{grid-template-columns:1fr;margin-left:0}}
+.serv-card{border:1px solid var(--borda);border-radius:14px;padding:20px 22px;background:var(--branco);transition:border-color .15s,transform .15s,box-shadow .15s;box-shadow:var(--shadow-sm)}
+.serv-card:hover{border-color:var(--vivo);transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.serv-card.wide{grid-column:1/-1}
+.serv-card.entrada{border-color:var(--vivo);background:linear-gradient(135deg,rgba(0,102,255,.06),rgba(0,102,255,.02));box-shadow:0 8px 22px rgba(0,102,255,.12)}
+.serv-card h4{font-family:'Montserrat',sans-serif;font-size:15.5px;font-weight:800;color:var(--azul);letter-spacing:-.01em;margin-bottom:6px}
+.serv-card p{font-size:13px;color:var(--cinza);line-height:1.55}
+.serv-card .tag{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--vivo);padding:4px 10px;border-radius:6px;margin-bottom:10px}
+.serv-arrow{display:none}
+.serv-cta{text-align:center;margin-top:40px}
+.serv-cta p{font-size:14.5px;color:var(--cinza);line-height:1.7;max-width:520px;margin:0 auto 20px}
+.serv-cta .btn{max-width:360px;margin:0 auto}
 
 /* ═══ QUEM NÃO ATENDO ═══ */
-.recusa{padding:64px 0;border-top:1px solid var(--borda)}
-.rec-box{background:var(--off);border-radius:14px;padding:28px 26px;margin-top:24px}
-.rec-box ul{list-style:none;display:flex;flex-direction:column;gap:15px}
-.rec-box li{font-size:14.5px;padding-left:26px;position:relative;line-height:1.6;color:var(--escuro)}
-.rec-box li::before{content:'✕';position:absolute;left:0;top:1px;color:var(--vermelho);font-weight:700;font-size:13px}
-.rec-note{margin-top:24px;font-size:14px;color:var(--cinza);line-height:1.75}
+.recusa{padding:84px 0;text-align:center}
+.rec-box{background:#fff;border:1px solid var(--borda);border-radius:16px;padding:30px 28px;margin:0 auto;max-width:540px;text-align:left;box-shadow:var(--shadow-md)}
+.rec-box ul{list-style:none;display:flex;flex-direction:column;gap:0}
+.rec-box li{font-size:14.5px;padding:15px 0 15px 30px;position:relative;line-height:1.6;color:var(--escuro);border-bottom:1px solid var(--borda)}
+.rec-box li:last-child{border-bottom:none}
+.rec-box li::before{content:'✕';position:absolute;left:0;top:15px;color:var(--vermelho);font-weight:700;font-size:13px;width:20px;height:20px;background:rgba(220,38,38,.09);border-radius:5px;display:flex;align-items:center;justify-content:center}
+.rec-note{margin:24px auto 0;font-size:14px;color:var(--cinza);line-height:1.75;max-width:540px}
 
-/* ═══ YASMIN ═══ */
-.ysm{padding:64px 0;border-top:1px solid var(--borda)}
-.ysm-grid{display:grid;grid-template-columns:270px 1fr;gap:36px;align-items:start;margin-top:6px}
-@media(max-width:680px){.ysm-grid{grid-template-columns:1fr;gap:26px}}
-
-.ysm-foto{position:relative}
-.ysm-foto img{width:100%;height:auto;display:block;border-radius:14px;background:var(--off);border:1px solid var(--borda)}
-.ysm-foto figcaption{margin-top:13px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;letter-spacing:.01em;color:var(--azul);line-height:1.35}
-.ysm-foto figcaption span{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:var(--cinza);margin-top:5px}
-@media(max-width:680px){.ysm-foto{max-width:260px}}
-
-.ysm-q{font-family:'Montserrat',sans-serif;font-size:clamp(23px,4.2vw,32px);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:20px}
-.ysm-q .g{color:var(--cinza)}
-.ysm-txt p{font-size:15px;color:var(--cinza);line-height:1.8;margin-bottom:16px}
-.ysm-txt p b{color:var(--azul);font-weight:600}
-.ysm-txt .lnk{margin-top:4px}
+/* ═══ YASMIN · composição editorial ═══ */
+.ysm{padding:0;border:none}
+.ysm-inner{background:var(--azul);border-radius:24px;padding:clamp(44px,6vw,64px) clamp(28px,5vw,52px);position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
+.ysm-inner::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:42px 42px;pointer-events:none}
+.ysm-inner::after{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(0,102,255,.16) 0%,transparent 70%);top:-160px;right:-120px;pointer-events:none}
+.ysm .eyebrow{text-align:center;color:#5BA4FF;position:relative;z-index:2;display:flex;justify-content:center;margin-bottom:24px}
+.ysm .eyebrow::before,.ysm .eyebrow::after{background:#5BA4FF;opacity:.4}
+.ysm-grid{display:flex;flex-direction:column;align-items:center;gap:28px;margin:0 auto;max-width:600px;position:relative;z-index:2}
+.ysm-foto{position:relative;width:200px;flex-shrink:0}
+.ysm-foto img{width:100%;height:auto;display:block;border-radius:18px;background:var(--off);border:3px solid rgba(255,255,255,.12);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.ysm-foto figcaption{margin-top:16px;text-align:center;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:800;letter-spacing:.01em;color:#fff;line-height:1.35}
+.ysm-foto figcaption span{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:#5BA4FF;margin-top:6px}
+.ysm-txt{text-align:center}
+.ysm-q{font-family:'Montserrat',sans-serif;font-size:clamp(25px,4.4vw,36px);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:24px;color:#fff}
+.ysm-q .g{color:rgba(255,255,255,.5)}
+.ysm-txt p{font-size:15.5px;color:rgba(255,255,255,.75);line-height:1.8;margin:0 auto 16px;max-width:540px}
+.ysm-txt p b{color:#fff;font-weight:600}
+.ysm-txt .lnk{margin-top:8px;display:inline-flex}
 .lnk{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:800;color:var(--vivo);text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:gap .15s}
 .lnk:hover{gap:11px}
 
-/* ═══ CTA FINAL ═══ */
-.final{padding:64px 0 20px;border-top:1px solid var(--borda)}
-.final h2{margin-bottom:22px}
+/* ═══ CTA FINAL · encerramento marcante ═══ */
+.final{padding:0;border:none}
+.final-inner{background:linear-gradient(135deg,var(--vivo),#0047B3);border-radius:24px;padding:clamp(52px,7vw,80px) clamp(28px,5vw,52px);text-align:center;position:relative;overflow:hidden;box-shadow:var(--shadow-blue)}
+.final-inner::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.final-inner::after{content:'';position:absolute;width:440px;height:440px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.12) 0%,transparent 70%);top:-180px;left:50%;transform:translateX(-50%);pointer-events:none}
+.final h2{margin-bottom:26px;color:#fff;position:relative;z-index:2;font-size:clamp(27px,5vw,40px)}
+.final .btn{background:#fff;color:var(--vivo);position:relative;z-index:2;max-width:360px;margin:0 auto;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+.final .btn:hover{background:#f0f5ff;box-shadow:0 16px 38px rgba(0,0,0,.28)}
 
 /* ═══ FOOTER ═══ */
-footer{border-top:1px solid var(--borda);margin-top:60px;padding:34px 0 46px}
+footer{border-top:1px solid var(--borda);margin-top:80px;padding:38px 0 50px}
 .ft{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:12.5px;color:var(--cinza)}
 .ft a{color:var(--cinza);text-decoration:none;border-bottom:1px solid var(--borda)}
 .ft a:hover{color:var(--vivo);border-color:var(--vivo)}
 .ft-links{display:flex;gap:18px;flex-wrap:wrap}
+
+/* ═══ RITMO · espaçamento entre blocos full-bleed ═══ */
+.block-space{padding:44px 0}
+@media(max-width:600px){.block-space{padding:30px 0}}
+
 </style>
 </head>
 <body>
 
-<!-- ═══════ BANNER DE EVENTO · slot editável ═══════ -->
-<div class="evt" id="evt">
+<!-- ═══════ BANNER DE EVENTO · slot editável · alta prioridade ═══════ -->
+<div class="evt" id="evt" role="region" aria-label="Aula ao vivo gratuita">
   <div class="evt-in">
-    <div class="evt-tag"><span class="dot"></span><span id="evt-tag-text">Quinta, 23/07 · 20h · Ao vivo · Gratuita</span></div>
+    <div class="evt-tag"><span class="dot"></span><span id="evt-tag-text">Segunda, 27/07 · 20h · Ao vivo · Gratuita</span></div>
     <div class="evt-body">
-      <h3 id="evt-titulo">ORDEM CERTA</h3>
+      <h3><span class="evt-live">Aula ao vivo</span><span id="evt-titulo">ORDEM CERTA</span></h3>
       <p id="evt-sub">Os 7 lugares onde a causa do seu negócio se esconde</p>
     </div>
-    <a href="https://chat.whatsapp.com/G9TIOLn75rp58qmWm9HllM" class="evt-cta" id="evt-cta" target="_blank" rel="noopener noreferrer">Quero minha vaga</a>
+    <a href="https://chat.whatsapp.com/G9TIOLn75rp58qmWm9HllM" class="evt-cta" id="evt-cta" target="_blank" rel="noopener noreferrer">Garantir minha vaga →</a>
   </div>
   <button class="evt-x" id="evt-x" aria-label="Fechar aviso do evento">✕</button>
 </div>
@@ -220,7 +342,7 @@ footer{border-top:1px solid var(--borda);margin-top:60px;padding:34px 0 46px}
       <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0066FF"/><path d="M9 10l7 8 7-8M16 18v6" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>YM</span>
     </a>
-    <a href="./raio-x.html" class="nav-cta">Raio-X · R$ 97</a>
+    <a href="./raio-x.html" class="nav-cta">Fazer meu Raio-X</a>
   </div>
 </nav>
 
@@ -228,7 +350,7 @@ footer{border-top:1px solid var(--borda);margin-top:60px;padding:34px 0 46px}
 <div class="shell">
 
   <!-- ═══════ DOR ═══════ -->
-  <section class="hero">
+  <section class="hero" id="inicio" aria-label="Apresentação">
     <h1>Você resolve um problema<br><span class="fade">e nasce outro no mesmo lugar.</span></h1>
     <p class="lede">Não é azar. É que você está tratando <b>sintoma</b>. A causa está em outro lugar — e enquanto ela ficar lá, sempre vai nascer outro.</p>
   </section>
@@ -266,15 +388,20 @@ footer{border-top:1px solid var(--borda);margin-top:60px;padding:34px 0 46px}
   </section>
 
   <!-- ═══════ MANIFESTO ═══════ -->
-  <section class="mani">
-    <p>O problema quase nunca é falta de esforço.<br><span class="g">É esforço aplicado na ordem errada.</span></p>
+  <section class="mani block-space" id="manifesto" aria-label="O problema não é falta de esforço">
+    <div class="mani-inner">
+      <div class="mani-mark">O ponto de virada</div>
+      <p>O problema quase nunca é falta de esforço.<br><span class="g">É esforço aplicado na ordem errada.</span></p>
+    </div>
   </section>
 
   <!-- ═══════ CONSEQUÊNCIA · a conta ═══════ -->
-  <section class="conta">
-    <div class="eyebrow">O que já aconteceu</div>
-    <h2>Você já contratou.</h2>
-    <p class="sect-p">Esses números são de uma fisioterapeuta. Cinco anos de clínica, três pessoas na equipe, agenda cheia.</p>
+  <section class="conta band" id="desperdicio" aria-label="A conta do que você já gastou">
+    <div class="sec-head">
+      <div class="eyebrow">O que já aconteceu</div>
+      <h2>Você já contratou.</h2>
+      <p class="sect-p">Esses números são de uma fisioterapeuta. Cinco anos de clínica, três pessoas na equipe, agenda cheia.</p>
+    </div>
 
     <div class="conta-box">
       <div class="row"><span>Social media</span><span>R$&nbsp;&nbsp;5.600</span></div>
@@ -292,70 +419,203 @@ footer{border-top:1px solid var(--borda);margin-top:60px;padding:34px 0 46px}
   </section>
 
   <!-- ═══════ MÉTODO ═══════ -->
-  <section class="vos">
-    <div class="eyebrow">O método</div>
-    <h2>Ver · Ordenar · Sustentar</h2>
-    <p class="sect-p">Não é framework. É a sequência em que as coisas precisam existir.</p>
+  <section class="vos" id="metodo" aria-label="Método VOS: Ver, Ordenar, Sustentar">
+    <div class="sec-head">
+      <div class="eyebrow">O método</div>
+      <h2>Ver · Ordenar · Sustentar</h2>
+      <p class="sect-p">Não é framework. É a sequência em que as coisas precisam existir.</p>
+    </div>
     <div class="vos-grid">
-      <div class="vos-c"><div class="vos-l">V</div><h3>VER</h3><p>Separar o que dói do que causa. Sintoma não é causa — e é por isso que resolver um problema faz nascer outro.</p></div>
-      <div class="vos-c"><div class="vos-l">O</div><h3>ORDENAR</h3><p>Em que ordem as coisas precisam existir. Sequência com justificativa — e a lista do que não fazer agora.</p></div>
-      <div class="vos-c"><div class="vos-l">S</div><h3>SUSTENTAR</h3><p>A estrutura se mantém sozinha depois que eu saio. Base que não depende de mim nem de você.</p></div>
+      <div class="vos-c"><div class="vos-step">Passo 1</div><div class="vos-l">V</div><h3>VER</h3><p>Separar o que dói do que causa. Sintoma não é causa — e é por isso que resolver um problema faz nascer outro.</p></div>
+      <div class="vos-c"><div class="vos-step">Passo 2</div><div class="vos-l">O</div><h3>ORDENAR</h3><p>Em que ordem as coisas precisam existir. Sequência com justificativa — e a lista do que não fazer agora.</p></div>
+      <div class="vos-c"><div class="vos-step">Passo 3</div><div class="vos-l">S</div><h3>SUSTENTAR</h3><p>A estrutura se mantém sozinha depois que eu saio. Base que não depende de mim nem de você.</p></div>
     </div>
   </section>
 
   <!-- ═══════ PROVA · o que não fazer ═══════ -->
-  <section class="nofazer">
-    <div class="eyebrow">Prova</div>
-    <h2>Isto é uma página<br>de um Raio-X real.</h2>
-    <p class="sect-p">Não é a página de recomendações. É a página do que <b>não</b> fazer.</p>
-
-    <div class="nf-box">
-      <div class="nf-t">O QUE NÃO FAZER AGORA</div>
-      <div class="nf-i"><span class="nf-x">✕</span><span>Não contrate social media nos próximos 90 dias.<span class="sub">Sua oferta não está clara. Post vai amplificar a confusão.</span></span></div>
-      <div class="nf-i"><span class="nf-x">✕</span><span>Não invista em tráfego pago.<span class="sub">Sua conversão no direct é 4%. Você pagaria R$ 480 por paciente.</span></span></div>
-      <div class="nf-i"><span class="nf-x">✕</span><span>Não refaça a identidade visual.<span class="sub">Ela não é o problema. É a terceira vez.</span></span></div>
+  <section class="nofazer band" id="exemplo" aria-label="Exemplo de Raio-X real">
+    <div class="sec-head">
+      <div class="eyebrow">Prova</div>
+      <h2>Isto é uma página<br>de um Raio-X real.</h2>
+      <p class="sect-p">Não é a página de recomendações. É a página do que <b>não</b> fazer.</p>
     </div>
 
-    <p class="sect-p">Nenhuma agência te entrega essa página. Ninguém ganha dinheiro dizendo ao cliente o que ele deve parar de comprar.</p>
+    <div class="nf-report">
+      <div class="nf-report-top">
+        <span class="nf-doc">Raio-X Estratégico · Relatório</span>
+        <span class="nf-pg">Seção 08</span>
+      </div>
+      <div class="nf-box">
+        <div class="nf-t">O que não fazer agora</div>
+        <div class="nf-i"><span class="nf-x">✕</span><span>Não contrate social media nos próximos 90 dias.<span class="sub">Sua oferta não está clara. Post vai amplificar a confusão.</span></span></div>
+        <div class="nf-i"><span class="nf-x">✕</span><span>Não invista em tráfego pago.<span class="sub">Sua conversão no direct é 4%. Você pagaria R$ 480 por paciente.</span></span></div>
+        <div class="nf-i"><span class="nf-x">✕</span><span>Não refaça a identidade visual.<span class="sub">Ela não é o problema. É a terceira vez.</span></span></div>
+      </div>
+    </div>
+
+    <p class="sect-p" style="margin-top:26px">Nenhuma agência te entrega essa página. Ninguém ganha dinheiro dizendo ao cliente o que ele deve parar de comprar.</p>
   </section>
 
   <!-- ═══════ OFERTA ═══════ -->
   <section class="oferta" id="oferta">
-    <div class="eyebrow">O produto</div>
-    <h2>Raio-X Estratégico</h2>
+    <div class="sec-head">
+      <div class="eyebrow">O produto</div>
+      <h2>Raio-X Estratégico</h2>
+    </div>
 
     <div class="of-card">
-      <h3>A causa, a ordem, e o que parar.</h3>
-      <p>Uma análise dos sete pilares do seu negócio. Você responde. Eu leio. O relatório chega pronto.</p>
-
-      <ul class="of-list">
-        <li><b>Painel de saúde</b> — nota de 0 a 10 em cada pilar</li>
-        <li><b>A causa-raiz</b> — nomeada em uma frase</li>
-        <li><b>A ordem certa</b> — o que vem primeiro, e por quê</li>
-        <li><b>O que NÃO fazer</b> — a lista que ninguém te dá</li>
-        <li><b>Plano de 90 dias</b> — três fases, com marcos</li>
-      </ul>
-
-      <div class="of-no">
-        <div class="of-no-t">O que não inclui</div>
-        <ul>
-          <li>Reunião obrigatória — é opcional, e é à parte</li>
-          <li>Execução ou criação de peças</li>
-          <li>Acompanhamento posterior</li>
-        </ul>
+      <div class="of-card-top">
+        <h3>A causa, a ordem, e o que parar.</h3>
+        <p>Uma análise dos sete pilares do seu negócio. Você responde. Eu leio. O relatório chega pronto.</p>
       </div>
+      <div class="of-card-body">
+        <ul class="of-list">
+          <li><b>Painel de saúde</b> — nota de 0 a 10 em cada pilar</li>
+          <li><b>A causa-raiz</b> — nomeada em uma frase</li>
+          <li><b>A ordem certa</b> — o que vem primeiro, e por quê</li>
+          <li><b>O que NÃO fazer</b> — a lista que ninguém te dá</li>
+          <li><b>Plano de 90 dias</b> — três fases, com marcos</li>
+        </ul>
 
-      <p class="of-anchor">Diagnóstico consultivo de mercado custa entre R$ 1.500 e R$ 4.000. A diferença é que o meu roda em motor, não em hora de consultor.</p>
+        <div class="of-no">
+          <div class="of-no-t">O que não inclui</div>
+          <ul>
+            <li>Reunião obrigatória — é opcional, e é à parte</li>
+            <li>Execução ou criação de peças</li>
+            <li>Acompanhamento posterior</li>
+          </ul>
+        </div>
 
-      <div class="of-price"><span class="v">R$ 97</span><span class="l">uma vez · sem assinatura</span></div>
-      <a href="./raio-x.html" class="btn">Fazer meu Raio-X · R$ 97</a>
+        <p class="of-anchor">Um diagnóstico consultivo de mercado custa alto e depende de horas de consultor. O meu roda em motor — a mesma leitura estratégica, sem a conta de consultoria.</p>
+
+        <a href="./raio-x.html" class="btn">Fazer meu Raio-X →</a>
+        <p class="of-mini">Você vê o valor na página do Raio-X — pagamento único, sem assinatura.</p>
+      </div>
     </div>
   </section>
 
+
+  <!-- ═══════ SERVIÇOS · o sistema ═══════ -->
+  <section class="serv band" id="servicos" aria-label="Serviços e ecossistema YM">
+    <div class="serv-head">
+      <div class="eyebrow">Depois do diagnóstico</div>
+      <h2>A YM não vende peças soltas.<br>Vende as partes de um sistema.</h2>
+      <p>Cada serviço resolve uma dor específica — mas nenhum é vendido no escuro. O Raio-X aponta qual peça o seu negócio realmente precisa, e em que ordem.</p>
+    </div>
+
+    <div class="serv-trava">
+      <div class="serv-trava-k">A regra que mantém tudo coerente</div>
+      <p>Você pode contratar só uma landing, só um checkout, só uma automação. <b>Mas todo serviço começa com uma conversa curta pra confirmar que o que você pediu é o que você precisa.</b> Se não for, eu te falo — antes de você gastar.</p>
+    </div>
+
+    <div class="serv-track">
+    <!-- Nível 1 -->
+    <div class="serv-nivel">
+      <div class="serv-nivel-h">
+        <span class="serv-nivel-n">01</span>
+        <div class="serv-nivel-t">Por onde tudo começa<span>Baixo risco. É aqui que o negócio é lido antes de qualquer execução.</span></div>
+      </div>
+      <div class="serv-cards">
+        <div class="serv-card entrada wide">
+          <span class="tag">Porta de entrada</span>
+          <h4>Raio-X Estratégico</h4>
+          <p>O diagnóstico dos sete pilares do negócio: a causa-raiz nomeada, a ordem de correção e o plano de 90 dias. Todo caminho passa por aqui.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nível 2 -->
+    <div class="serv-nivel">
+      <div class="serv-nivel-h">
+        <span class="serv-nivel-n">02</span>
+        <div class="serv-nivel-t">Resolver uma dor específica<span>Serviços avulsos, quando falta só uma peça — sempre validados pela conversa inicial.</span></div>
+      </div>
+      <div class="serv-cards">
+        <div class="serv-card">
+          <h4>Posicionamento</h4>
+          <p>Deixar claro o que você faz e por que vale — pra parar de competir por preço.</p>
+        </div>
+        <div class="serv-card">
+          <h4>Landing Page</h4>
+          <p>Uma página feita pra fazer uma coisa só — captar, inscrever, divulgar — e fazer bem.</p>
+        </div>
+        <div class="serv-card">
+          <h4>Página de Vendas</h4>
+          <p>A página que apresenta sua oferta do jeito que faz a pessoa comprar.</p>
+        </div>
+        <div class="serv-card">
+          <h4>Site Completo</h4>
+          <p>Sua casa digital — que trabalha por você mesmo quando você não está postando.</p>
+        </div>
+        <div class="serv-card">
+          <h4>Configuração de Funil</h4>
+          <p>Suas peças de venda conectadas num sistema só — sem furo no meio do caminho.</p>
+        </div>
+        <div class="serv-card">
+          <h4>Checkout & Pagamentos</h4>
+          <p>A parte chata do dinheiro, resolvida — pra você não perder venda na hora de pagar.</p>
+        </div>
+        <div class="serv-card">
+          <h4>Automação de Atendimento</h4>
+          <p>O primeiro atendimento acontece sozinho — pra você não perder cliente por demora.</p>
+        </div>
+        <div class="serv-card">
+          <h4>Jornada de Aquisição</h4>
+          <p>O mapa do caminho que o seu cliente faz até comprar — e onde ele está desistindo.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nível 3 -->
+    <div class="serv-nivel">
+      <div class="serv-nivel-h">
+        <span class="serv-nivel-n">03</span>
+        <div class="serv-nivel-t">Transformar o negócio<span>Projetos estruturantes, quando o Raio-X mostra que a base inteira precisa ser montada.</span></div>
+      </div>
+      <div class="serv-cards">
+        <div class="serv-card">
+          <h4>Fundação</h4>
+          <p>A base do seu negócio, montada na ordem certa — marca, posicionamento, comunicação e presença.</p>
+        </div>
+        <div class="serv-card">
+          <h4>Campanha de Lançamento</h4>
+          <p>Seu lançamento com método — do aquecimento ao carrinho, sem achismo.</p>
+        </div>
+        <div class="serv-card wide">
+          <h4>Ativação</h4>
+          <p>Sua base colocada pra funcionar de verdade no mercado — o que a Fundação construiu, rodando.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nível 4 -->
+    <div class="serv-nivel">
+      <div class="serv-nivel-h">
+        <span class="serv-nivel-n">04</span>
+        <div class="serv-nivel-t">Manter e crescer<span>A continuidade — quando o negócio já roda e você quer ampliar sem voltar ao caos.</span></div>
+      </div>
+      <div class="serv-cards">
+        <div class="serv-card entrada wide">
+          <span class="tag">Recorrência</span>
+          <h4>Crescimento</h4>
+          <p>Alguém de nível olhando seu negócio junto com você, todo mês — direção, ajuste e próximos passos por ciclo.</p>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- /serv-track -->
+
+    <div class="serv-cta">
+      <p>Não sabe por qual serviço começar? Essa é exatamente a resposta que o Raio-X te dá.</p>
+      <a href="./raio-x.html" class="btn" style="max-width:340px;margin:0 auto">Começar pelo Raio-X →</a>
+    </div>
+  </section>
   <!-- ═══════ RISCO REDUZIDO · recusa ═══════ -->
-  <section class="recusa">
-    <div class="eyebrow">Antes de comprar</div>
-    <h2>Quem eu não atendo.</h2>
+  <section class="recusa" id="quem-nao-atendo" aria-label="Quem eu não atendo">
+    <div class="sec-head">
+      <div class="eyebrow">Antes de comprar</div>
+      <h2>Quem eu não atendo.</h2>
+    </div>
 
     <div class="rec-box">
       <ul>
@@ -369,8 +629,71 @@ footer{border-top:1px solid var(--borda);margin-top:60px;padding:34px 0 46px}
     <p class="rec-note">Se você é um desses quatro, eu não vou conseguir te ajudar. Prefiro dizer agora do que depois de você ter pago. Não é arrogância — é escopo.</p>
   </section>
 
+
+  <!-- ═══════ DEPOIMENTOS · prova social ═══════ -->
+  <section class="depo band" id="depoimentos" aria-label="Depoimentos de quem já fez o Raio-X">
+    <div class="depo-head">
+      <div class="eyebrow">Quem já passou pelo Raio-X</div>
+      <h2>O que os primeiros negócios disseram<br>depois de ver o próprio diagnóstico</h2>
+      <p>Mensagens reais de quem recebeu a análise. Sem roteiro, sem edição — só a reação de ver o negócio por dentro.</p>
+    </div>
+    <div class="depo-honest">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9"/></svg>
+      Depoimentos reais · uso autorizado · primeiros negócios analisados (2026)
+    </div>
+    <div class="depo-grid">
+
+      <!-- ANA -->
+      <div class="dp-phone">
+        <div class="dp-bar">
+          <span class="dp-back">‹</span>
+          <div class="dp-av" style="background:linear-gradient(140deg,#0066FF,#3D47C4)">A</div>
+          <div class="dp-who"><div class="dp-name">Ana</div><div class="dp-status"><span class="on"></span>online</div></div>
+        </div>
+        <div class="dp-chat">
+          <div class="dp-bub">Yas, acabei de ver o diagnóstico 😮<div class="meta">14:02</div></div>
+          <div class="dp-bub">Abriu minha visão em relação ao que é importante pra obter um crescimento digital objetivo.<div class="meta">14:02</div></div>
+          <div class="dp-bub">Super recomendo 🙌<div class="meta">14:03</div></div>
+        </div>
+        <div class="dp-foot"><div class="dp-ctx"><b>Ana</b> · negócio comercial</div></div>
+      </div>
+
+      <!-- BOAS BRONZE E ESTÉTICA -->
+      <div class="dp-phone">
+        <div class="dp-bar">
+          <span class="dp-back">‹</span>
+          <div class="dp-av" style="background:linear-gradient(140deg,#C77B3B,#8A4E1F)">B</div>
+          <div class="dp-who"><div class="dp-name">Boas Bronze e Estética</div><div class="dp-status"><span class="on"></span>online</div></div>
+        </div>
+        <div class="dp-chat">
+          <div class="dp-bub">Não tenho palavras pra te agradecer 🥹<div class="meta">10:47</div></div>
+          <div class="dp-bub">Essa análise desbloqueou minha mente.<div class="meta">10:47</div></div>
+          <div class="dp-bub">Tudo que eu precisava!<div class="meta">10:48</div></div>
+        </div>
+        <div class="dp-foot"><div class="dp-ctx"><b>Boas Bronze e Estética</b> · estética</div></div>
+      </div>
+
+      <!-- GEISE -->
+      <div class="dp-phone">
+        <div class="dp-bar">
+          <span class="dp-back">‹</span>
+          <div class="dp-av" style="background:linear-gradient(140deg,#1FA37A,#0C6E4E)">G</div>
+          <div class="dp-who"><div class="dp-name">Geise</div><div class="dp-status"><span class="on"></span>online</div></div>
+        </div>
+        <div class="dp-chat">
+          <div class="dp-bub">O material ficou excelente, adorei! ✨<div class="meta">18:21</div></div>
+          <div class="dp-bub">Já pensando em tudo que está lá…<div class="meta">18:21</div></div>
+          <div class="dp-bub">Você sabe o quanto sou exigente, e ficou muito bom mesmo 👏<div class="meta">18:22</div></div>
+        </div>
+        <div class="dp-foot"><div class="dp-ctx"><b>Geise</b> · cliente exigente</div></div>
+      </div>
+
+    </div>
+    <p class="depo-note">Estamos no começo — e escolhemos mostrar as reações reais dos primeiros negócios em vez de inventar números. <b>Prova acima de promessa.</b></p>
+  </section>
   <!-- ═══════ AUTORIDADE ═══════ -->
-  <section class="ysm">
+  <section class="ysm block-space" id="sobre" aria-label="Sobre Yasmin Menezes, fundadora">
+    <div class="ysm-inner">
     <div class="eyebrow">Quem escreveu isso</div>
 
     <div class="ysm-grid">
@@ -383,18 +706,21 @@ footer{border-top:1px solid var(--borda);margin-top:60px;padding:34px 0 46px}
 
       <div class="ysm-txt">
         <p class="ysm-q">Eu não vim<br>do marketing.<br><span class="g">Vim de operação.</span></p>
-        <p>Dezesseis anos dentro de estruturas que atendem milhões de pessoas. Instrutora de treinamento. Experiência do cliente. Supervisão regional. Coordenação de melhoria contínua.</p>
-        <p>Em todo lugar que eu entrei, eu fiz a mesma coisa: parei de executar e comecei a estruturar o sistema.</p>
+        <p>Quase 20 anos dentro de estruturas que atendem milhões de pessoas. Instrutora de treinamento. Experiência do cliente. Supervisão regional. Coordenação de melhoria contínua. Hoje também sou sócia da H2PL — opero negócio de verdade, não só falo sobre ele.</p>
+        <p>Em todo lugar que eu entrei, eu fiz a mesma coisa: parei de executar e comecei a estruturar o sistema. Esse método tem nome — <b>Ver, Ordenar, Sustentar</b> — e é ele que faz o trabalho.</p>
+        <p>Uso tecnologia, no-code e IA como ferramenta para construir em dias o que levava semanas. Mas a ferramenta é bastidor: <b>quem decide o que fazer, e em que ordem, é o método</b>.</p>
         <p>É por isso que quando você me mostra o Instagram do negócio, <b>eu não olho o Instagram</b>.</p>
-        <a href="#" class="lnk">Ler a história inteira <span>&rarr;</span></a>
       </div>
     </div>
+    </div><!-- /ysm-inner -->
   </section>
 
   <!-- ═══════ CTA FINAL ═══════ -->
-  <section class="final">
-    <h2>Descubra a causa<br>antes de gastar mais.</h2>
-    <a href="./raio-x.html" class="btn">Fazer meu Raio-X · R$ 97</a>
+  <section class="final block-space" id="comecar" aria-label="Comece seu Raio-X">
+    <div class="final-inner">
+      <h2>Descubra a causa<br>antes de gastar mais.</h2>
+      <a href="./raio-x.html" class="btn">Fazer meu Raio-X →</a>
+    </div>
   </section>
 
 </div>
@@ -420,12 +746,12 @@ footer{border-top:1px solid var(--borda);margin-top:60px;padding:34px 0 46px}
    ═══════════════════════════════════════════════ */
 const EVENTO = {
   ativo:     true,
-  tag:       "Quinta, 23/07 · 20h · Ao vivo · Gratuita",
+  tag:       "Segunda, 27/07 · 20h · Ao vivo · Gratuita",
   titulo:    "ORDEM CERTA",
   subtitulo: "Os 7 lugares onde a causa do seu negócio se esconde",
-  cta:       "Quero minha vaga",
+  cta:       "Garantir minha vaga →",
   url:       "https://chat.whatsapp.com/G9TIOLn75rp58qmWm9HllM",
-  encerra:   "2026-07-23T23:00:00-03:00"
+  encerra:   "2026-07-27T23:00:00-03:00"
 };
 
 /* renderiza o banner e some sozinho depois da data */
