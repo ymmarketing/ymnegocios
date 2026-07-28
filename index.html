@@ -1105,6 +1105,38 @@
       .services-note { border-radius: 20px; }
       .journey-grid { grid-template-columns: 1fr; }
       .about-grid { gap: 34px; }
+
+      /* No mobile, a identificação fica abaixo da foto para não cobrir o rosto. */
+      .about-visual {
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .about-photo {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: clamp(420px, 118vw, 620px);
+        object-fit: cover;
+        object-position: center top;
+        flex: 0 0 auto;
+      }
+      .about-card {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        width: 100%;
+        padding: 22px 20px;
+        border: 0;
+        border-radius: 0;
+        background: var(--navy-900);
+        backdrop-filter: none;
+      }
+      .about-card strong { font-size: 1.35rem; }
+      .about-card span { margin-top: 4px; font-size: .95rem; }
+
       .form-row { grid-template-columns: 1fr; }
       .cta-copy,
       .lead-form { padding: 34px 24px; }
@@ -1123,7 +1155,9 @@
       .question-item { grid-template-columns: 44px 1fr; padding: 18px; }
       .question-number { width: 44px; height: 44px; }
       .service-card { padding: 26px; }
-      .about-visual { min-height: 320px; }
+      .about-visual { min-height: 0; }
+      .about-photo { height: clamp(410px, 122vw, 560px); }
+      .about-card { padding: 20px 18px; }
       .about-visual::before { font-size: 8rem; }
       .floating-whatsapp { right: 14px; bottom: 14px; }
     }
