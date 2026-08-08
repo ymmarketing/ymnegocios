@@ -54,14 +54,24 @@ jobs:
           console.log('Static acceptance checks: PASS');
           NODE
 
-      - name: Commit generated artifacts if changed
+      - name: Prepare branch publication candidate without deleting legacy
+        run: |
+          mkdir -p 90_LEGADO_E_REFERENCIAS
+          LEGACY='90_LEGADO_E_REFERENCIAS/2026-08-08_raio-x_PRE_V31_LEGADO.html'
+          if [ ! -f "$LEGACY" ]; then
+            cp raio-x.html "$LEGACY"
+          fi
+          cp raio-x-v3.1-integrado.html raio-x.html
+          cmp -s raio-x.html raio-x-v3.1-integrado.html
+
+      - name: Commit generated candidate if changed
         run: |
           git config user.name 'YM VOS Build Bot'
           git config user.email 'actions@users.noreply.github.com'
-          git add raio-x-v3.1-approved.html raio-x-v3.1-integrado.html
+          git add raio-x-v3.1-approved.html raio-x-v3.1-integrado.html raio-x.html 90_LEGADO_E_REFERENCIAS/2026-08-08_raio-x_PRE_V31_LEGADO.html
           if git diff --cached --quiet; then
-            echo 'Artifacts already current.'
+            echo 'Candidate already current.'
             exit 0
           fi
-          git commit -m 'Etapa 3: materializa candidato integrado v3.1 [skip ci]'
+          git commit -m 'Etapa 3: prepara substituição do Raio-X na branch preservando legado [skip ci]'
           git push origin HEAD:vos-etapa3-integracao-2026-08-08
