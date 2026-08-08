@@ -1,9 +1,5 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <path android:fillColor="#2563EB" android:pathData="M18,18h72v72h-72z" />
-    <path android:fillColor="#FFFFFF" android:pathData="M29,38h16c12,0 19,6 19,16s-7,16 -19,16h-16zM38,46v16h7c6,0 10,-3 10,-8s-4,-8 -10,-8z" />
-    <path android:fillColor="#FFFFFF" android:pathData="M67,38h12v8h-9c-5,0 -8,3 -8,8s3,8 8,8h9v8h-12c-9,0 -15,-7 -15,-16s6,-16 15,-16z" />
-</vector>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:gravity="center" android:width="84dp" android:height="84dp">
+        <bitmap android:src="@drawable/ym_symbol" android:gravity="center" />
+    </item>
+</layer-list>
