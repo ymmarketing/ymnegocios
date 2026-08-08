@@ -7,7 +7,7 @@
         <item name="android:navigationBarColor">@color/navy</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
-        <item name="android:windowSplashScreenBackground">@color/navy</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_logo_dc</item>
+        <item name="android:windowSplashScreenBackground">@color/white</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ym_symbol</item>
     </style>
 </resources>
