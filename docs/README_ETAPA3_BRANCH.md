@@ -1,0 +1,1 @@
+Branch técnica isolada para a Etapa 3. Não é fonte pública nem deve ser mesclada sem homologação e GO explícito de produção.

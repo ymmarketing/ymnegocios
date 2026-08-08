@@ -1,0 +1,1 @@
+ETAPA 3: candidata integrada preparada em branch; produção não alterada.

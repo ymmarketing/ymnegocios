@@ -1,0 +1,77 @@
+name: VOS Etapa 3 - Build RX v3.1 integrado
+
+on:
+  push:
+    branches:
+      - vos-etapa3-integracao-2026-08-08
+    paths:
+      - '.vos-build/v31/**'
+      - 'assets/js/raiox-v3.1-persist.js'
+      - 'assets/js/raiox-payment-shell-v1.js'
+      - '.github/workflows/vos-etapa3-build-v31.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: ${{ !contains(github.event.head_commit.message || '', '[skip ci]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: vos-etapa3-integracao-2026-08-08
+
+      - name: Reconstruct and verify approved v3.1
+        run: node .vos-build/v31/reconstruct-v31.mjs
+
+      - name: Build integrated candidate
+        run: node .vos-build/v31/build-integrated-v31.mjs
+
+      - name: Syntax check integration modules
+        run: |
+          node --check assets/js/raiox-v3.1-persist.js
+          node --check assets/js/raiox-payment-shell-v1.js
+
+      - name: Deterministic integration tests
+        run: node .vos-build/v31/test-integration-modules-v31.mjs
+
+      - name: Static acceptance checks
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const s=fs.readFileSync('raio-x-v3.1-integrado.html','utf8');
+          const required=[
+            'Descubra seu <em>Score da Jornada Digital</em>',
+            'RX_CANONICO_1.0','RX_SCORE_1.0','VOS_INTAKE_1.0','RX_REPORT_1.0',
+            'route_signal: null','human_validation_required: true',
+            'id="view-payment"','assets/js/raiox-v3.1-persist.js','assets/js/raiox-payment-shell-v1.js'
+          ];
+          for(const x of required){if(!s.includes(x))throw new Error('Ausente: '+x)}
+          if(s.includes("function startCheckout(){go('quiz');renderQuiz();}"))throw new Error('Bypass de pagamento presente');
+          console.log('Static acceptance checks: PASS');
+          NODE
+
+      - name: Prepare branch publication candidate without deleting legacy
+        run: |
+          mkdir -p 90_LEGADO_E_REFERENCIAS
+          LEGACY='90_LEGADO_E_REFERENCIAS/2026-08-08_raio-x_PRE_V31_LEGADO.html'
+          if [ ! -f "$LEGACY" ]; then
+            cp raio-x.html "$LEGACY"
+          fi
+          cp raio-x-v3.1-integrado.html raio-x.html
+          cmp -s raio-x.html raio-x-v3.1-integrado.html
+
+      - name: Commit generated candidate if changed
+        run: |
+          git config user.name 'YM VOS Build Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add raio-x-v3.1-approved.html raio-x-v3.1-integrado.html raio-x.html 90_LEGADO_E_REFERENCIAS/2026-08-08_raio-x_PRE_V31_LEGADO.html
+          if git diff --cached --quiet; then
+            echo 'Candidate already current.'
+            exit 0
+          fi
+          git commit -m 'Etapa 3: prepara substituição do Raio-X na branch preservando legado [skip ci]'
+          git push origin HEAD:vos-etapa3-integracao-2026-08-08
