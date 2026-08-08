@@ -14,8 +14,51 @@
     var vsl = document.querySelector('.vsl');
     if (vsl) vsl.remove();
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', removeProvisionalVsl, { once: true });
-  else removeProvisionalVsl();
+
+  function onlyDigits(v) {
+    return String(v || '').replace(/\D/g, '').slice(0, 14);
+  }
+  function formatDocument(v) {
+    var d = onlyDigits(v);
+    if (d.length <= 11) {
+      return d.replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    }
+    return d.replace(/(\d{2})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1/$2')
+      .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+  }
+  function ensurePaymentCustomerFields() {
+    var view = document.getElementById('view-payment');
+    if (!view || document.getElementById('payx-customer-fields')) return;
+    var start = view.querySelector('[data-payx-start]');
+    if (!start || !start.parentNode) return;
+
+    var box = document.createElement('div');
+    box.id = 'payx-customer-fields';
+    box.style.cssText = 'max-width:540px;margin:18px auto 18px;text-align:left;background:#F7F9FC;border:1px solid #DDE4EE;border-radius:12px;padding:18px;';
+    box.innerHTML =
+      '<label for="payx-documento" style="display:block;font-size:13px;font-weight:700;color:#0A1628;margin-bottom:7px">CPF ou CNPJ do pagador</label>' +
+      '<input id="payx-documento" type="text" inputmode="numeric" autocomplete="off" maxlength="18" placeholder="000.000.000-00" style="width:100%;padding:14px 15px;border:1.5px solid #DDE4EE;border-radius:10px;font:500 15px Inter,Arial,sans-serif;color:#1C2B40;background:#fff;outline:none">' +
+      '<p style="font-size:11.5px;line-height:1.5;color:#6B7A99;margin:8px 0 0">O Asaas exige CPF ou CNPJ para gerar a cobrança. O documento é enviado com segurança ao Asaas e não é armazenado no Raio-X.</p>';
+    start.parentNode.insertBefore(box, start);
+
+    var input = document.getElementById('payx-documento');
+    if (input) {
+      input.addEventListener('input', function () { input.value = formatDocument(input.value); });
+      input.addEventListener('focus', function () { input.style.borderColor = '#0055CC'; });
+      input.addEventListener('blur', function () { input.style.borderColor = '#DDE4EE'; });
+    }
+  }
+
+  function initPublicPaymentUi() {
+    removeProvisionalVsl();
+    ensurePaymentCustomerFields();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPublicPaymentUi, { once: true });
+  else initPublicPaymentUi();
 
   var API_BASE = 'https://ym-raiox-backend.vercel.app';
   var WHATSAPP_YM = 'https://wa.me/5531975073862';
@@ -61,6 +104,7 @@
   }
   function goPayment(message) {
     originalGo('payment');
+    ensurePaymentCustomerFields();
     if (message) showPaymentMessage(message);
   }
 
@@ -85,11 +129,24 @@
 
   async function createPayment() {
     clearPaymentMessage();
+    ensurePaymentCustomerFields();
+
+    var docInput = document.getElementById('payx-documento');
+    var documento = onlyDigits(docInput ? docInput.value : '');
+    if (documento.length !== 11 && documento.length !== 14) {
+      originalGo('payment');
+      ensurePaymentCustomerFields();
+      showPaymentMessage('<b>Informe o CPF ou CNPJ do pagador.</b><br>Esse dado é exigido pelo Asaas para gerar a cobrança.');
+      docInput = document.getElementById('payx-documento');
+      if (docInput) docInput.focus();
+      return;
+    }
+
     var buttons = document.querySelectorAll('[data-payx-start]');
     buttons.forEach(function (b) { b.disabled = true; b.dataset.oldText = b.textContent; b.textContent = 'Preparando pagamento…'; });
     try {
       var r = await fetch(API_BASE + '/api/pagamento/criar', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({})
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ documento: documento })
       });
       var d = await r.json().catch(function () { return {}; });
       if (!r.ok || !d.ok || !d.ref || !d.paymentUrl) throw new Error((d && d.error) || 'Não foi possível criar a cobrança.');
@@ -186,7 +243,7 @@
 
   function resumeFromPayment() {
     var ref = getRef(); if (!ref) return;
-    originalGo('payment'); checkPayment(); startPolling();
+    originalGo('payment'); ensurePaymentCustomerFields(); checkPayment(); startPolling();
     try { if (new URLSearchParams(root.location.search).get('ref')) root.history.replaceState(null, '', root.location.pathname + root.location.hash); } catch (e) {}
   }
   document.addEventListener('visibilitychange', function () {
