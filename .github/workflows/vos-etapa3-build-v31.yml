@@ -1,4 +1,4 @@
-name: VOS Etapa 3 - Build RX v3.1 aprovado
+name: VOS Etapa 3 - Build RX v3.1 integrado
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
       - vos-etapa3-integracao-2026-08-08
     paths:
       - '.vos-build/v31/**'
+      - 'assets/js/raiox-v3.1-persist.js'
+      - 'assets/js/raiox-payment-shell-v1.js'
       - '.github/workflows/vos-etapa3-build-v31.yml'
   workflow_dispatch:
 
@@ -13,7 +15,7 @@ permissions:
   contents: write
 
 jobs:
-  reconstruct:
+  build:
     if: ${{ !contains(github.event.head_commit.message || '', '[skip ci]') }}
     runs-on: ubuntu-latest
     steps:
@@ -25,14 +27,38 @@ jobs:
       - name: Reconstruct and verify approved v3.1
         run: node .vos-build/v31/reconstruct-v31.mjs
 
-      - name: Commit verified artifact if changed
+      - name: Build integrated candidate
+        run: node .vos-build/v31/build-integrated-v31.mjs
+
+      - name: Syntax check integration modules
         run: |
-          if git diff --quiet -- raio-x-v3.1-approved.html && git ls-files --error-unmatch raio-x-v3.1-approved.html >/dev/null 2>&1; then
-            echo 'Artifact already current.'
-            exit 0
-          fi
+          node --check assets/js/raiox-v3.1-persist.js
+          node --check assets/js/raiox-payment-shell-v1.js
+
+      - name: Static acceptance checks
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const s=fs.readFileSync('raio-x-v3.1-integrado.html','utf8');
+          const required=[
+            'Descubra seu <em>Score da Jornada Digital</em>',
+            'RX_CANONICO_1.0','RX_SCORE_1.0','VOS_INTAKE_1.0','RX_REPORT_1.0',
+            'route_signal: null','human_validation_required: true',
+            'id="view-payment"','assets/js/raiox-v3.1-persist.js','assets/js/raiox-payment-shell-v1.js'
+          ];
+          for(const x of required){if(!s.includes(x))throw new Error('Ausente: '+x)}
+          if(s.includes("function startCheckout(){go('quiz');renderQuiz();}"))throw new Error('Bypass de pagamento presente');
+          console.log('Static acceptance checks: PASS');
+          NODE
+
+      - name: Commit generated artifacts if changed
+        run: |
           git config user.name 'YM VOS Build Bot'
           git config user.email 'actions@users.noreply.github.com'
-          git add raio-x-v3.1-approved.html
-          git commit -m 'Etapa 3: materializa Raio-X v3.1 aprovado [skip ci]'
+          git add raio-x-v3.1-approved.html raio-x-v3.1-integrado.html
+          if git diff --cached --quiet; then
+            echo 'Artifacts already current.'
+            exit 0
+          fi
+          git commit -m 'Etapa 3: materializa candidato integrado v3.1 [skip ci]'
           git push origin HEAD:vos-etapa3-integracao-2026-08-08
