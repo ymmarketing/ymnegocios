@@ -1,0 +1,38 @@
+name: VOS Etapa 3 - Build RX v3.1 aprovado
+
+on:
+  push:
+    branches:
+      - vos-etapa3-integracao-2026-08-08
+    paths:
+      - '.vos-build/v31/**'
+      - '.github/workflows/vos-etapa3-build-v31.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reconstruct:
+    if: ${{ !contains(github.event.head_commit.message || '', '[skip ci]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: vos-etapa3-integracao-2026-08-08
+
+      - name: Reconstruct and verify approved v3.1
+        run: node .vos-build/v31/reconstruct-v31.mjs
+
+      - name: Commit verified artifact if changed
+        run: |
+          if git diff --quiet -- raio-x-v3.1-approved.html && git ls-files --error-unmatch raio-x-v3.1-approved.html >/dev/null 2>&1; then
+            echo 'Artifact already current.'
+            exit 0
+          fi
+          git config user.name 'YM VOS Build Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add raio-x-v3.1-approved.html
+          git commit -m 'Etapa 3: materializa Raio-X v3.1 aprovado [skip ci]'
+          git push origin HEAD:vos-etapa3-integracao-2026-08-08
