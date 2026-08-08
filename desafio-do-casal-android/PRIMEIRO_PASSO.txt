@@ -1,0 +1,4 @@
+DESAFIO DO CASAL — ANDROID v1.0.1
+
+Projeto Android pronto para build automático no GitHub Actions.
+Na primeira abertura, o aplicativo pede a URL publicada do Google Apps Script terminada em /exec e salva essa URL no aparelho.

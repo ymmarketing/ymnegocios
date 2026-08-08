@@ -1,0 +1,5 @@
+DESAFIO DO CASAL — ANDROID v1.0.1
+
+STATUS: PROJETO ANDROID PRONTO PARA BUILD.
+
+Inclui app Android, package br.com.ymnegocios.desafiodocasal, Android API 36, ícone, splash, persistência da URL do Apps Script, internet/erro/retry e WebView.
