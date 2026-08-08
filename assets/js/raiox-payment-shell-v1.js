@@ -6,6 +6,17 @@
 (function (root) {
   'use strict';
 
+  /* Produção assistida · 2026-08-08
+   * A VSL ainda não está homologada. Remove apenas o bloco visual provisório,
+   * sem alterar checkout, questionário, Score, relatório ou integrações.
+   */
+  function removeProvisionalVsl() {
+    var vsl = document.querySelector('.vsl');
+    if (vsl) vsl.remove();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', removeProvisionalVsl, { once: true });
+  else removeProvisionalVsl();
+
   var API_BASE = 'https://ym-raiox-backend.vercel.app';
   var WHATSAPP_YM = 'https://wa.me/5531975073862';
   var REF_STORAGE_KEY = 'ym_raiox_ref';
