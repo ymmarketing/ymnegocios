@@ -1,5 +1,14 @@
-DESAFIO DO CASAL — ANDROID v1.0.1
+DESAFIO DO CASAL — ANDROID v1.0.3 YM
 
-STATUS: PROJETO ANDROID PRONTO PARA BUILD.
+Revisão UX mobile aplicada:
+- ícone do launcher com símbolo oficial YM
+- splash com símbolo YM, sem DC
+- cor principal YM #484DCF
+- conteúdo protegido das áreas não tocáveis do sistema no Android 15/16
+- status bar e navigation bar reservadas, com fundo azul-marinho
+- WebView não ocupa a zona do relógio/notificações nem a barra de gestos
+- tipografia do WebView mantida em 100%, sem zoom forçado
 
-Inclui app Android, package br.com.ymnegocios.desafiodocasal, Android API 36, ícone, splash, persistência da URL do Apps Script, internet/erro/retry e WebView.
+Observação:
+O aviso "Este aplicativo foi criado por um usuário do Google Apps Script" pertence ao Google Apps Script e não ao APK.
+Ele não deve ser ocultado por CSS/JavaScript. Para eliminá-lo de forma correta, a interface precisa deixar de ser servida pelo HTML Service do Apps Script e o Apps Script deve ficar apenas como API/backend.
