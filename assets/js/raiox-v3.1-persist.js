@@ -1,5 +1,5 @@
 /* YM Raio-X — persistência VOS_INTAKE_1.0
- * ETAPA 3 · integração staging · 2026-08-08
+ * ETAPA 3 · integração production-ready · 2026-08-08
  *
  * Contrato preservado:
  * - não calcula Score;
@@ -11,7 +11,7 @@
 (function (root) {
   'use strict';
 
-  var ENDPOINT = 'https://nxmcqkhaolplyzapccaf.supabase.co/functions/v1/save-raiox-intake';
+  var ENDPOINT = 'https://srzdikgztpdtwbggwniz.supabase.co/functions/v1/save-raiox-intake';
   var REF_STORAGE_KEY = 'ym_raiox_ref';
 
   function getRef() {
