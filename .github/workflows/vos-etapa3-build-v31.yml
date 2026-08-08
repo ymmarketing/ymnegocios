@@ -35,6 +35,9 @@ jobs:
           node --check assets/js/raiox-v3.1-persist.js
           node --check assets/js/raiox-payment-shell-v1.js
 
+      - name: Deterministic integration tests
+        run: node .vos-build/v31/test-integration-modules-v31.mjs
+
       - name: Static acceptance checks
         run: |
           node - <<'NODE'
