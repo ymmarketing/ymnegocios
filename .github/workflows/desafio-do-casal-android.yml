@@ -32,12 +32,17 @@ jobs:
         with:
           gradle-version: '9.5.0'
 
+      - name: Preparar símbolo oficial YM
+        run: |
+          mkdir -p app/src/main/res/drawable-nodpi
+          base64 --decode ym_symbol.b64 > app/src/main/res/drawable-nodpi/ym_symbol.png
+
       - name: Gerar APK de teste
         run: gradle :app:assembleDebug --stacktrace
 
       - name: Publicar APK
         uses: actions/upload-artifact@v4
         with:
-          name: Desafio-do-Casal-Android-v1.0.1
+          name: Desafio-do-Casal-Android-v1.0.3-YM
           path: desafio-do-casal-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
