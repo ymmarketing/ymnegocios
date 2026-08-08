@@ -1,0 +1,59 @@
+{
+  "brand": {
+    "name": "YM Marketing & Negócios",
+    "version": "1.0",
+    "status": "OFICIAL_VIGENTE",
+    "consolidated_at": "2026-08",
+    "signature": "O marketing certo, na ordem certa.",
+    "essence": "Colocar o marketing digital na ordem certa do negócio.",
+    "positioning": "A YM estrutura o digital de pequenos negócios de serviços a partir da realidade do próprio negócio. Por meio do Método VOS, diagnostica o momento atual, organiza prioridades e implanta o que precisa existir para conectar posicionamento, marketing e vendas.",
+    "promise": "Em até 45 dias, a YM organiza e implanta a estrutura essencial de marketing digital para conectar posicionamento, marketing e vendas à realidade do pequeno negócio de serviços.",
+    "value_proposition": "Transformar confusão em clareza acionável.",
+    "question": "O que precisa acontecer primeiro?"
+  },
+  "method": {
+    "name": "Método VOS",
+    "steps": ["Ver", "Ordenar", "Sustentar"],
+    "manifesto": "Ver para compreender. Ordenar para avançar. Sustentar para crescer."
+  },
+  "voice": {
+    "traits": ["estratégica", "inteligente", "prática", "didática", "questionadora", "acessível", "segura", "estruturada", "humana", "contemporânea", "orientada à realidade"],
+    "authority_flow": ["observação", "explicação", "entendimento", "direção"],
+    "avoid": ["agressividade", "acusação", "jargão excessivo", "promessa mágica", "viralização garantida", "fórmula universal", "tom de guru"]
+  },
+  "colors": {
+    "navy": "#0A2540",
+    "primary": "#0066FF",
+    "secondary": "#3D47C4",
+    "background": "#F7F9FC",
+    "border": "#E4EAF2",
+    "muted": "#6B7A99",
+    "positive": "#047857",
+    "attention": "#B45309",
+    "critical": "#B91C1C"
+  },
+  "typography": {
+    "heading_family": "Montserrat",
+    "heading_weight": 800,
+    "subheading_weight_range": [600, 700],
+    "body_family": "Inter",
+    "body_weight_range": [400, 500],
+    "emphasis_weight_range": [600, 700]
+  },
+  "visual": {
+    "dominant_reading": "azul-marinho + azul institucional + branco/off-white",
+    "style": ["clean", "premium", "editorial", "moderna", "estratégica", "corporativa", "didática", "organizada"],
+    "editorial_support_colors": ["amarelo", "laranja"],
+    "purple_rule": "#3D47C4 é apoio e nunca deve tornar a marca predominantemente roxa",
+    "principle": "Menos elementos. Mais hierarquia."
+  },
+  "governance": {
+    "levels": ["ECOSSISTEMA_DE_MARCA", "IDENTIDADE_VISUAL", "TOM_DE_VOZ", "FABRICA_DE_CONTEUDOS", "GUIAS_POR_CANAL", "PRODUTOS_E_CAMPANHAS"],
+    "rule": "Um nível inferior pode adaptar a marca, mas nunca contradizer um nível superior.",
+    "ai_can_reinterpret_institutional_identity": false
+  },
+  "source": {
+    "document": "ECOSSISTEMA OFICIAL DE MARCA — YM MARKETING & NEGÓCIOS — Versão oficial consolidada — Agosto/2026",
+    "sha256": "c83f19838bfb659ed358f0bfc8bcf53e54bec3b3e4f0b21fdb6cc53d38ad3237"
+  }
+}
