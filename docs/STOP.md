@@ -1,0 +1,1 @@
+Produção protegida por gate explícito.
