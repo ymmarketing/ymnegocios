@@ -8,6 +8,9 @@ on:
       - "desafio-do-casal-android/**"
       - ".github/workflows/desafio-do-casal-android.yml"
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -32,12 +35,28 @@ jobs:
         with:
           gradle-version: '9.5.0'
 
-      - name: Gerar APK de teste
+      - name: Gerar APK
         run: gradle :app:assembleDebug --stacktrace
 
-      - name: Publicar APK
+      - name: Nomear APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk Desafio-do-Casal-YM-v1.0.3.apk
+
+      - name: Publicar APK como artefato
         uses: actions/upload-artifact@v4
         with:
           name: Desafio-do-Casal-Android-v1.0.3-YM
-          path: desafio-do-casal-android/app/build/outputs/apk/debug/app-debug.apk
+          path: desafio-do-casal-android/Desafio-do-Casal-YM-v1.0.3.apk
           if-no-files-found: error
+
+      - name: Publicar link público de instalação
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: desafio-do-casal-v1.0.3
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" Desafio-do-Casal-YM-v1.0.3.apk --clobber
+          else
+            gh release create "$TAG" Desafio-do-Casal-YM-v1.0.3.apk \
+              --title "Desafio do Casal v1.0.3 — YM" \
+              --notes "Versão Android com identidade YM e correção de áreas seguras para celular."
+          fi
