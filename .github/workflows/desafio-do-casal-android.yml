@@ -32,11 +32,6 @@ jobs:
         with:
           gradle-version: '9.5.0'
 
-      - name: Preparar símbolo oficial YM
-        run: |
-          mkdir -p app/src/main/res/drawable-nodpi
-          base64 --decode ym_symbol.b64 > app/src/main/res/drawable-nodpi/ym_symbol.png
-
       - name: Gerar APK de teste
         run: gradle :app:assembleDebug --stacktrace
 
