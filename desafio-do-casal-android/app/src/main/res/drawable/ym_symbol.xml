@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Símbolo YM: V/check arredondado -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#484DCF"
+        android:strokeWidth="18"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M18,18 L54,55 L90,18" />
+
+    <!-- Ponto inferior do símbolo -->
+    <path
+        android:fillColor="#484DCF"
+        android:pathData="M54,78 C59,78 63,82 63,87 C63,92 59,96 54,96 C49,96 45,92 45,87 C45,82 49,78 54,78 Z" />
+</vector>
