@@ -1,0 +1,49 @@
+:root{
+  --ym-navy:#0A2540;
+  --ym-blue:#0066FF;
+  --ym-blue-secondary:#3D47C4;
+  --ym-bg:#F7F9FC;
+  --ym-border:#E4EAF2;
+  --ym-muted:#6B7A99;
+  --ym-positive:#047857;
+  --ym-attention:#B45309;
+  --ym-critical:#B91C1C;
+  --ym-white:#FFFFFF;
+  --ym-font-heading:'Montserrat',sans-serif;
+  --ym-font-body:'Inter',sans-serif;
+  --ym-radius-sm:10px;
+  --ym-radius-md:16px;
+  --ym-radius-lg:22px;
+}
+
+.ym-brand{
+  color:var(--ym-navy);
+  background:var(--ym-bg);
+  font-family:var(--ym-font-body);
+}
+
+.ym-brand h1,.ym-brand h2,.ym-brand h3,.ym-brand h4{
+  color:var(--ym-navy);
+  font-family:var(--ym-font-heading);
+  font-weight:800;
+}
+
+.ym-brand .ym-cta{
+  background:var(--ym-blue);
+  color:var(--ym-white);
+  font-family:var(--ym-font-body);
+  font-weight:700;
+}
+
+.ym-brand .ym-muted{color:var(--ym-muted)}
+.ym-brand .ym-positive{color:var(--ym-positive)}
+.ym-brand .ym-attention{color:var(--ym-attention)}
+.ym-brand .ym-critical{color:var(--ym-critical)}
+
+/* Governança visual v1.0:
+ * - leitura dominante azul navy + azul vivo + branco/off-white;
+ * - #3D47C4 é apoio e não deve transformar a YM em marca roxa;
+ * - amarelo/laranja são complementares editoriais, não institucionais;
+ * - Montserrat para títulos; Inter para corpo;
+ * - menos elementos, mais hierarquia e espaço em branco.
+ */
