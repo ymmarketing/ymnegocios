@@ -1,4 +1,4 @@
-/* YM Raio-X — shell de pagamento/sessão v1
+/* YM Raio-X — shell de pagamento/sessão v1.1
  * ETAPA 3 · integração do RX v3.1 aprovado com backend existente.
  * Responsabilidade exclusiva: pagamento, ref, gate e contingência de acesso.
  * NÃO calcula Score, NÃO interpreta respostas, NÃO define rota, NÃO chama IA.
@@ -63,6 +63,7 @@
   var API_BASE = 'https://ym-raiox-backend.vercel.app';
   var WHATSAPP_YM = 'https://wa.me/5531975073862';
   var REF_STORAGE_KEY = 'ym_raiox_ref';
+  var DRAFT_STORAGE_KEY = 'rx_draft_v1';
   var PROTECTED = ['quiz', 'proc', 'report'];
   var paymentStatus = 'pending';
   var pollId = null;
@@ -74,6 +75,14 @@
     throw new Error('RX v3.1 não carregado antes do shell de pagamento.');
   }
 
+  function clearStoredSession() {
+    try {
+      if (root.localStorage) {
+        root.localStorage.removeItem(REF_STORAGE_KEY);
+        root.localStorage.removeItem(DRAFT_STORAGE_KEY);
+      }
+    } catch (e) {}
+  }
   function saveRef(ref) {
     if (!ref) return;
     try { root.localStorage && root.localStorage.setItem(REF_STORAGE_KEY, ref); } catch (e) {}
@@ -81,6 +90,21 @@
   function getRef() {
     try { var q = new URLSearchParams(root.location.search).get('ref'); if (q) { saveRef(q); return q; } } catch (e) {}
     try { return root.localStorage ? (root.localStorage.getItem(REF_STORAGE_KEY) || '') : ''; } catch (e) { return ''; }
+  }
+  function isFreshCheckout() {
+    try {
+      var p = new URLSearchParams(root.location.search);
+      return p.get('checkout') === '1' || p.get('novo') === '1';
+    } catch (e) { return false; }
+  }
+  function clearFreshCheckoutParam() {
+    try {
+      var p = new URLSearchParams(root.location.search);
+      p.delete('checkout');
+      p.delete('novo');
+      var qs = p.toString();
+      root.history.replaceState(null, '', root.location.pathname + (qs ? '?' + qs : '') + root.location.hash);
+    } catch (e) {}
   }
   function showPaymentMessage(html) {
     var box = document.getElementById('payx-alert');
@@ -126,6 +150,14 @@
       });
     }
   };
+
+  function beginNewCheckout() {
+    stopPolling();
+    clearStoredSession();
+    paymentStatus = 'pending';
+    clearPaymentMessage();
+    goPayment();
+  }
 
   async function createPayment() {
     clearPaymentMessage();
@@ -226,7 +258,7 @@
     finally { if (btn) { btn.disabled = false; btn.textContent = 'Liberar meu Raio-X'; } }
   }
 
-  root.startCheckout = createPayment;
+  root.startCheckout = beginNewCheckout;
   root.irParaPagamento = createPayment;
   root.checkPayment = checkPayment;
   root.validarCodigo = validateManualCode;
@@ -242,6 +274,15 @@
   };
 
   function resumeFromPayment() {
+    if (isFreshCheckout()) {
+      stopPolling();
+      clearStoredSession();
+      paymentStatus = 'pending';
+      originalGo('payment');
+      ensurePaymentCustomerFields();
+      clearFreshCheckoutParam();
+      return;
+    }
     var ref = getRef(); if (!ref) return;
     originalGo('payment'); ensurePaymentCustomerFields(); checkPayment(); startPolling();
     try { if (new URLSearchParams(root.location.search).get('ref')) root.history.replaceState(null, '', root.location.pathname + root.location.hash); } catch (e) {}
