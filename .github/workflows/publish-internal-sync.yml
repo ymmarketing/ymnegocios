@@ -1,0 +1,41 @@
+name: Publicar módulos internos YM
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-internal-sync.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync-internal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sincronizar arquivos homologados
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://raw.githubusercontent.com/ymmarketing/ym-raiox-backend/vos-etapa5-crm-essencial-2026-08-08'
+          mkdir -p MOTOR Identidade quemsomos areadocliente
+          curl -fsSL "$BASE/MOTOR/index.html" -o MOTOR/index.html
+          curl -fsSL "$BASE/Identidade/index.html" -o Identidade/index.html
+          curl -fsSL "$BASE/quemsomos/index.html" -o quemsomos/index.html
+          curl -fsSL "$BASE/areadocliente/index.html" -o areadocliente/index.html
+          sed -i 's/STAGING · CANDIDATO FINAL/PRODUÇÃO ASSISTIDA/g; s/STAGING · CANDIDATO FINAL/PRODUÇÃO ASSISTIDA/g; s/CANDIDATO FINAL/PRODUÇÃO ASSISTIDA/g' MOTOR/index.html Identidade/index.html || true
+      - name: Publicar no domínio oficial
+        shell: bash
+        run: |
+          git config user.name 'YM Production Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add MOTOR Identidade quemsomos areadocliente
+          if git diff --cached --quiet; then
+            echo 'Sem alterações.'
+          else
+            git commit -m 'Produção assistida: publica MOTOR e módulos do ecossistema YM'
+            git push origin main
+          fi
