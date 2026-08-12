@@ -1,30 +1,35 @@
-/* YM Home V3 · hotfix de depoimentos
- * 2026-08-12: remove temporariamente os cortes não homologados da Home.
- * As fotos permanecem ativas. Os depoimentos voltam somente com os vídeos
- * completos, em hospedagem adequada e após validação visual.
- */
+/* YM Home V4 · fotos + depoimentos completos via YouTube */
 (function(){
-  function apply(){
+  function applyPhotos(){
     var hero=document.querySelector('[data-ym-photo="hero"]');
     var sobre=document.querySelector('[data-ym-photo="sobre"]');
     if(hero&&window.YM_HERO_V3) hero.src=window.YM_HERO_V3;
     if(sobre&&window.YM_SOBRE_V3) sobre.src=window.YM_SOBRE_V3;
-
-    var section=document.getElementById('depoimentos') || document.querySelector('.testimonial-band');
-    if(section) section.style.display='none';
-
-    var nav=document.querySelector('.links a[href="#depoimentos"]');
-    if(nav) nav.style.display='none';
-
-    [1,2,3,4].forEach(function(i){
-      var el=document.querySelector('[data-ym-video="'+i+'"]');
-      if(el){
-        try{ el.pause(); }catch(e){}
-        el.removeAttribute('src');
-        try{ el.load(); }catch(e){}
-      }
-    });
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply,{once:true});
-  else apply();
+  function initTestimonials(){
+    var modal=document.getElementById('yt-modal');
+    var player=document.getElementById('yt-player');
+    if(!modal||!player) return;
+    function close(){
+      player.src='';
+      modal.hidden=true;
+      modal.setAttribute('aria-hidden','true');
+      document.body.classList.remove('yt-modal-open');
+    }
+    document.querySelectorAll('[data-youtube-id]').forEach(function(card){
+      card.addEventListener('click',function(){
+        var id=card.getAttribute('data-youtube-id');
+        if(!id) return;
+        player.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1&playsinline=1&rel=0';
+        modal.hidden=false;
+        modal.setAttribute('aria-hidden','false');
+        document.body.classList.add('yt-modal-open');
+      });
+    });
+    modal.querySelectorAll('[data-yt-close]').forEach(function(btn){btn.addEventListener('click',close)});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!modal.hidden) close()});
+  }
+  function boot(){applyPhotos();initTestimonials();if(window.lucide) window.lucide.createIcons();}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
 })();
