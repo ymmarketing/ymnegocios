@@ -1,6 +1,42 @@
-/* YM Home V4 · fotos + depoimentos completos via YouTube */
+/* YM Home V4 · fotos + depoimentos completos via YouTube + provas escritas */
 (function(){
   var videos=['CuSLKnGcAlQ','txEiXWxCIJI','jRdsKtvCogg','RhcWRrUR0FA'];
+
+  var writtenProofs=[
+    {
+      initial:'A',
+      name:'Ana',
+      caption:'negócio comercial',
+      tone:'blue',
+      messages:[
+        ['Yas, acabei de ver o diagnóstico 😍','14:02'],
+        ['Abriu minha visão em relação ao que é importante pra obter um crescimento digital objetivo.','14:02'],
+        ['Super recomendo 🙌','14:03']
+      ]
+    },
+    {
+      initial:'B',
+      name:'Boas Bronze e Estética',
+      caption:'estética',
+      tone:'orange',
+      messages:[
+        ['Não tenho palavras pra te agradecer 🥹','10:47'],
+        ['Essa análise desbloqueou minha mente.','10:47'],
+        ['Tudo que eu precisava!','10:48']
+      ]
+    },
+    {
+      initial:'G',
+      name:'Geise',
+      caption:'cliente exigente',
+      tone:'green',
+      messages:[
+        ['O material ficou excelente, adorei! ✨','18:21'],
+        ['Já pensando em tudo que está lá...','18:21'],
+        ['Você sabe o quanto sou exigente, e ficou muito bom mesmo 👏','18:22']
+      ]
+    }
+  ];
 
   function ensureStyles(){
     if(document.getElementById('ym-testimonials-v4-css')) return;
@@ -16,6 +52,32 @@
     var sobre=document.querySelector('[data-ym-photo="sobre"]');
     if(hero&&window.YM_HERO_V3) hero.src=window.YM_HERO_V3;
     if(sobre&&window.YM_SOBRE_V3) sobre.src=window.YM_SOBRE_V3;
+  }
+
+  function renderWrittenProofs(section){
+    if(!section || section.querySelector('.written-proof-block')) return;
+
+    var block=document.createElement('div');
+    block.className='written-proof-block';
+    block.innerHTML='<div class="written-proof-head">'+
+      '<span class="written-proof-kicker">MAIS PROVA REAL</span>'+
+      '<h3>Prova acima de promessa.</h3>'+
+      '<p>Depois do vídeo, ficam também as mensagens que chegaram de quem viveu o diagnóstico na prática.</p>'+
+      '</div>'+
+      '<div class="written-proofs">'+writtenProofs.map(function(item){
+        var msgs=item.messages.map(function(m){
+          return '<div class="wa-bubble"><span>'+m[0]+'</span><small>'+m[1]+'</small></div>';
+        }).join('');
+        return '<article class="wa-proof">'+
+          '<header class="wa-header"><span class="wa-back">‹</span><span class="wa-avatar '+item.tone+'">'+item.initial+'</span>'+
+          '<span class="wa-person"><b>'+item.name+'</b><small><i></i> online</small></span></header>'+
+          '<div class="wa-chat">'+msgs+'</div>'+
+          '<footer><b>'+item.name+'</b><span> · '+item.caption+'</span></footer>'+
+          '</article>';
+      }).join('')+'</div>';
+
+    var grid=section.querySelector('.testimonials');
+    if(grid && grid.parentNode) grid.parentNode.insertBefore(block,grid.nextSibling);
   }
 
   function renderTestimonials(){
@@ -37,6 +99,8 @@
         '<span class="yt-shade"></span><span class="yt-play" aria-hidden="true">▶</span>'+
         '<span class="yt-label"><b>Depoimento de cliente</b><small>Assistir completo</small></span></button>';
     }).join('');
+
+    renderWrittenProofs(section);
 
     if(!document.getElementById('yt-modal')){
       var modal=document.createElement('div');
