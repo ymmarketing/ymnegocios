@@ -1,10 +1,32 @@
-/* YM Raio-X — shell de pagamento/sessão v1.1
+/* YM Raio-X — shell de pagamento/sessão v1.2
  * ETAPA 3 · integração do RX v3.1 aprovado com backend existente.
  * Responsabilidade exclusiva: pagamento, ref, gate e contingência de acesso.
  * NÃO calcula Score, NÃO interpreta respostas, NÃO define rota, NÃO chama IA.
  */
 (function (root) {
   'use strict';
+
+  /* Produção assistida · 2026-08-11
+   * Correção de primeira renderização: quando a navegação vem da Home com
+   * ?checkout=1/?novo=1 (ou retorno com ref), troca a view de forma síncrona
+   * assim que este shell é executado. Isso evita o flash visual da antiga
+   * view-intro antes da tela de pagamento.
+   */
+  function preflightRoute() {
+    try {
+      var p = new URLSearchParams(root.location.search);
+      var shouldShowPayment = p.get('checkout') === '1' || p.get('novo') === '1' || !!p.get('ref');
+      if (!shouldShowPayment) {
+        try { shouldShowPayment = !!(root.localStorage && root.localStorage.getItem('ym_raiox_ref')); } catch (e) {}
+      }
+      if (!shouldShowPayment) return;
+      var intro = document.getElementById('view-intro');
+      var payment = document.getElementById('view-payment');
+      if (intro) intro.classList.remove('active');
+      if (payment) payment.classList.add('active');
+    } catch (e) {}
+  }
+  preflightRoute();
 
   /* Produção assistida · 2026-08-08
    * A VSL ainda não está homologada. Remove apenas o bloco visual provisório,
