@@ -73,14 +73,7 @@
     }
 
     function convert(card) {
-      if (card.tagName === 'DETAILS' && card.dataset.nativeDetails === '1') {
-        const body = card.querySelector('.client-body');
-        if (body) {
-          delete body.dataset.collapsed;
-          body.style.removeProperty('display');
-        }
-        return;
-      }
+      if (card.tagName === 'DETAILS' && card.dataset.nativeDetails === '1') return;
 
       const head = card.querySelector(':scope > .client-head');
       const body = card.querySelector(':scope > .client-body');
@@ -90,15 +83,12 @@
       const details = document.createElement('details');
       details.className = card.className;
       details.dataset.nativeDetails = '1';
-      details.dataset.foldReady = '1';
       details.dataset.clientKey = key;
       if (expanded.has(key)) details.open = true;
 
       const summary = document.createElement('summary');
-      summary.className = head.className.replace(/client-fold-head/g, '').trim();
-      summary.classList.add('client-head');
+      summary.className = 'client-head';
 
-      head.querySelectorAll('.client-view-btn,.client-fold-arrow').forEach((el) => el.remove());
       const arrow = document.createElement('span');
       arrow.className = 'client-native-arrow';
       arrow.textContent = '›';
@@ -107,14 +97,12 @@
       while (head.firstChild) summary.appendChild(head.firstChild);
 
       delete body.dataset.collapsed;
+      body.hidden = false;
       body.style.removeProperty('display');
 
       summary.addEventListener('click', (event) => {
         const action = event.target.closest('button,a,input,select,textarea');
-        if (action) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
+        if (action) event.stopPropagation();
       });
 
       details.addEventListener('toggle', () => {
@@ -132,20 +120,16 @@
       document.querySelectorAll('.client-card').forEach(convert);
     }
 
-    new MutationObserver(() => requestAnimationFrame(apply)).observe(document.documentElement, {
+    new MutationObserver(() => requestAnimationFrame(apply)).observe(document.getElementById('leadList') || document.body, {
       childList: true,
-      subtree: true
+      subtree: false
     });
     setInterval(apply, 700);
     apply();
   }
 
   loadScript('/assets/crm15-runtime-core.js?v=20260813-1', 'ymRuntimeCore')
-    .then(() => Promise.all([
-      loadScript('/assets/crm15-kpi-click.js?v=20260813-6', 'ymPipelineKpi'),
-      loadScript('/assets/crm15-clients-ui.js?v=20260813-3', 'ymClientsUi'),
-      loadScript('/assets/crm15-client-kpi.js?v=20260813-1', 'ymClientKpi')
-    ]))
+    .then(() => loadScript('/assets/crm15-kpi-click.js?v=20260813-6', 'ymPipelineKpi'))
     .then(startNativeClientDetails)
     .catch((error) => console.error('CRM interaction layer', error));
 })();
