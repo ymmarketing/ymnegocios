@@ -32,3 +32,4 @@
   const obs=new MutationObserver(()=>{enhanceUnified();enhanceServiceDeletes();enhanceClientMotorButtons()});obs.observe(document.documentElement,{childList:true,subtree:true});
   window.CRMSaveAll={saveAll,enhanceUnified,enhanceServiceDeletes,enhanceClientMotorButtons};
 })();
+// deploy retry 2026-08-13
