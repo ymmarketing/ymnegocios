@@ -115,7 +115,7 @@
 
   loadScript('/assets/crm15-runtime-core.js?v=20260813-1', 'ymRuntimeCore')
     .then(() => Promise.all([
-      loadScript('/assets/crm15-kpi-click.js?v=20260813-2', 'ymPipelineKpi'),
+      loadScript('/assets/crm15-kpi-click.js?v=20260813-5', 'ymPipelineKpi'),
       loadScript('/assets/crm15-clients-ui.js?v=20260813-3', 'ymClientsUi'),
       loadScript('/assets/crm15-client-kpi.js?v=20260813-1', 'ymClientKpi')
     ]))
