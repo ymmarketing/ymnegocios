@@ -1,0 +1,32 @@
+name: Patch MOTOR investigation flow
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/patch-motor-flow.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Attach investigation flow
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('MOTOR/index.html')
+          s=p.read_text()
+          tag='<script src="/assets/motor-flow-v2.js"></script>'
+          if tag not in s:
+              s=s.replace('</body>',tag+'</body>')
+              p.write_text(s)
+          PY
+      - name: Commit patch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add MOTOR/index.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'MOTOR: fecha investigação causal antes do Gate'
+          git push
