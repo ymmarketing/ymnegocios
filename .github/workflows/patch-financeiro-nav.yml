@@ -1,0 +1,38 @@
+name: Integrar Financeiro ao menu interno
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-financeiro-nav.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch internal shell
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/internal-shell.js')
+          s=p.read_text()
+          s=s.replace("/^\\/(CRM|MOTOR|DASHBOARD|Identidade)(?:[/?#]|$)/", "/^\\/(CRM|MOTOR|DASHBOARD|FINANCEIRO|Identidade)(?:[/?#]|$)/")
+          old="${nav('/CRM','CRM','C')}${nav('/MOTOR','MOTOR','M')}${nav('/DASHBOARD','Dashboard','D')}${nav('/Identidade','IDENTIDADE','ID','IDEAÇÃO')}"
+          new="${nav('/CRM','CRM','C')}${nav('/MOTOR','MOTOR','M')}${nav('/DASHBOARD','Dashboard','D')}${nav('/FINANCEIRO','Financeiro','F')}${nav('/Identidade','IDENTIDADE','ID','IDEAÇÃO')}"
+          if old not in s:
+              raise SystemExit('nav target not found')
+          s=s.replace(old,new,1)
+          old2="p.startsWith('/DASHBOARD')?'Dashboard':p.startsWith('/Identidade')?'IDENTIDADE':null"
+          new2="p.startsWith('/DASHBOARD')?'Dashboard':p.startsWith('/FINANCEIRO')?'Financeiro':p.startsWith('/Identidade')?'IDENTIDADE':null"
+          if old2 not in s:
+              raise SystemExit('fast shell target not found')
+          s=s.replace(old2,new2,1)
+          p.write_text(s)
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/internal-shell.js
+          git commit -m 'Etapa 3: adiciona Financeiro ao ambiente interno'
+          git push
