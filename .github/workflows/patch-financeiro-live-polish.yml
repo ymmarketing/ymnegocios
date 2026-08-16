@@ -1,0 +1,30 @@
+name: Finalizar Financeiro vivo
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-financeiro-live-polish.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ajustes finais
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('FINANCEIRO/index.html')
+          s=p.read_text()
+          s=s.replace('CLIENTES RECORRENTES SIMULADOS','COMPROMISSOS EM CAPACIDADE')
+          s=s.replace('grid-template-columns:2fr 1fr 1fr 2fr auto','grid-template-columns:repeat(auto-fit,minmax(150px,1fr))')
+          p.write_text(s)
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add FINANCEIRO/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Etapa 3: finaliza responsividade e rótulos do Financeiro vivo'
+          git push
