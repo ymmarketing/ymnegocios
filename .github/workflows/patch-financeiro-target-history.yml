@@ -1,0 +1,43 @@
+name: Versionar metas do Financeiro
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-financeiro-target-history.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aplicar metas históricas por competência
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('FINANCEIRO/index.html')
+          s=p.read_text()
+          old="""async function api(){const s=await YM.requireSession('/FINANCEIRO');if(!s)throw new Error('Sessão necessária');const headers={Authorization:'Bearer '+s.access_token,apikey:YM.PUBLISHABLE_KEY};const [r,dr]=await Promise.all([fetch(YM.SUPABASE_URL+'/functions/v1/finance-dashboard',{headers}),fetch(YM.SUPABASE_URL+'/functions/v1/motor-dashboard?period=ALL',{headers})]);const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.detail||j.error||'Falha no Financeiro');const dj=await dr.json().catch(()=>({}));j.commercial_snapshot=dr.ok?(dj.commercial?.funnel||null):null;return j}"""
+          new="""async function api(){const s=await YM.requireSession('/FINANCEIRO');if(!s)throw new Error('Sessão necessária');const headers={Authorization:'Bearer '+s.access_token,apikey:YM.PUBLISHABLE_KEY};const [r,dr,tr]=await Promise.all([fetch(YM.SUPABASE_URL+'/functions/v1/finance-dashboard',{headers}),fetch(YM.SUPABASE_URL+'/functions/v1/motor-dashboard?period=ALL',{headers}),fetch(YM.SUPABASE_URL+'/functions/v1/finance-targets',{headers})]);const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.detail||j.error||'Falha no Financeiro');const dj=await dr.json().catch(()=>({})),tj=await tr.json().catch(()=>({}));j.commercial_snapshot=dr.ok?(dj.commercial?.funnel||null):null;j.target_history=tr.ok?(tj.target_history||[]):[];return j}"""
+          if old not in s: raise SystemExit('api exact target not found')
+          s=s.replace(old,new,1)
+          marker="function monthKeys(from,to){let out=[],k=from,guard=0;while(k<=to&&guard<120){out.push(k);k=addMonths(k,1);guard++}return out}"
+          helper=marker+"\nfunction targetForMonth(k){const h=[...(data?.target_history||[])].sort((a,b)=>String(a.effective_month).localeCompare(String(b.effective_month)));let v=0;for(const x of h){if(String(x.effective_month)<=k)v=N(x.monthly_revenue_target);else break}return v}"
+          if marker not in s: raise SystemExit('monthKeys marker not found')
+          s=s.replace(marker,helper,1)
+          oldagg="""function aggregates(){const s=data.summary||{},actuals=data.monthly_actuals||[],projection=data.planning?.live_projection||[],keys=monthKeys(state.from,state.to),aset=new Map(actuals.map(x=>[String(x.month),x])),pset=new Map(projection.map(x=>[String(x.month),x]));let recebido=0,contratado=0,faturado=0,previsto=0,planejado=0;for(const k of keys){const a=aset.get(k)||{};const p=pset.get(k)||{};recebido+=N(a.recebido);contratado+=N(a.contratado);faturado+=N(a.faturado);previsto+=N(a.previsto);planejado+=N(p.planned_revenue)}const meta=N(s.monthly_revenue_target)*keys.length;const pct=meta>0?recebido/meta*100:0;const gap=Math.max(meta-recebido,0);const prevFrom=addMonths(state.from,-keys.length),prevTo=addMonths(state.to,-keys.length);let recebidoAnterior=0;for(const a of actuals){const k=String(a.month);if(k>=prevFrom&&k<=prevTo)recebidoAnterior+=N(a.recebido)}return{keys,aset,pset,recebido,contratado,faturado,previsto,planejado,meta,pct,gap,recebidoAnterior,delta:recebido-recebidoAnterior}}"""
+          newagg="""function aggregates(){const actuals=data.monthly_actuals||[],projection=data.planning?.live_projection||[],keys=monthKeys(state.from,state.to),aset=new Map(actuals.map(x=>[String(x.month),x])),pset=new Map(projection.map(x=>[String(x.month),x]));let recebido=0,contratado=0,faturado=0,previsto=0,planejado=0,meta=0;for(const k of keys){const a=aset.get(k)||{},p=pset.get(k)||{};recebido+=N(a.recebido);contratado+=N(a.contratado);faturado+=N(a.faturado);previsto+=N(a.previsto);planejado+=N(p.planned_revenue);meta+=targetForMonth(k)}const pct=meta>0?recebido/meta*100:0,gap=Math.max(meta-recebido,0),prevFrom=addMonths(state.from,-keys.length),prevTo=addMonths(state.to,-keys.length);let recebidoAnterior=0;for(const a of actuals){const k=String(a.month);if(k>=prevFrom&&k<=prevTo)recebidoAnterior+=N(a.recebido)}return{keys,aset,pset,recebido,contratado,faturado,previsto,planejado,meta,pct,gap,recebidoAnterior,delta:recebido-recebidoAnterior}}"""
+          if oldagg not in s: raise SystemExit('aggregates target not found')
+          s=s.replace(oldagg,newagg,1)
+          s=s.replace("max=Math.max(a.meta,...a.keys.map(k=>Math.max(N(a.aset.get(k)?.recebido),N(a.aset.get(k)?.contratado),N(a.pset.get(k)?.planned_revenue))),1)","max=Math.max(...a.keys.map(k=>Math.max(N(a.aset.get(k)?.recebido),N(a.aset.get(k)?.contratado),N(a.pset.get(k)?.planned_revenue),targetForMonth(k))),1)",1)
+          s=s.replace("meta=N(data.summary?.monthly_revenue_target);return `<div class=\"trend-month\"","meta=targetForMonth(k);return `<div class=\"trend-month\"",1)
+          s=s.replace("Math.max(N(data.summary?.monthly_revenue_target)-N(x.recebido),0)","Math.max(targetForMonth(k)-N(x.recebido),0)",1)
+          p.write_text(s)
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add FINANCEIRO/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Etapa 3: preserva metas históricas por competência'
+          git push
