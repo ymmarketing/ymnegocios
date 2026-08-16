@@ -1,0 +1,36 @@
+name: Publicar fotos do Quem Somos
+on:
+  push:
+    paths:
+      - 'assets/media/quemsomos-fotos.js'
+      - 'assets/media/quemsomos-hero.txt'
+      - 'assets/media/quemsomos-historia.txt'
+      - 'assets/media/quemsomos-fundadora.txt'
+      - 'assets/media/quemsomos-bastidores.txt'
+      - '.github/workflows/patch-quemsomos-fotos-loader.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Conectar loader de fotos
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('quemsomos/index.html')
+          s=p.read_text()
+          tag='<script src="/assets/media/quemsomos-fotos.js" defer></script>'
+          if tag not in s:
+              s=s.replace('</head>',tag+'\n</head>',1)
+          p.write_text(s)
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add quemsomos/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Site: conecta fotos novas à página Quem Somos'
+          git push
