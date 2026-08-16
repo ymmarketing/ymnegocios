@@ -1,0 +1,34 @@
+name: Fechar governança do Financeiro vivo
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-financeiro-governanca-final.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Corrigir referências e preços oficiais
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('FINANCEIRO/index.html')
+          s=p.read_text()
+          s=s.replace("v=data.official?.valuation||[]","v=data.baseline?.valuation||[]")
+          s=s.replace("<td><input id=\"pp_${S(x.service_code)}\" type=\"number\" step=\"1\" min=\"0\" value=\"${N(x.reference_price)}\" style=\"width:100px;padding:7px;border:1px solid #D5E0E8;border-radius:8px\"></td>","<td><strong>${BRL(x.reference_price)}</strong></td>")
+          s=s.replace("reference_price:N($('pp_'+code).value),","")
+          s=s.replace("{label:'Preço'}","{label:'Preço oficial'}")
+          s=s.replace('Plano oficial acumulado','Plano vivo acumulado')
+          s=s.replace("{label:'Plano oficial',money:true}","{label:'Plano vivo',money:true}")
+          p.write_text(s)
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add FINANCEIRO/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Etapa 3: fecha governança de preços e referências do Financeiro'
+          git push
