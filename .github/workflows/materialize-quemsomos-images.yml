@@ -1,0 +1,59 @@
+name: Materializar fotos reais do Quem Somos
+on:
+  push:
+    paths:
+      - '.github/workflows/materialize-quemsomos-images.yml'
+permissions:
+  contents: write
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gerar arquivos WebP reais
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/img/quemsomos
+          cat assets/media/quemsomos-v3/hero-1.txt assets/media/quemsomos-v3/hero-2.txt | tr -d '\r\n\t ' | base64 -d > assets/img/quemsomos/hero.webp
+          cat assets/media/quemsomos-v3/historia-1.txt assets/media/quemsomos-v3/historia-2.txt assets/media/quemsomos-v3/historia-3.txt | tr -d '\r\n\t ' | base64 -d > assets/img/quemsomos/historia.webp
+          cat assets/media/quemsomos-v3/fundadora.txt | tr -d '\r\n\t ' | base64 -d > assets/img/quemsomos/fundadora.webp
+          cat assets/media/quemsomos-v3/bastidores.txt | tr -d '\r\n\t ' | base64 -d > assets/img/quemsomos/bastidores.webp
+          for f in assets/img/quemsomos/*.webp; do
+            echo "Validando $f"
+            file "$f"
+            file "$f" | grep -q 'Web/P image'
+          done
+      - name: Colocar imagens diretamente no HTML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('quemsomos/index.html')
+          s=p.read_text()
+          # remove loader antigo
+          import re
+          s=re.sub(r'\n?<script src="/assets/media/quemsomos-fotos\.js[^\"]*" defer></script>','',s)
+          # CSS de imagem real
+          extra='''\n<style id="ym-quemsomos-real-images">\n.photo-slot.ym-real-photo{border-style:solid;background:#fff}\n.photo-slot.ym-real-photo img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;z-index:1}\n.photo-slot.ym-real-photo:before,.photo-slot.ym-real-photo:after{z-index:2;pointer-events:none}\n.photo-slot.ym-real-photo .slot-label{display:none}\n[data-photo-slot="quemsomos-hero"] img{object-position:center center}\n[data-photo-slot="quemsomos-historia"] img{object-position:center center}\n[data-photo-slot="quemsomos-fundadora"] img{object-position:center 34%}\n[data-photo-slot="quemsomos-bastidores"] img{object-position:center center}\n@media(max-width:720px){\n[data-photo-slot="quemsomos-hero"]{min-height:470px}\n[data-photo-slot="quemsomos-hero"] img{object-position:center center}\n[data-photo-slot="quemsomos-fundadora"] img{object-position:center 34%}\n}\n</style>\n'''
+          if 'id="ym-quemsomos-real-images"' not in s:
+              s=s.replace('</head>',extra+'</head>',1)
+          replacements={
+            '<div class="photo-slot" data-photo-slot="quemsomos-hero"><div class="slot-label"><b>Nova foto institucional</b><span>Espaço reservado para uma imagem nova da Yasmin, exclusiva desta página e diferente das fotos utilizadas no index do Raio-X.</span><small>Slot 01 · Hero Quem Somos</small></div></div>':'<div class="photo-slot ym-real-photo" data-photo-slot="quemsomos-hero"><img src="/assets/img/quemsomos/hero.webp?v=20260816-1" alt="Yasmin Menezes em foto institucional" loading="eager" fetchpriority="high"></div>',
+            '<div class="photo-slot story-photo" data-photo-slot="quemsomos-historia"><div class="slot-label"><b>Nova foto de trajetória</b><span>Espaço para uma imagem mais humana e profissional — bastidor, trabalho, apresentação ou contexto executivo.</span><small>Slot 02 · Nossa história</small></div></div>':'<div class="photo-slot story-photo ym-real-photo" data-photo-slot="quemsomos-historia"><img src="/assets/img/quemsomos/historia.webp?v=20260816-1" alt="Yasmin Menezes em seu ambiente de trabalho" loading="lazy"></div>',
+            '<div class="photo-slot founder-photo" data-photo-slot="quemsomos-fundadora"><div class="slot-label"><b>Nova foto da fundadora</b><span>Espaço reservado para um retrato profissional novo, com leitura mais executiva e institucional.</span><small>Slot 03 · Yasmin Menezes</small></div></div>':'<div class="photo-slot founder-photo ym-real-photo" data-photo-slot="quemsomos-fundadora"><img src="/assets/img/quemsomos/fundadora.webp?v=20260816-1" alt="Yasmin Menezes, fundadora da YM Marketing & Negócios" loading="lazy"></div>',
+            '<div class="photo-slot behind-photo" data-photo-slot="quemsomos-bastidores"><div class="slot-label"><b>Nova foto de bastidores</b><span>Espaço opcional para uma quarta foto inédita: trabalhando, apresentando, desenhando processo ou construindo uma solução.</span><small>Slot 04 · Bastidores</small></div></div>':'<div class="photo-slot behind-photo ym-real-photo" data-photo-slot="quemsomos-bastidores"><img src="/assets/img/quemsomos/bastidores.webp?v=20260816-1" alt="Yasmin Menezes trabalhando na operação da YM" loading="lazy"></div>'
+          }
+          for old,new in replacements.items():
+              if old not in s:
+                  raise SystemExit('Slot esperado não encontrado: '+old[:80])
+              s=s.replace(old,new,1)
+          p.write_text(s)
+          PY
+      - name: Commitar binários e HTML
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/img/quemsomos quemsomos/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Site: usa fotos WebP reais no Quem Somos'
+          git push
