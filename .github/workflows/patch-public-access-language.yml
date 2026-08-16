@@ -1,0 +1,61 @@
+name: Corrigir acessos públicos e linguagem
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-public-access-language.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Corrigir index, cliente e login interno
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          # INDEX: login interno sempre explícito + nome institucional aprovado
+          p=Path('index.html'); s=p.read_text()
+          s=s.replace('<a class="quick-link" href="/interno"><i data-lucide="lock-keyhole"></i><span>Acesso interno</span></a>',
+                      '<a class="quick-link" href="/interno?force_login=1"><i data-lucide="lock-keyhole"></i><span>Acesso interno</span></a>')
+          s=s.replace('<a class="quick-link" href="/quemsomos"><i data-lucide="building-2"></i><span>Quem somos</span></a>',
+                      '<a class="quick-link" href="/quemsomos"><i data-lucide="building-2"></i><span>A YM</span></a>')
+          p.write_text(s)
+
+          # ÁREA DO CLIENTE: linguagem em presente e navegação consistente
+          p=Path('areadocliente/index.html'); s=p.read_text()
+          s=s.replace('<a href="/quemsomos">Quem Somos</a>', '<a href="/quemsomos">A YM</a>')
+          s=s.replace('<a href="/interno">Acesso Interno</a>', '<a href="/interno?force_login=1">Acesso Interno</a>')
+          s=s.replace('Este ambiente será destinado aos clientes da YM Marketing & Negócios para acompanhar projetos, entregas, documentos e informações importantes em um único lugar.',
+                      'Este é o ambiente exclusivo dos clientes da YM Marketing & Negócios para acompanhar projetos, entregas, documentos e informações importantes em um único lugar.')
+          s=s.replace('<div id="msg" class="message"><strong>Acesso ainda não liberado.</strong><br>Esta área é exclusiva para clientes YM e está em fase de implantação. As credenciais serão enviadas individualmente quando o ambiente estiver disponível.</div>',
+                      '<div id="msg" class="message"><strong>Não foi possível concluir o acesso.</strong><br>Esta área é exclusiva para clientes YM com credenciais vinculadas ao atendimento. Confirme seu e-mail e senha ou fale com a YM para verificar o acesso.</div>')
+          s=s.replace('<div class="privacy">Esta tela é apenas uma simulação de acesso. Nenhum dado digitado aqui é enviado, armazenado ou validado.</div>',
+                      '<div class="privacy">O acesso é individual e vinculado ao atendimento. Não compartilhe suas credenciais. Em caso de dificuldade, fale com a YM.</div>')
+          p.write_text(s)
+
+          # INTERNO: quando o acesso vem do site público, sempre exibe login/senha
+          p=Path('interno/index.html'); s=p.read_text()
+          old="const q=new URLSearchParams(location.search),next=YM.safeNext(q.get('next')||'/CRM'),email=document.getElementById('email'),password=document.getElementById('password'),msg=document.getElementById('msg');"
+          new="const q=new URLSearchParams(location.search),next=YM.safeNext(q.get('next')||'/CRM'),forceLogin=q.get('force_login')==='1',email=document.getElementById('email'),password=document.getElementById('password'),msg=document.getElementById('msg');"
+          if old not in s: raise SystemExit('assinatura do login interno não encontrada')
+          s=s.replace(old,new,1)
+          s=s.replace("async function boot(){const {data:{session}}=await YM.sb.auth.getSession();if(session)location.replace(next)}",
+                      "async function boot(){const {data:{session}}=await YM.sb.auth.getSession();if(session&&!forceLogin)location.replace(next)}",1)
+          p.write_text(s)
+
+          # Demais navegações públicas: padroniza o rótulo institucional
+          for fp in ['quemsomos/index.html']:
+              p=Path(fp); s=p.read_text()
+              s=s.replace('<a href="/interno">Acesso Interno</a>', '<a href="/interno?force_login=1">Acesso Interno</a>')
+              p.write_text(s)
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html areadocliente/index.html interno/index.html quemsomos/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Site: força login interno e atualiza linguagem pública'
+          git push
