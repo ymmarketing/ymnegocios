@@ -1,0 +1,36 @@
+name: Ativar contingência ChatGPT no MOTOR
+on:
+  push:
+    paths:
+      - 'assets/motor-contingency-prompt.js'
+      - '.github/workflows/patch-motor-contingency-prompt.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validar JavaScript
+        run: node --check assets/motor-contingency-prompt.js
+      - name: Ativar no MOTOR
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('MOTOR/index.html')
+          s=p.read_text()
+          old='<script src="/assets/motor-ai-layer.js?v=20260814-1"></script></body></html>'
+          new='<script src="/assets/motor-ai-layer.js?v=20260814-1"></script><script src="/assets/motor-contingency-prompt.js?v=20260816-1"></script></body></html>'
+          if 'motor-contingency-prompt.js' not in s:
+              if old not in s: raise SystemExit('motor ai loader not found')
+              s=s.replace(old,new,1)
+              p.write_text(s)
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add MOTOR/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'MOTOR: ativa prompt de contingência para ChatGPT'
+          git push
