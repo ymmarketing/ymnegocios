@@ -1,0 +1,82 @@
+name: Fix Quem Somos direct images
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fix-quemsomos-direct-images.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Materializar fotos como arquivos reais
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/img/quemsomos /tmp/qm
+          cat assets/media/quemsomos-hero-v3-part1.txt assets/media/quemsomos-hero-v3-part2.txt assets/media/quemsomos-hero-v3-part3.txt assets/media/quemsomos-hero-v3-part4.txt | tr -d '\n\r ' | base64 -d > assets/img/quemsomos/hero.webp
+          BASE='https://raw.githubusercontent.com/ymmarketing/ymnegocios/0f277cf3deed45ec7e095794052075eea50ef314/assets/media'
+          for n in historia fundadora bastidores; do
+            curl -fsSL "$BASE/quemsomos-$n.txt" -o "/tmp/qm/$n.txt"
+            tr -d '\n\r ' < "/tmp/qm/$n.txt" | base64 -d > "assets/img/quemsomos/$n.webp"
+          done
+          python - <<'PY'
+          from pathlib import Path
+          for n in ['hero','historia','fundadora','bastidores']:
+              p=Path(f'assets/img/quemsomos/{n}.webp')
+              b=p.read_bytes()
+              if len(b)<1000 or b[:4]!=b'RIFF' or b[8:12]!=b'WEBP':
+                  raise SystemExit(f'Imagem inválida: {n} ({len(b)} bytes, {b[:12]!r})')
+              print(n, len(b), 'bytes OK')
+          PY
+      - name: Referenciar imagens diretamente no HTML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('quemsomos/index.html')
+          s=p.read_text(encoding='utf-8')
+          # Remove loaders antigos: as fotos passam a ser assets HTML diretos.
+          s=re.sub(r'\s*<script[^>]+quemsomos-fotos\.js[^>]*></script>\s*','\n',s,flags=re.I)
+          version='20260816-direct1'
+          data={
+            'quemsomos-hero':('hero.webp','Yasmin Menezes em foto institucional','hero'),
+            'quemsomos-historia':('historia.webp','Yasmin Menezes em seu ambiente de trabalho','historia'),
+            'quemsomos-fundadora':('fundadora.webp','Yasmin Menezes, fundadora da YM Marketing & Negócios','fundadora'),
+            'quemsomos-bastidores':('bastidores.webp','Yasmin Menezes trabalhando na operação da YM','bastidores'),
+          }
+          for key,(file,alt,kind) in data.items():
+              pat=re.compile(r'<div class="photo-slot([^"]*)" data-photo-slot="'+re.escape(key)+r'">.*?</div>\s*</div>',re.S)
+              rep=(f'<div class="photo-slot\\1 ym-direct-photo qm-{kind}" data-photo-slot="{key}">'
+                   f'<img src="/assets/img/quemsomos/{file}?v={version}" alt="{alt}" loading="{"eager" if kind=="hero" else "lazy"}" decoding="async">'
+                   f'</div>')
+              s,n=pat.subn(rep,s,count=1)
+              if n!=1:
+                  raise SystemExit(f'Slot não encontrado para substituição: {key}')
+          style='''<style id="ym-quemsomos-direct-images">
+          .photo-slot.ym-direct-photo{border-style:solid;background:#fff}
+          .photo-slot.ym-direct-photo>img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;z-index:1}
+          .photo-slot.ym-direct-photo:before,.photo-slot.ym-direct-photo:after{z-index:2;pointer-events:none}
+          .qm-hero>img{object-position:center 28%}
+          .qm-historia>img{object-position:center center}
+          .qm-fundadora>img{object-position:center 18%;transform:scale(1.12)}
+          .qm-bastidores>img{object-position:center center}
+          @media(max-width:720px){
+            .qm-hero{min-height:520px}
+            .qm-hero>img{object-position:center 26%}
+            .qm-fundadora>img{object-position:center 16%;transform:scale(1.18)}
+          }
+          </style>'''
+          s=s.replace('</head>',style+'\n</head>',1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commitar correção definitiva
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/img/quemsomos quemsomos/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Site: usa fotos diretas e estáveis no Quem Somos'
+          git push
