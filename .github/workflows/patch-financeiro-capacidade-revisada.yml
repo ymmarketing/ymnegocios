@@ -1,0 +1,34 @@
+name: Publicar capacidade revisada no Financeiro
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-financeiro-capacidade-revisada.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Atualizar aba Capacidade
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('FINANCEIRO/index.html')
+          s=p.read_text()
+          new=r'''function capacityPanel(){const s=data.summary||{},p=data.products||[],commitments=data.capacity_commitments||[];const safe=N(s.safe_delivery_hours||s.vendable_hours),committed=N(s.committed_hours),available=N(s.available_new_sales_hours),occupancy=N(s.capacity_occupancy_pct);const commitmentCards=commitments.map(x=>`<div class="scenario"><h3>${S(x.business_name)}</h3><p>${S(x.basis_label||'Estimativa operacional')}</p><div class="minirow"><span>Horas/mês estimadas</span><b>${N(x.estimated_hours_month).toLocaleString('pt-BR')}h</b></div><div class="minirow"><span>Status</span><b>${S(x.estimation_status)}</b></div><div class="minirow"><span>Observação</span><b>${S(x.basis_note||'—')}</b></div></div>`).join('');return `<div class="section-title">Capacidade</div><p class="section-lead">Aqui a pergunta é: das 200 horas oficiais do mês, quanto vai para comercial, gestão, clientes atuais e quanto ainda pode ser vendido com segurança?</p><div class="metric-grid"><div class="metric dark"><div class="k">Jornada mensal</div><div class="v">${N(s.total_hours||s.productive_hours).toLocaleString('pt-BR')}h</div><div class="d">Capacidade bruta oficial do mês.</div></div><div class="metric"><div class="k">Prospecção / comercial</div><div class="v">${N(s.commercial_hours).toLocaleString('pt-BR')}h</div><div class="d">2h por dia × 20 dias comerciais.</div></div><div class="metric"><div class="k">Gestão interna</div><div class="v">${N(s.management_hours).toLocaleString('pt-BR')}h</div><div class="d">Financeiro, CRM, planejamento e gestão da YM.</div></div><div class="metric indigo"><div class="k">Capacidade segura de entrega</div><div class="v">${safe.toLocaleString('pt-BR')}h</div><div class="d">Após comercial, gestão e reserva operacional.</div></div><div class="metric orange"><div class="k">Já comprometidas</div><div class="v">${committed.toLocaleString('pt-BR')}h</div><div class="d">Estimativa atual de clientes recorrentes.</div></div><div class="metric green"><div class="k">Disponíveis para novas vendas</div><div class="v">${available.toLocaleString('pt-BR')}h</div><div class="d">Saldo seguro para novos contratos neste cenário.</div></div></div><div class="section"><header><div><h2>Leitura da capacidade</h2><p>A conta mostra a alocação das horas antes de transformar capacidade em venda.</p></div>${badge(`${occupancy.toLocaleString('pt-BR',{maximumFractionDigits:1})}% ocupada`,occupancy<=70?'ok':occupancy<=85?'warn':'bad')}</header><div class="section-body"><div class="period-summary"><div class="summary-card emphasis"><strong>${available.toLocaleString('pt-BR')}h ainda podem ser vendidas</strong><span>${safe.toLocaleString('pt-BR')}h formam a capacidade segura de entrega. ${committed.toLocaleString('pt-BR')}h já estão comprometidas com os clientes simulados.</span></div><div class="summary-card"><strong>${N(s.reserve_hours).toLocaleString('pt-BR')}h de reserva</strong><span>Folga operacional para revisão, WhatsApp, imprevistos e retrabalho; não deve ser vendida.</span></div></div></div></div><div class="section"><header><div><h2>Clientes já comprometidos</h2><p>Estimativas iniciais até medirmos o tempo real de execução.</p></div>${badge('ESTIMADO','warn')}</header><div class="section-body"><div class="scenario-grid">${commitmentCards||'<div class="summary-card"><strong>Nenhum compromisso estimado</strong></div>'}</div></div></div><div class="section"><header><div><h2>Equivalência do saldo por produto</h2><p>Quantas unidades caberiam se as ${available.toLocaleString('pt-BR')}h disponíveis fossem dedicadas somente àquele produto. É comparação de peso operacional, não meta de venda.</p></div></header><div class="section-body">${table([{label:'Produto'},{label:'Horas/venda',money:true},{label:'Capacidade segura total',money:true},{label:'Com saldo atual',money:true},{label:'Receita equivalente do saldo',money:true},{label:'Leitura'}],p.map(x=>{const q=N(x.available_new_sales_capacity);return `<tr><td><strong>${S(x.service_name)}</strong></td><td class="money">${N(x.human_hours).toLocaleString('pt-BR')}h</td><td class="money">${N(x.recommended_capacity_month).toLocaleString('pt-BR')}</td><td class="money"><strong>${q.toLocaleString('pt-BR')}</strong></td><td class="money">${BRL(q*N(x.reference_price))}</td><td>Equivalência máxima do saldo disponível; não representa meta.</td></tr>`}))}</div></div>`}
+function planningPanel'''
+          pattern=r'function capacityPanel\(\)\{.*?\}\nfunction planningPanel'
+          out,n=re.subn(pattern,new,s,count=1,flags=re.S)
+          if n!=1:
+              raise SystemExit(f'capacityPanel target not found: {n}')
+          p.write_text(out)
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add FINANCEIRO/index.html
+          git commit -m 'Etapa 3: revisa capacidade para jornada de 200h e saldo vendável'
+          git push
