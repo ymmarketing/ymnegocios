@@ -3,10 +3,8 @@ on:
   push:
     paths:
       - 'assets/media/quemsomos-fotos.js'
-      - 'assets/media/quemsomos-hero.txt'
-      - 'assets/media/quemsomos-historia.txt'
-      - 'assets/media/quemsomos-fundadora.txt'
-      - 'assets/media/quemsomos-bastidores.txt'
+      - 'assets/media/quemsomos-v3/**'
+      - 'quemsomos/index.html'
       - '.github/workflows/patch-quemsomos-fotos-loader.yml'
 permissions:
   contents: write
@@ -15,15 +13,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Conectar loader de fotos
+      - name: Garantir loader de fotos
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
           p=Path('quemsomos/index.html')
           s=p.read_text()
-          tag='<script src="/assets/media/quemsomos-fotos.js" defer></script>'
-          if tag not in s:
-              s=s.replace('</head>',tag+'\n</head>',1)
+          s=re.sub(r'\s*<script src="/assets/media/quemsomos-fotos\.js(?:\?v=[^"]*)?" defer></script>\s*','\n',s)
+          tag='<script src="/assets/media/quemsomos-fotos.js?v=20260816-restore3" defer></script>'
+          if '</head>' not in s:
+              raise SystemExit('quemsomos/index.html sem </head>')
+          s=s.replace('</head>',tag+'\n</head>',1)
           p.write_text(s)
           PY
       - name: Commit
@@ -32,5 +33,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add quemsomos/index.html
           git diff --cached --quiet && exit 0
-          git commit -m 'Site: conecta fotos novas à página Quem Somos'
+          git commit -m 'Site: garante fotos restauradas na página Quem Somos'
           git push
