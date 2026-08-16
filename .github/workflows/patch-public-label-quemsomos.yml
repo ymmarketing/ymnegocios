@@ -1,0 +1,31 @@
+name: Restaurar Quem somos nos acessos públicos
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-public-label-quemsomos.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restaurar rótulo público
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for name in ['index.html','areadocliente/index.html']:
+              p=Path(name)
+              s=p.read_text()
+              s=s.replace('href="/quemsomos"><i data-lucide="building-2"></i><span>A YM</span></a>','href="/quemsomos"><i data-lucide="building-2"></i><span>Quem somos</span></a>')
+              s=s.replace('href="/quemsomos">A YM</a>','href="/quemsomos">Quem Somos</a>')
+              p.write_text(s)
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html areadocliente/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Site: restaura Quem somos nos acessos públicos'
+          git push
