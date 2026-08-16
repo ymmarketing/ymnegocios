@@ -1,0 +1,23 @@
+name: Publicar Financeiro vivo auditado
+on:
+  push:
+    paths:
+      - 'scripts/patch_financeiro_live_v34.py'
+      - '.github/workflows/patch-financeiro-live-v34.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aplicar auditoria geral do Financeiro
+        run: python scripts/patch_financeiro_live_v34.py
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add FINANCEIRO/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Etapa 3: torna custos, produtos e cálculos financeiros vivos'
+          git push
