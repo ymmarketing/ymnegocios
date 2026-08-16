@@ -1,82 +1,114 @@
 name: Fix Quem Somos direct images
+
 on:
   workflow_dispatch:
   push:
     paths:
       - '.github/workflows/fix-quemsomos-direct-images.yml'
+
 permissions:
   contents: write
+
 jobs:
-  fix:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Materializar fotos como arquivos reais
+        with:
+          fetch-depth: 0
+
+      - name: Materializar as tres fotos como assets reais
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p assets/img/quemsomos /tmp/qm
-          cat assets/media/quemsomos-hero-v3-part1.txt assets/media/quemsomos-hero-v3-part2.txt assets/media/quemsomos-hero-v3-part3.txt assets/media/quemsomos-hero-v3-part4.txt | tr -d '\n\r ' | base64 -d > assets/img/quemsomos/hero.webp
-          BASE='https://raw.githubusercontent.com/ymmarketing/ymnegocios/0f277cf3deed45ec7e095794052075eea50ef314/assets/media'
-          for n in historia fundadora bastidores; do
-            curl -fsSL "$BASE/quemsomos-$n.txt" -o "/tmp/qm/$n.txt"
-            tr -d '\n\r ' < "/tmp/qm/$n.txt" | base64 -d > "assets/img/quemsomos/$n.webp"
-          done
+          mkdir -p assets/img/quemsomos
+
+          cat assets/media/quemsomos-final-600/s01-01.txt assets/media/quemsomos-final-600/s01-02.txt | tr -d '\n\r ' | base64 -d > assets/img/quemsomos/slot-01.webp
+          cat assets/media/quemsomos-final-600/s02-01.txt assets/media/quemsomos-final-600/s02-02.txt | tr -d '\n\r ' | base64 -d > assets/img/quemsomos/slot-02.webp
+          cat assets/media/quemsomos-final-600/s03-01.txt assets/media/quemsomos-final-600/s03-02.txt | tr -d '\n\r ' | base64 -d > assets/img/quemsomos/slot-03.webp
+
           python - <<'PY'
           from pathlib import Path
-          for n in ['hero','historia','fundadora','bastidores']:
-              p=Path(f'assets/img/quemsomos/{n}.webp')
-              b=p.read_bytes()
-              if len(b)<1000 or b[:4]!=b'RIFF' or b[8:12]!=b'WEBP':
-                  raise SystemExit(f'Imagem inválida: {n} ({len(b)} bytes, {b[:12]!r})')
-              print(n, len(b), 'bytes OK')
+          for n in ('01','02','03'):
+              p = Path(f'assets/img/quemsomos/slot-{n}.webp')
+              b = p.read_bytes()
+              if len(b) < 5000 or b[:4] != b'RIFF' or b[8:12] != b'WEBP':
+                  raise SystemExit(f'Imagem invalida: {p} ({len(b)} bytes)')
+              print(p, len(b), 'bytes OK')
           PY
-      - name: Referenciar imagens diretamente no HTML
+
+      - name: Preencher somente os Slots 01 02 e 03 do Quem Somos
+        shell: python
         run: |
-          python - <<'PY'
           from pathlib import Path
-          import re
-          p=Path('quemsomos/index.html')
-          s=p.read_text(encoding='utf-8')
-          # Remove loaders antigos: as fotos passam a ser assets HTML diretos.
-          s=re.sub(r'\s*<script[^>]+quemsomos-fotos\.js[^>]*></script>\s*','\n',s,flags=re.I)
-          version='20260816-direct1'
-          data={
-            'quemsomos-hero':('hero.webp','Yasmin Menezes em foto institucional','hero'),
-            'quemsomos-historia':('historia.webp','Yasmin Menezes em seu ambiente de trabalho','historia'),
-            'quemsomos-fundadora':('fundadora.webp','Yasmin Menezes, fundadora da YM Marketing & Negócios','fundadora'),
-            'quemsomos-bastidores':('bastidores.webp','Yasmin Menezes trabalhando na operação da YM','bastidores'),
+
+          p = Path('quemsomos/index.html')
+          s = p.read_text(encoding='utf-8')
+
+          replacements = {
+            '<div class="photo-slot" data-photo-slot="quemsomos-hero"><div class="slot-label"><b>Nova foto institucional</b><span>Espaço reservado para uma imagem nova da Yasmin, exclusiva desta página e diferente das fotos utilizadas no index do Raio-X.</span><small>Slot 01 · Hero Quem Somos</small></div></div>':
+            '<div class="photo-slot ym-direct-photo qm-slot01"><img src="/assets/img/quemsomos/slot-01.webp?v=20260816-final" alt="Yasmin Menezes em foto institucional da YM Marketing & Negócios" loading="eager" decoding="async" fetchpriority="high"></div>',
+
+            '<div class="photo-slot story-photo" data-photo-slot="quemsomos-historia"><div class="slot-label"><b>Nova foto de trajetória</b><span>Espaço para uma imagem mais humana e profissional — bastidor, trabalho, apresentação ou contexto executivo.</span><small>Slot 02 · Nossa história</small></div></div>':
+            '<div class="photo-slot story-photo ym-direct-photo qm-slot02"><img src="/assets/img/quemsomos/slot-02.webp?v=20260816-final" alt="Yasmin Menezes em seu ambiente de trabalho" loading="lazy" decoding="async"></div>',
+
+            '<div class="photo-slot founder-photo" data-photo-slot="quemsomos-fundadora"><div class="slot-label"><b>Nova foto da fundadora</b><span>Espaço reservado para um retrato profissional novo, com leitura mais executiva e institucional.</span><small>Slot 03 · Yasmin Menezes</small></div></div>':
+            '<div class="photo-slot founder-photo ym-direct-photo qm-slot03"><img src="/assets/img/quemsomos/slot-03.webp?v=20260816-final" alt="Yasmin Menezes, fundadora da YM Marketing & Negócios" loading="lazy" decoding="async"></div>',
           }
-          for key,(file,alt,kind) in data.items():
-              pat=re.compile(r'<div class="photo-slot([^"]*)" data-photo-slot="'+re.escape(key)+r'">.*?</div>\s*</div>',re.S)
-              rep=(f'<div class="photo-slot\\1 ym-direct-photo qm-{kind}" data-photo-slot="{key}">'
-                   f'<img src="/assets/img/quemsomos/{file}?v={version}" alt="{alt}" loading="{"eager" if kind=="hero" else "lazy"}" decoding="async">'
-                   f'</div>')
-              s,n=pat.subn(rep,s,count=1)
-              if n!=1:
-                  raise SystemExit(f'Slot não encontrado para substituição: {key}')
-          style='''<style id="ym-quemsomos-direct-images">
+
+          for old, new in replacements.items():
+              if old not in s:
+                  raise SystemExit('Um dos slots 01-03 nao foi encontrado exatamente como esperado; abortando para nao alterar outra area do site.')
+              s = s.replace(old, new, 1)
+
+          style = '''<style id="ym-quemsomos-direct-images">
           .photo-slot.ym-direct-photo{border-style:solid;background:#fff}
           .photo-slot.ym-direct-photo>img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;z-index:1}
           .photo-slot.ym-direct-photo:before,.photo-slot.ym-direct-photo:after{z-index:2;pointer-events:none}
-          .qm-hero>img{object-position:center 28%}
-          .qm-historia>img{object-position:center center}
-          .qm-fundadora>img{object-position:center 18%;transform:scale(1.12)}
-          .qm-bastidores>img{object-position:center center}
+          .qm-slot01>img{object-position:62% center}
+          .qm-slot02>img{object-position:68% center}
+          .qm-slot03>img{object-position:57% center}
           @media(max-width:720px){
-            .qm-hero{min-height:520px}
-            .qm-hero>img{object-position:center 26%}
-            .qm-fundadora>img{object-position:center 16%;transform:scale(1.18)}
+            .qm-slot01>img{object-position:62% center}
+            .qm-slot02>img{object-position:68% center}
+            .qm-slot03>img{object-position:57% center}
           }
           </style>'''
-          s=s.replace('</head>',style+'\n</head>',1)
-          p.write_text(s,encoding='utf-8')
-          PY
-      - name: Commitar correção definitiva
+
+          if 'id="ym-quemsomos-direct-images"' not in s:
+              s = s.replace('</head>', style + '\n</head>', 1)
+
+          # Os tres slots deixam de ter data-photo-slot para o loader legado nao sobrescrever
+          # as novas imagens. O Slot 04 permanece intacto e continua usando o loader existente.
+          p.write_text(s, encoding='utf-8')
+
+      - name: Confirmar que o Raio X nao foi alterado
+        shell: bash
         run: |
+          set -euo pipefail
+          changed="$(git diff --name-only)"
+          echo "$changed"
+          if echo "$changed" | grep -Ev '^(quemsomos/index\.html|assets/img/quemsomos/slot-0[123]\.webp)$' | grep -q .; then
+            echo 'Alteracao inesperada fora do Quem Somos.'
+            exit 1
+          fi
+
+      - name: Limpar staging e publicar
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf assets/media/quemsomos-final-600
+          rm -rf assets/media/quemsomos-upload-20260816
+
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/img/quemsomos quemsomos/index.html
-          git diff --cached --quiet && exit 0
-          git commit -m 'Site: usa fotos diretas e estáveis no Quem Somos'
+          git add quemsomos/index.html assets/img/quemsomos/slot-01.webp assets/img/quemsomos/slot-02.webp assets/img/quemsomos/slot-03.webp
+          git add -u assets/media/quemsomos-final-600 assets/media/quemsomos-upload-20260816 || true
+
+          if git diff --cached --quiet; then
+            echo 'Sem alteracoes para publicar.'
+            exit 0
+          fi
+
+          git commit -m 'Site: preenche fotos definitivas do Quem Somos'
           git push
