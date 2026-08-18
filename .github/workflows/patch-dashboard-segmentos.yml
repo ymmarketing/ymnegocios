@@ -1,0 +1,23 @@
+name: Consolidar segmentos do Dashboard
+on:
+  push:
+    paths:
+      - 'scripts/patch_dashboard_segmentos.py'
+      - '.github/workflows/patch-dashboard-segmentos.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Consolidar segmentos gerenciais
+        run: python scripts/patch_dashboard_segmentos.py
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add DASHBOARD/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Dashboard: consolida segmentos gerenciais'
+          git push
