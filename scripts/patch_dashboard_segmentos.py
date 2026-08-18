@@ -28,3 +28,4 @@ text = text.replace(old_call, new_call, 1)
 
 path.write_text(text, encoding='utf-8')
 print('Dashboard atualizado: segmentos gerenciais consolidados e bloco Por segmento ampliado.')
+# trigger workflow 2026-08-18
