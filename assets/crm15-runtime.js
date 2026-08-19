@@ -128,16 +128,9 @@
     apply();
   }
 
-  /*
-    Hotfix 2026-08-19:
-    crm15-lead-sheet-v2 observava o documento inteiro e, dentro do próprio
-    callback, reescrevia o stageFilter. Isso gerava uma sequência contínua de
-    mutações e podia bloquear a thread principal antes de o GET do CRM terminar
-    de renderizar. Mantemos as camadas estáveis (core, clientes e KPIs) e
-    suspendemos somente esse enhancer até sua versão corrigida.
-  */
   loadScript('/assets/crm15-runtime-core.js?v=20260813-1', 'ymRuntimeCore')
     .then(() => loadScript('/assets/crm15-kpi-click.js?v=20260819-1', 'ymPipelineKpi'))
+    .then(() => loadScript('/assets/crm15-lead-sheet-v3.js?v=20260819-1', 'ymLeadSheetV3'))
     .then(startNativeClientDetails)
     .catch((error) => console.error('CRM interaction layer', error));
 })();
