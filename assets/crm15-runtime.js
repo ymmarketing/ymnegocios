@@ -129,8 +129,8 @@
   }
 
   loadScript('/assets/crm15-runtime-core.js?v=20260813-1', 'ymRuntimeCore')
-    .then(() => loadScript('/assets/crm15-kpi-click.js?v=20260813-6', 'ymPipelineKpi'))
-    .then(() => loadScript('/assets/crm15-lead-sheet-v2.js?v=20260819-1', 'ymLeadSheetV2'))
+    .then(() => loadScript('/assets/crm15-kpi-click.js?v=20260819-1', 'ymPipelineKpi'))
+    .then(() => loadScript('/assets/crm15-lead-sheet-v2.js?v=20260819-2', 'ymLeadSheetV2'))
     .then(startNativeClientDetails)
     .catch((error) => console.error('CRM interaction layer', error));
 })();
