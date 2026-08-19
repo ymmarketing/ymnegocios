@@ -11,7 +11,7 @@
       script.dataset[key] = '1';
       script.onload = resolve;
       script.onerror = reject;
-      document.head.append(script);
+      document.head.appendChild(script);
     });
   }
 
@@ -61,7 +61,7 @@
           }
         }
       `;
-      document.head.append(style);
+      document.head.appendChild(style);
     }
 
     function clientKey(card) {
@@ -130,6 +130,7 @@
 
   loadScript('/assets/crm15-runtime-core.js?v=20260813-1', 'ymRuntimeCore')
     .then(() => loadScript('/assets/crm15-kpi-click.js?v=20260813-6', 'ymPipelineKpi'))
+    .then(() => loadScript('/assets/crm15-lead-sheet-v2.js?v=20260819-1', 'ymLeadSheetV2'))
     .then(startNativeClientDetails)
     .catch((error) => console.error('CRM interaction layer', error));
 })();
