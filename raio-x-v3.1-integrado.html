@@ -1124,7 +1124,7 @@ return {versao:META.versao,diagnosticar:diagnosticar};
     questionnaire_version: 'RX_CANONICO_1.0',
     scoring_version: 'RX_SCORE_1.0',
     packet_version: 'VOS_INTAKE_1.0',
-    report_version: 'RX_REPORT_1.0'
+    report_version: 'RX_REPORT_1.1'
   };
 
   /* Os 8 Ps — peso IGUAL. Ordem = cobertura do negócio, NÃO prioridade. */
@@ -1859,7 +1859,7 @@ function runAnalysis(){
   }
 }
 
-/* ══════════════ RX_REPORT_1.0 — renderer ══════════════
+/* ══════════════ RX_REPORT_1.0 — renderer-base/fallback ══════════════
    Ordem obrigatória: Score → leitura executiva → 8Ps → patrimônio →
    pontos de atenção → lacunas → hipóteses → dicas → rota a validar → limites.
    Score é a MANCHETE (maior elemento). */
@@ -2018,5 +2018,6 @@ if(typeof window!=='undefined'){ window.__renderReport=renderReport; window.__ge
 <!-- ETAPA 3 · integrações aditivas -->
 <script src="assets/js/raiox-v3.1-persist.js"></script>
 <script src="assets/js/raiox-payment-shell-v1.js"></script>
+<script src="assets/js/raiox-report-v1-1.js"></script>
 </body>
 </html>
