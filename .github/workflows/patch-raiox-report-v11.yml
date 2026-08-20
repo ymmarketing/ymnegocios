@@ -32,11 +32,32 @@ jobs:
                             '/* ══════════════ RX_REPORT_1.0 — renderer-base/fallback ══════════════')
               p.write_text(s, encoding='utf-8')
           PY
-      - name: Commit patch
+      - name: Validar sintaxe e contrato mínimo
         run: |
+          node --check assets/js/raiox-report-v1-1.js
+          python - <<'PY'
+          from pathlib import Path
+          for fp in ['raio-x.html','raio-x-v3.1-integrado.html']:
+              s=Path(fp).read_text(encoding='utf-8')
+              assert "questionnaire_version: 'RX_CANONICO_1.0'" in s
+              assert "scoring_version: 'RX_SCORE_1.0'" in s
+              assert "report_version: 'RX_REPORT_1.1'" in s
+              assert 'assets/js/raiox-report-v1-1.js' in s
+          js=Path('assets/js/raiox-report-v1-1.js').read_text(encoding='utf-8')
+          assert 'Seu negócio em uma leitura' in js
+          assert 'Hoje → Destino' in js
+          assert 'Leituras cruzadas' in js
+          assert 'O que ainda não decidir' in js
+          assert 'Resposta informada:' not in js
+          print('RX_REPORT_1.1 wiring OK')
+          PY
+      - name: Registrar verificação e commit
+        run: |
+          mkdir -p docs
+          printf '%s\n' '# RX_REPORT_1.1 — CHECK OK' '' '- RX_CANONICO_1.0 preservado' '- RX_SCORE_1.0 preservado' '- renderer interpretativo carregado' '- sintaxe JavaScript validada' '- respostas abertas não são renderizadas como "Resposta informada"' > docs/RX_REPORT_1_1_CHECK_OK.md
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add raio-x.html raio-x-v3.1-integrado.html
+          git add raio-x.html raio-x-v3.1-integrado.html docs/RX_REPORT_1_1_CHECK_OK.md
           git diff --cached --quiet && exit 0
-          git commit -m 'Raio-X: liga RX_REPORT_1.1 interpretativo'
+          git commit -m 'Raio-X: valida RX_REPORT_1.1 interpretativo'
           git push
