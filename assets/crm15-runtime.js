@@ -133,6 +133,7 @@
     .then(() => loadScript('/assets/crm15-lead-sheet-v3.js?v=20260819-1', 'ymLeadSheetV3'))
     .then(() => loadScript('/assets/crm15-no-recommendation.js?v=20260819-1', 'ymNoRecommendation'))
     .then(() => loadScript('/assets/crm15-reading-prompt-v2.js?v=20260820-1', 'ymReadingPromptV2'))
+    .then(() => loadScript('/assets/crm15-reading-copy-fix.js?v=20260820-1', 'ymReadingCopyFix'))
     .then(startNativeClientDetails)
     .catch((error) => console.error('CRM interaction layer', error));
 })();
