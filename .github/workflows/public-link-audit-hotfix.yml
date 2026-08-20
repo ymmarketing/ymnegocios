@@ -1,0 +1,233 @@
+name: Public Link Audit Hotfix
+
+on:
+  push:
+    paths:
+      - '.github/workflows/public-link-audit-hotfix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  audit-and-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Corrigir rotas públicas e eliminar flash legado
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          from urllib.parse import urlparse
+
+          stamp = '20260820-0947'
+
+          def read(path):
+              return Path(path).read_text(encoding='utf-8')
+
+          def write(path, text):
+              Path(path).write_text(text, encoding='utf-8')
+
+          def rep(text, old, new, label, count=1):
+              if old not in text:
+                  raise SystemExit(f'Padrão não encontrado: {label}')
+              return text.replace(old, new, count)
+
+          # ─────────────────────────────────────────────────────────────
+          # HOME — contatos estáticos corretos + cache bust do shell
+          # ─────────────────────────────────────────────────────────────
+          p = Path('index.html')
+          t = read(p)
+          t = t.replace('/assets/js/raiox-payment-shell-v1.js" as="script"', f'/assets/js/raiox-payment-shell-v1.js?v={stamp}" as="script"')
+          t = t.replace('/assets/js/raiox-payment-shell-v1.js" defer', f'/assets/js/raiox-payment-shell-v1.js?v={stamp}" defer')
+
+          old_contact = '<div class="contact-line"><a class="btn" href="mailto:ymmarketingenegocios@gmail.com">Falar comigo <i data-lucide="message-circle"></i></a><a class="btn ghost" href="https://br.linkedin.com/in/yasmin-menezes-06a187193" target="_blank" rel="noopener">LinkedIn</a></div>'
+          new_contact = '<div class="contact-line" data-ym-social-patched="1"><a class="btn" href="https://wa.me/5531975073862?text=Ol%C3%A1%2C%20Yasmin%21%20Vim%20pelo%20site%20da%20YM%20e%20gostaria%20de%20falar%20com%20voc%C3%AA." target="_blank" rel="noopener">Falar comigo <i data-lucide="message-circle"></i></a><a class="btn ghost" href="https://www.instagram.com/ym_marketingenegocios/" target="_blank" rel="noopener">Instagram <i data-lucide="instagram"></i></a><a class="btn ghost" href="https://br.linkedin.com/in/yasmin-menezes-06a187193" target="_blank" rel="noopener">LinkedIn <i data-lucide="linkedin"></i></a></div>'
+          if old_contact in t:
+              t = t.replace(old_contact, new_contact, 1)
+          else:
+              # Se o contato já foi corrigido antes, garante os 3 destinos sem destruir o layout.
+              if 'mailto:ymmarketingenegocios@gmail.com' in t:
+                  t = t.replace('mailto:ymmarketingenegocios@gmail.com', 'https://wa.me/5531975073862?text=Ol%C3%A1%2C%20Yasmin%21%20Vim%20pelo%20site%20da%20YM%20e%20gostaria%20de%20falar%20com%20voc%C3%AA.')
+          write(p, t)
+
+          # ─────────────────────────────────────────────────────────────
+          # RAIO-X — nunca mais exibir a landing legada
+          # ─────────────────────────────────────────────────────────────
+          p = Path('raio-x.html')
+          t = read(p)
+
+          preflight = '''\n<script id="ym-flow-preflight">\n(function(){\n  var hasFlow=false;\n  try{\n    var p=new URLSearchParams(location.search);\n    hasFlow=p.get('checkout')==='1'||p.get('novo')==='1'||!!p.get('ref')||!!localStorage.getItem('ym_raiox_ref');\n  }catch(e){}\n  if(!hasFlow){ location.replace('/'); return; }\n  document.documentElement.classList.add('ym-flow-booting');\n})();\n</script>\n<style id="ym-flow-prepaint">\nhtml.ym-flow-booting body{background:#F7F8FC;overflow:hidden}\nhtml.ym-flow-booting body>*{visibility:hidden!important}\nhtml.ym-flow-booting body:before{content:'';visibility:visible!important;position:fixed;inset:0;z-index:99998;background:radial-gradient(circle at 12% 14%,rgba(72,77,207,.12),transparent 27%),radial-gradient(circle at 88% 16%,rgba(255,122,0,.10),transparent 25%),#F7F8FC}\nhtml.ym-flow-booting body:after{content:'Preparando seu Raio-X';visibility:visible!important;position:fixed;z-index:99999;left:50%;top:50%;transform:translate(-50%,-50%);font:800 14px Inter,Arial,sans-serif;letter-spacing:.02em;color:#0B1533;padding:16px 22px 16px 48px;border:1px solid #E4E8F1;border-radius:999px;background:#fff;box-shadow:0 16px 45px rgba(18,30,74,.10)}\n#view-intro{display:none!important}\n</style>\n'''
+          marker = '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+          if 'ym-flow-preflight' not in t:
+              t = rep(t, marker, marker + preflight, 'preflight anti-flash')
+
+          old_nav = '''<nav>\n  <div class="nav-brand">\n    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="9" fill="#0055CC"/><path d="M11 12l9 9 9-9M20 21v8" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>\n    <span>YM Marketing &amp; Negócios</span>\n  </div>\n  <div class="nav-chip">Raio-X Estratégico</div>\n</nav>'''
+          new_nav = '''<nav class="ym-flow-nav">\n  <div class="nav-brand"><a href="/" aria-label="Voltar ao site da YM"><img class="ym-flow-logo" src="/assets/img/logo-ym-horizontal.webp" alt="YM Marketing &amp; Negócios" style="height:34px;width:auto;max-width:210px"></a></div>\n  <div class="nav-chip">Raio-X Estratégico</div>\n</nav>'''
+          if old_nav in t:
+              t = t.replace(old_nav, new_nav, 1)
+
+          t = t.replace('<div class="view active" id="view-intro">', '<div class="view" id="view-intro" aria-hidden="true">', 1)
+          t = t.replace('.payx-code{margin-top:18px;padding-top:18px;border-top:1px dashed var(--borda)}', '.payx-code{display:none;margin-top:18px;padding-top:18px;border-top:1px dashed var(--borda)}.payx-code.ym-contingency-visible{display:block}', 1)
+          t = t.replace('<div class="payx-body"><div class="payx-lock">🔒</div><h2>Pagamento em confirmação</h2><p>O questionário é liberado somente depois que o servidor confirma o pagamento no Asaas.</p>', '<div class="payx-body"><div class="payx-lock">🔒</div><h2>Finalize seu pagamento</h2><p>Informe o CPF ou CNPJ do pagador e siga para o checkout seguro. Depois da confirmação, seu Raio-X será liberado automaticamente.</p>', 1)
+          t = t.replace('<div class="payx-back" onclick="go(\'intro\')">← Voltar ao início</div>', '<a class="payx-back" href="/">← Voltar ao site da YM</a>', 1)
+
+          # Cache bust dos três módulos críticos do fluxo.
+          t = t.replace('src="assets/js/raiox-v3.1-persist.js"', f'src="assets/js/raiox-v3.1-persist.js?v={stamp}"')
+          t = t.replace('src="assets/js/raiox-payment-shell-v1.js"', f'src="assets/js/raiox-payment-shell-v1.js?v={stamp}"')
+          t = t.replace('src="assets/js/raiox-report-v1-1.js"', f'src="assets/js/raiox-report-v1-1.js?v={stamp}"')
+          write(p, t)
+
+          # ─────────────────────────────────────────────────────────────
+          # SHELL — rota nua volta para Home; fluxo válido remove loader
+          # ─────────────────────────────────────────────────────────────
+          p = Path('assets/js/raiox-payment-shell-v1.js')
+          t = read(p)
+          t = t.replace('shell de pagamento/sessão v1.4', 'shell de pagamento/sessão v1.5', 1)
+          old_resume = """  function resumeFromPayment() {\n    if (isFreshCheckout()) { stopPolling(); clearStoredSession(); paymentStatus='pending'; originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); clearFreshCheckoutParam(); return; }\n    var ref=getRef(); if (!ref) return; originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); checkPayment(); startPolling();\n    try { if (new URLSearchParams(root.location.search).get('ref')) root.history.replaceState(null,'',root.location.pathname+root.location.hash); } catch(e) {}\n  }\n"""
+          new_resume = """  function markFlowReady() {\n    try { document.documentElement.classList.remove('ym-flow-booting'); } catch (e) {}\n  }\n\n  function resumeFromPayment() {\n    if (isFreshCheckout()) {\n      stopPolling(); clearStoredSession(); paymentStatus='pending'; originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); clearFreshCheckoutParam(); markFlowReady(); return;\n    }\n    var ref=getRef();\n    if (!ref) { markFlowReady(); root.location.replace('/'); return; }\n    originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); markFlowReady(); checkPayment(); startPolling();\n    try { if (new URLSearchParams(root.location.search).get('ref')) root.history.replaceState(null,'',root.location.pathname+root.location.hash); } catch(e) {}\n  }\n\n  root.addEventListener('pageshow', function () {\n    var active=document.querySelector('.view.active');\n    if (active && active.id==='view-intro') {\n      var ref=getRef();\n      if (ref) { originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); markFlowReady(); checkPayment(); startPolling(); }\n      else root.location.replace('/');\n    }\n  });\n"""
+          if old_resume not in t:
+              raise SystemExit('Contrato resumeFromPayment mudou; hotfix abortado para não aplicar patch inseguro.')
+          t = t.replace(old_resume, new_resume, 1)
+          write(p, t)
+
+          # ─────────────────────────────────────────────────────────────
+          # QUEM SOMOS — CTA de Raio-X vai direto ao checkout
+          # ─────────────────────────────────────────────────────────────
+          p = Path('quemsomos/index.html')
+          t = read(p)
+          t = re.sub(r'href="https://ymnegocios\.com\.br"([^>]*)>Fazer meu Raio-X</a>', r'href="/raio-x.html?checkout=1"\1>Fazer meu Raio-X</a>', t)
+          t = re.sub(r'href="https://ymnegocios\.com\.br"([^>]*)>Fazer meu Raio-X</a>', r'href="/raio-x.html?checkout=1"\1>Fazer meu Raio-X</a>', t)
+          t = t.replace('mailto:ymmarketingenegocios@gmail.com', 'https://wa.me/5531975073862?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20YM%20e%20gostaria%20de%20falar%20sobre%20um%20projeto.')
+          write(p, t)
+
+          # ─────────────────────────────────────────────────────────────
+          # IMPACTO — contato nunca por e-mail
+          # ─────────────────────────────────────────────────────────────
+          p = Path('impacto/index.html')
+          t = read(p)
+          t = t.replace('mailto:ymmarketingenegocios@gmail.com', 'https://wa.me/5531975073862?text=Ol%C3%A1%21%20Tenho%20uma%20d%C3%BAvida%20sobre%20a%20pol%C3%ADtica%20de%20Impacto%20e%20Governan%C3%A7a%20da%20YM.')
+          write(p, t)
+
+          # ─────────────────────────────────────────────────────────────
+          # ÁREA DO CLIENTE — rótulo coerente com o destino
+          # ─────────────────────────────────────────────────────────────
+          p = Path('areadocliente/index.html')
+          t = read(p)
+          t = t.replace('<a href="/">Raio-X</a>', '<a href="/">Início</a>', 1)
+          write(p, t)
+
+          # ─────────────────────────────────────────────────────────────
+          # AUDITORIA ESTÁTICA DE LINKS DO AMBIENTE PÚBLICO
+          # ─────────────────────────────────────────────────────────────
+          public_files = [
+              Path('index.html'),
+              Path('raio-x.html'),
+              Path('quemsomos/index.html'),
+              Path('impacto/index.html'),
+              Path('areadocliente/index.html'),
+          ]
+          route_map = {
+              '/': Path('index.html'),
+              '/raio-x.html': Path('raio-x.html'),
+              '/quemsomos': Path('quemsomos/index.html'),
+              '/impacto': Path('impacto/index.html'),
+              '/areadocliente': Path('areadocliente/index.html'),
+          }
+          issues = []
+          rows = []
+
+          href_re = re.compile(r'href=["\']([^"\']+)["\']', re.I)
+          id_re = re.compile(r'\bid=["\']([^"\']+)["\']', re.I)
+          for f in public_files:
+              html = read(f)
+              ids = set(id_re.findall(html))
+              if 'mailto:' in html:
+                  issues.append(f'{f}: ainda contém mailto público')
+              for href in href_re.findall(html):
+                  status = 'OK'
+                  note = ''
+                  if href.startswith('#'):
+                      if href[1:] and href[1:] not in ids:
+                          status='ERRO'; note='âncora inexistente'; issues.append(f'{f}: {href} não existe')
+                  elif href.startswith('/'):
+                      path = urlparse(href).path
+                      if path.startswith('/assets/') or path.startswith('/interno'):
+                          pass
+                      elif path in route_map:
+                          if not route_map[path].exists():
+                              status='ERRO'; note='rota sem arquivo'; issues.append(f'{f}: {href} sem destino')
+                      else:
+                          # Aceita apenas arquivos/diretórios reais conhecidos.
+                          local = Path(path.lstrip('/'))
+                          exists = local.exists() or (local/'index.html').exists()
+                          if not exists:
+                              status='ERRO'; note='rota local desconhecida'; issues.append(f'{f}: {href} rota desconhecida')
+                  elif href.startswith('http'):
+                      host = urlparse(href).netloc.lower()
+                      if not host:
+                          status='ERRO'; note='URL externa inválida'; issues.append(f'{f}: {href} inválida')
+                  rows.append((str(f), href, status, note))
+
+          raio = read('raio-x.html')
+          shell = read('assets/js/raiox-payment-shell-v1.js')
+          home = read('index.html')
+          quem = read('quemsomos/index.html')
+
+          hard_checks = {
+              'Raio-X sem intro legado ativo': '<div class="view active" id="view-intro">' not in raio,
+              'Voltar do pagamento leva à Home': '<a class="payx-back" href="/">← Voltar ao site da YM</a>' in raio,
+              'Contingência oculta no HTML-base': '.payx-code{display:none' in raio,
+              'Preflight anti-flash presente': 'ym-flow-preflight' in raio and 'ym-flow-booting' in raio,
+              'Rota nua /raio-x.html volta à Home': "root.location.replace('/')" in shell,
+              'CTA Home abre checkout': "'/raio-x.html?checkout=1'" in shell,
+              'Home fala por WhatsApp': 'https://wa.me/5531975073862' in home,
+              'Home tem Instagram': 'https://www.instagram.com/ym_marketingenegocios/' in home,
+              'Home tem LinkedIn': 'https://br.linkedin.com/in/yasmin-menezes-06a187193' in home,
+              'Quem Somos abre checkout direto': '/raio-x.html?checkout=1' in quem,
+          }
+          for name, ok in hard_checks.items():
+              if not ok:
+                  issues.append('CHECK: ' + name)
+
+          report = [
+              '# Auditoria de links públicos — YM',
+              '',
+              'Data: 20/08/2026',
+              '',
+              'Escopo auditado: Home, fluxo do Raio-X, Quem Somos, Impacto & Governança e Área do Cliente.',
+              '',
+              '## Checks críticos',
+              '',
+          ]
+          for name, ok in hard_checks.items():
+              report.append(f'- {"✅" if ok else "❌"} {name}')
+          report += ['', '## Links encontrados', '', '| Arquivo | Link | Status | Observação |', '|---|---|---|---|']
+          for f, href, status, note in rows:
+              report.append(f'| `{f}` | `{href}` | {"✅" if status=="OK" else "❌"} {status} | {note} |')
+          report += ['', '## Resultado', '']
+          if issues:
+              report.append('❌ Auditoria encontrou pendências:')
+              report.extend([f'- {x}' for x in issues])
+          else:
+              report.append('✅ Nenhum link local quebrado ou retorno legado foi identificado no escopo estático auditado.')
+          Path('docs/AUDITORIA_LINKS_PUBLICOS_2026-08-20.md').write_text('\n'.join(report)+'\n', encoding='utf-8')
+
+          if issues:
+              raise SystemExit('\n'.join(issues))
+          PY
+
+      - name: Commit das correções auditadas
+        run: |
+          git config user.name "YM Public UX Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html raio-x.html assets/js/raiox-payment-shell-v1.js quemsomos/index.html impacto/index.html areadocliente/index.html docs/AUDITORIA_LINKS_PUBLICOS_2026-08-20.md
+          if git diff --cached --quiet; then
+            echo "Sem alterações."
+            exit 0
+          fi
+          git commit -m "Public: corrigir rotas e eliminar flash legado do Raio-X"
+          git push
