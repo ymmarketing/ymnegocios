@@ -1,6 +1,6 @@
-/* YM Quem Somos · fotos restauradas · v3 · 2026-08-16 */
+/* YM Quem Somos · fotos + estado público validado · 2026-08-20 */
 (function(){
-  var VERSION='20260816-restore3';
+  var VERSION='20260820-bastidores';
   var items={
     'quemsomos-hero':{
       parts:[
@@ -40,15 +40,28 @@
       '.photo-slot.ym-real-photo img{position:absolute;inset:0;width:100%;height:100%;z-index:1;display:block}',
       '.photo-slot.ym-real-photo:before,.photo-slot.ym-real-photo:after{z-index:2;pointer-events:none}',
       '.photo-slot.ym-real-photo .slot-label{display:none}',
+      '.portfolio-band{display:none!important}',
+      '.navlinks a[href="#portfolio"]{display:none!important}',
       '@media(max-width:720px){',
         '[data-photo-slot="quemsomos-hero"]{min-height:470px}',
         '[data-photo-slot="quemsomos-hero"] img{object-position:center center!important}',
         '[data-photo-slot="quemsomos-fundadora"] img{object-position:center 34%!important}',
         '[data-photo-slot="quemsomos-historia"] img{object-position:center center!important}',
+        '[data-photo-slot="quemsomos-bastidores"]{min-height:300px!important}',
         '[data-photo-slot="quemsomos-bastidores"] img{object-position:center center!important}',
       '}'
     ].join('');
     document.head.appendChild(s);
+  }
+
+  function normalizePublicPortfolio(){
+    document.querySelectorAll('.navlinks a[href="#portfolio"]').forEach(function(a){a.style.display='none';});
+    document.querySelectorAll('.hero-actions a[href="#portfolio"]').forEach(function(a){
+      a.setAttribute('href','#construimos');
+      if(/conhecer nosso trabalho/i.test(a.textContent||'')) a.textContent='Ver o que construímos';
+    });
+    var portfolio=document.getElementById('portfolio');
+    if(portfolio) portfolio.setAttribute('aria-hidden','true');
   }
 
   function getPart(url){
@@ -89,6 +102,7 @@
 
   function boot(){
     addStyle();
+    normalizePublicPortfolio();
     Object.keys(items).forEach(function(k){loadOne(k,items[k]);});
   }
 
