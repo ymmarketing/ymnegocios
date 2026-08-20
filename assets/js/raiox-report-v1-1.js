@@ -90,9 +90,18 @@
     return d.interpretation;
   }
 
+  function sourceLabel(id) {
+    var q = Q.find(function (item) { return item.id === id; });
+    if (!q) return id;
+    var parts = [id];
+    if (q.bloco) parts.push(q.bloco);
+    if (q.visao && q.visao !== q.bloco) parts.push(q.visao);
+    return parts.join(' · ');
+  }
+
   function sourcesHtml(xs) {
     if (!Array.isArray(xs) || !xs.length) return '';
-    return '<div class="rx11-source-row">' + xs.map(function (s) { return '<span class="rx11-source">Origem · ' + esc(s) + '</span>'; }).join('') + '</div>';
+    return '<div class="rx11-source-row">' + xs.map(function (s) { return '<span class="rx11-source">Origem · ' + esc(sourceLabel(s)) + '</span>'; }).join('') + '</div>';
   }
 
   function confidenceHtml(c) {
@@ -246,8 +255,20 @@
     if (qs.length) h += '<ul class="rx11-questions">' + qs.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
     h += '</div></section>';
 
+    // 13 — rastreabilidade: cada pergunta tem um papel analítico definido
+    h += '<section class="rep-sec"><div class="sec-num">13 — Rastreabilidade</div><h3 class="rep-h">Como suas respostas entram na análise</h3><p class="rep-p">Nem toda resposta precisa virar um card. Mas nenhuma pergunta existe sem função: os dados alimentam contexto, Score, cruzamentos, hipóteses ou destino.</p><div class="rx11-grid2">';
+    [
+      {t:'Contexto e modelo do negócio',ids:['RX01','RX02','RX03','RX04','RX05','RX06','RX07','RX08'],d:'Identidade, operação, oferta, público e canais que sustentam a leitura executiva.'},
+      {t:'Maturidade e jornada',ids:['RX09','RX10','RX11','RX12','RX13','RX14','RX15','RX16','RX17','RX18','RX19','RX20','RX21','RX22','RX23','RX24'],d:'Base do Score dos 8Ps, das quatro visões da jornada e dos pontos de atenção.'},
+      {t:'Contexto de investigação',ids:['RX25','RX26','RX27','RX28'],d:'Capacidade, patrimônio, dificuldade percebida e tentativas anteriores usados para qualificar leituras cruzadas e hipóteses — sem virar nota.'},
+      {t:'Destino e evidência de avanço',ids:['RX29','RX30'],d:'Transformados em destino estratégico e sinal de sucesso; não são reproduzidos como simples citação.'}
+    ].forEach(function (g) {
+      h += '<div class="rx11-box soft"><div class="rx11-title">' + esc(g.t) + '</div><div class="rx11-text">' + esc(g.d) + '</div>' + sourcesHtml(g.ids) + '</div>';
+    });
+    h += '</div></section>';
+
     // limites / ações
-    h += '<section class="rep-sec"><div class="sec-num">13 — Limites da leitura</div><h3 class="rep-h">O que este Raio-X não pretende concluir sozinho</h3><ul class="rep-lims">';
+    h += '<section class="rep-sec"><div class="sec-num">14 — Limites da leitura</div><h3 class="rep-h">O que este Raio-X não pretende concluir sozinho</h3><ul class="rep-lims">';
     (pkt.limitations || []).forEach(function (l) { h += '<li>' + esc(l) + '</li>'; });
     h += '<li>Respostas abertas são usadas como matéria-prima para interpretação; não são tratadas como diagnóstico por simples repetição.</li></ul>';
     h += '<div class="rx11-print"><button class="btn btn-ghost" onclick="window.print()">Imprimir / salvar PDF</button><a class="btn" target="_blank" href="https://wa.me/5531975073862?text=' + encodeURIComponent('Olá! Fiz meu Raio-X Estratégico e quero validar a leitura antes de decidir o próximo passo.') + '">Validar minha leitura →</a></div></section>';
