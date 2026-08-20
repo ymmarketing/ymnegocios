@@ -1,0 +1,64 @@
+name: Patch public mobile/contact 2026-08-19
+
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-public-mobile-contact-20260819.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply public UX/contact patches
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          WA_PROJECT = 'https://wa.me/5531975073862?text=Ol%C3%A1%2C%20Yasmin%21%20Vim%20pelo%20site%20da%20YM%20e%20gostaria%20de%20falar%20sobre%20um%20projeto.'
+          WA_POLICY = 'https://wa.me/5531975073862?text=Ol%C3%A1%21%20Tenho%20uma%20d%C3%BAvida%20sobre%20a%20pol%C3%ADtica%20de%20Impacto%2C%20ESG%20e%20Governan%C3%A7a%20da%20YM.'
+          IG = 'https://www.instagram.com/ym_marketingenegocios/'
+          LI = 'https://br.linkedin.com/in/yasmin-menezes-06a187193'
+
+          # Quem Somos
+          p = Path('quemsomos/index.html')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('href="mailto:ymmarketingenegocios@gmail.com">Falar sobre um projeto</a>', f'href="{WA_PROJECT}" target="_blank" rel="noopener">Falar sobre um projeto</a>')
+          s = s.replace('href="mailto:ymmarketingenegocios@gmail.com">Falar com a YM</a>', f'href="{WA_PROJECT}" target="_blank" rel="noopener">Falar com a YM</a>')
+          s = s.replace('.foot span{font-size:9.5px;color:rgba(255,255,255,.48)}', '.foot span{font-size:9.5px;color:rgba(255,255,255,.48)}.foot-social{display:flex;gap:8px;flex-wrap:wrap}.foot-social a{min-height:44px;display:inline-flex;align-items:center;padding:8px 11px;border:1px solid rgba(255,255,255,.14);border-radius:999px;font-size:10px;font-weight:800;color:rgba(255,255,255,.82)}')
+          s = s.replace('@media(max-width:650px){.navin{padding:9px 14px}', '@media(max-width:650px){.navin{padding:9px 14px}')
+          s = s.replace('.closing{padding:58px 16px}}', '.closing{padding:58px 16px}.hero-actions,.closing-actions{display:grid;grid-template-columns:1fr;width:100%}.hero-actions .btn,.closing-actions .btn,.portfolio-top .btn{width:100%;min-height:48px}.foot{align-items:center;text-align:center}.foot-social{justify-content:center}}')
+          s = s.replace('<footer class="footer"><div class="foot"><span>YM Marketing & Negócios</span><span>Estratégia · Marketing · Processos · Tecnologia</span></div></footer>', f'<footer class="footer"><div class="foot"><span>YM Marketing & Negócios</span><div class="foot-social"><a href="{IG}" target="_blank" rel="noopener">Instagram</a><a href="{LI}" target="_blank" rel="noopener">LinkedIn</a></div><span>Estratégia · Marketing · Processos · Tecnologia</span></div></footer>')
+          s = s.replace('*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;', '*{box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}body{margin:0;overflow-x:hidden;')
+          s = s.replace('.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;padding:13px 18px;', '.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;border-radius:12px;padding:13px 18px;')
+          p.write_text(s, encoding='utf-8')
+
+          # Impacto
+          p = Path('impacto/index.html')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('href="mailto:ymmarketingenegocios@gmail.com">Dúvidas sobre a política</a>', f'href="{WA_POLICY}" target="_blank" rel="noopener">Dúvidas sobre a política</a>')
+          s = s.replace('*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;', '*{box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}body{margin:0;overflow-x:hidden;')
+          s = s.replace('.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:13px 18px;', '.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:12px;padding:13px 18px;')
+          s = s.replace('.foot span{font-size:10px;color:rgba(255,255,255,.48)}.foot a{text-decoration:underline;text-underline-offset:3px}', '.foot span{font-size:10px;color:rgba(255,255,255,.48)}.foot a{text-decoration:none}.foot-social{display:flex;gap:8px;flex-wrap:wrap}.foot-social a{min-height:44px;display:inline-flex;align-items:center;padding:8px 11px;border:1px solid rgba(255,255,255,.14);border-radius:999px;font-size:10px;font-weight:800;color:rgba(255,255,255,.82)}')
+          s = s.replace('@media(max-width:620px){.navin{padding:9px 14px}', '@media(max-width:620px){.navin{padding:9px 14px}')
+          s = s.replace('h1{font-size:40px}}', 'h1{font-size:40px}.contact{display:grid;grid-template-columns:1fr;width:100%}.contact .btn{width:100%;min-height:48px}.foot{align-items:center;text-align:center}.foot-social{justify-content:center}}')
+          s = s.replace('<footer class="footer"><div class="foot"><b>YM Marketing & Negócios</b><span>© 2026 · Impacto, ESG & Governança · Política YM-POL-ESG-001 v1.0</span></div></footer>', f'<footer class="footer"><div class="foot"><b>YM Marketing & Negócios</b><div class="foot-social"><a href="{IG}" target="_blank" rel="noopener">Instagram</a><a href="{LI}" target="_blank" rel="noopener">LinkedIn</a></div><span>© 2026 · Impacto, ESG & Governança · Política YM-POL-ESG-001 v1.0</span></div></footer>')
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Verify replacements
+        run: |
+          grep -q 'wa.me/5531975073862' quemsomos/index.html
+          grep -q 'instagram.com/ym_marketingenegocios' quemsomos/index.html
+          grep -q 'wa.me/5531975073862' impacto/index.html
+          grep -q 'instagram.com/ym_marketingenegocios' impacto/index.html
+      - name: Commit patches
+        run: |
+          git config user.name 'YM Public UX Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add quemsomos/index.html impacto/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Public: auditoria mobile e contatos WhatsApp/social'
+          git push
