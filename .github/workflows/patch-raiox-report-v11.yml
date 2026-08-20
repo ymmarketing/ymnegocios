@@ -1,0 +1,42 @@
+name: Patch Raio-X RX_REPORT_1.1 interpretativo
+on:
+  push:
+    branches:
+      - feat/rx-report-1-1-interpretativo-20260819
+    paths:
+      - '.github/workflows/patch-raiox-report-v11.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ligar renderer interpretativo sem alterar o questionário canônico
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          targets = [Path('raio-x.html'), Path('raio-x-v3.1-integrado.html')]
+          old_scripts = '<script src="assets/js/raiox-v3.1-persist.js"></script>\n<script src="assets/js/raiox-payment-shell-v1.js"></script>'
+          new_scripts = old_scripts + '\n<script src="assets/js/raiox-report-v1-1.js"></script>'
+
+          for p in targets:
+              s = p.read_text(encoding='utf-8')
+              if 'assets/js/raiox-report-v1-1.js' not in s:
+                  if old_scripts not in s:
+                      raise SystemExit(f'bloco de scripts não encontrado em {p}')
+                  s = s.replace(old_scripts, new_scripts, 1)
+              s = s.replace("report_version: 'RX_REPORT_1.0'", "report_version: 'RX_REPORT_1.1'")
+              s = s.replace('/* ══════════════ RX_REPORT_1.0 — renderer ══════════════',
+                            '/* ══════════════ RX_REPORT_1.0 — renderer-base/fallback ══════════════')
+              p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit patch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add raio-x.html raio-x-v3.1-integrado.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Raio-X: liga RX_REPORT_1.1 interpretativo'
+          git push
