@@ -1,4 +1,4 @@
-/* YM Raio-X — shell de pagamento/sessão v1.4
+/* YM Raio-X — shell de pagamento/sessão v1.5
  * Template público YM + auditoria responsiva mobile/desktop.
  * Contingência fica oculta e só aparece após falha técnica real.
  * NÃO calcula Score, NÃO interpreta respostas, NÃO define rota, NÃO chama IA.
@@ -291,11 +291,28 @@
     paymentStatus='approved'; return originalRunAnalysis();
   };
 
+  function markFlowReady() {
+    try { document.documentElement.classList.remove('ym-flow-booting'); } catch (e) {}
+  }
+
   function resumeFromPayment() {
-    if (isFreshCheckout()) { stopPolling(); clearStoredSession(); paymentStatus='pending'; originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); clearFreshCheckoutParam(); return; }
-    var ref=getRef(); if (!ref) return; originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); checkPayment(); startPolling();
+    if (isFreshCheckout()) {
+      stopPolling(); clearStoredSession(); paymentStatus='pending'; originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); clearFreshCheckoutParam(); markFlowReady(); return;
+    }
+    var ref=getRef();
+    if (!ref) { markFlowReady(); root.location.replace('/'); return; }
+    originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); markFlowReady(); checkPayment(); startPolling();
     try { if (new URLSearchParams(root.location.search).get('ref')) root.history.replaceState(null,'',root.location.pathname+root.location.hash); } catch(e) {}
   }
+
+  root.addEventListener('pageshow', function () {
+    var active=document.querySelector('.view.active');
+    if (active && active.id==='view-intro') {
+      var ref=getRef();
+      if (ref) { originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); markFlowReady(); checkPayment(); startPolling(); }
+      else root.location.replace('/');
+    }
+  });
 
   document.addEventListener('visibilitychange', function () { if (document.visibilityState==='visible') { var active=document.querySelector('.view.active'); if (active && active.id==='view-payment' && getRef()) startPolling(); } });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', resumeFromPayment); else resumeFromPayment();

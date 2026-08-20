@@ -3,6 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script id="ym-flow-preflight">
+(function(){
+  var hasFlow=false;
+  try{
+    var p=new URLSearchParams(location.search);
+    hasFlow=p.get('checkout')==='1'||p.get('novo')==='1'||!!p.get('ref')||!!localStorage.getItem('ym_raiox_ref');
+  }catch(e){}
+  if(!hasFlow){ location.replace('/'); return; }
+  document.documentElement.classList.add('ym-flow-booting');
+})();
+</script>
+<style id="ym-flow-prepaint">
+html.ym-flow-booting body{background:#F7F8FC;overflow:hidden}
+html.ym-flow-booting body>*{visibility:hidden!important}
+html.ym-flow-booting body:before{content:'';visibility:visible!important;position:fixed;inset:0;z-index:99998;background:radial-gradient(circle at 12% 14%,rgba(72,77,207,.12),transparent 27%),radial-gradient(circle at 88% 16%,rgba(255,122,0,.10),transparent 25%),#F7F8FC}
+html.ym-flow-booting body:after{content:'Preparando seu Raio-X';visibility:visible!important;position:fixed;z-index:99999;left:50%;top:50%;transform:translate(-50%,-50%);font:800 14px Inter,Arial,sans-serif;letter-spacing:.02em;color:#0B1533;padding:16px 22px 16px 48px;border:1px solid #E4E8F1;border-radius:999px;background:#fff;box-shadow:0 16px 45px rgba(18,30,74,.10)}
+#view-intro{display:none!important}
+</style>
+
 <title>Raio-X Estratégico — Descubra seu Score da Jornada Digital | YM</title>
 <meta name="description" content="Raio-X Estratégico da YM: descubra seu Score da Jornada Digital, a cobertura dos 8Ps do seu negócio, pontos de atenção, lacunas e hipóteses iniciais — uma leitura estratégica de onde aprofundar.">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -249,21 +268,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;background:rgba(
 .payx-wrap{max-width:560px;margin:0 auto;padding:100px clamp(18px,5vw,36px) 70px}
 .payx-card{background:var(--branco);border:1px solid var(--borda);border-radius:18px;overflow:hidden;box-shadow:0 14px 45px rgba(0,85,204,.08)}
 .payx-head{background:var(--azul2);padding:26px 28px;color:#fff;text-align:center}.payx-k{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:7px}.payx-title{font-family:'Montserrat',sans-serif;font-size:21px;font-weight:800}.payx-price{font-family:'Montserrat',sans-serif;font-size:32px;font-weight:900;margin-top:7px}.payx-price small{font-size:14px;color:rgba(255,255,255,.58);font-weight:600}
-.payx-body{padding:28px;text-align:center}.payx-lock{width:58px;height:58px;border-radius:50%;margin:0 auto 16px;background:var(--azul-bg);display:flex;align-items:center;justify-content:center;font-size:25px}.payx-body h2{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:800;color:var(--escuro);margin-bottom:9px}.payx-body>p{font-size:14px;color:var(--sub);line-height:1.65;margin-bottom:18px}.payx-alert{display:none;text-align:left;background:var(--amarelo-bg);border:1px solid var(--amarelo-bd);border-radius:10px;padding:13px 14px;font-size:12.5px;color:#7c4a08;line-height:1.55;margin-bottom:14px}.payx-actions{display:flex;flex-direction:column;gap:10px}.payx-code{margin-top:18px;padding-top:18px;border-top:1px dashed var(--borda)}.payx-code-k{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--azul);margin-bottom:7px}.payx-code p{font-size:12.5px;color:var(--sub);line-height:1.55;margin-bottom:10px}.payx-input{width:100%;padding:14px 15px;border:1.5px solid var(--borda);border-radius:10px;font-family:'Inter',sans-serif;font-size:16px;color:var(--texto);text-transform:uppercase;text-align:center;letter-spacing:.06em;margin-bottom:10px}.payx-input:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(0,85,204,.1)}.payx-support{display:inline-block;margin-top:18px;font-size:12.5px;color:var(--azul);text-decoration:none;font-weight:600}.payx-back{margin-top:18px;font-size:12px;color:var(--placeholder);cursor:pointer}@media(max-width:520px){.payx-body{padding:22px 18px}.payx-head{padding:23px 18px}}
+.payx-body{padding:28px;text-align:center}.payx-lock{width:58px;height:58px;border-radius:50%;margin:0 auto 16px;background:var(--azul-bg);display:flex;align-items:center;justify-content:center;font-size:25px}.payx-body h2{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:800;color:var(--escuro);margin-bottom:9px}.payx-body>p{font-size:14px;color:var(--sub);line-height:1.65;margin-bottom:18px}.payx-alert{display:none;text-align:left;background:var(--amarelo-bg);border:1px solid var(--amarelo-bd);border-radius:10px;padding:13px 14px;font-size:12.5px;color:#7c4a08;line-height:1.55;margin-bottom:14px}.payx-actions{display:flex;flex-direction:column;gap:10px}.payx-code{display:none;margin-top:18px;padding-top:18px;border-top:1px dashed var(--borda)}.payx-code.ym-contingency-visible{display:block}.payx-code-k{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--azul);margin-bottom:7px}.payx-code p{font-size:12.5px;color:var(--sub);line-height:1.55;margin-bottom:10px}.payx-input{width:100%;padding:14px 15px;border:1.5px solid var(--borda);border-radius:10px;font-family:'Inter',sans-serif;font-size:16px;color:var(--texto);text-transform:uppercase;text-align:center;letter-spacing:.06em;margin-bottom:10px}.payx-input:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(0,85,204,.1)}.payx-support{display:inline-block;margin-top:18px;font-size:12.5px;color:var(--azul);text-decoration:none;font-weight:600}.payx-back{margin-top:18px;font-size:12px;color:var(--placeholder);cursor:pointer}@media(max-width:520px){.payx-body{padding:22px 18px}.payx-head{padding:23px 18px}}
 
 </style>
 </head>
 <body>
-<nav>
-  <div class="nav-brand">
-    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="9" fill="#0055CC"/><path d="M11 12l9 9 9-9M20 21v8" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    <span>YM Marketing &amp; Negócios</span>
-  </div>
+<nav class="ym-flow-nav">
+  <div class="nav-brand"><a href="/" aria-label="Voltar ao site da YM"><img class="ym-flow-logo" src="/assets/img/logo-ym-horizontal.webp" alt="YM Marketing &amp; Negócios" style="height:34px;width:auto;max-width:210px"></a></div>
   <div class="nav-chip">Raio-X Estratégico</div>
 </nav>
 
 <!-- INTRO / VSL -->
-<div class="view active" id="view-intro">
+<div class="view" id="view-intro" aria-hidden="true">
   <div class="rx-hero">
     <div class="eyebrow"><span class="dot"></span>Score da Jornada Digital</div>
     <h1>Descubra seu <em>Score da Jornada Digital</em>.</h1>
@@ -296,10 +312,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;background:rgba(
 <!-- ETAPA 3 · PAGAMENTO/SESSÃO REAL -->
 <div class="view" id="view-payment"><div class="payx-wrap"><div class="payx-card">
 <div class="payx-head"><div class="payx-k">Você está adquirindo</div><div class="payx-title">Raio-X Estratégico</div><div class="payx-price">R$ 97 <small>· pagamento único</small></div></div>
-<div class="payx-body"><div class="payx-lock">🔒</div><h2>Pagamento em confirmação</h2><p>O questionário é liberado somente depois que o servidor confirma o pagamento no Asaas.</p><div class="payx-alert" id="payx-alert"></div>
+<div class="payx-body"><div class="payx-lock">🔒</div><h2>Finalize seu pagamento</h2><p>Informe o CPF ou CNPJ do pagador e siga para o checkout seguro. Depois da confirmação, seu Raio-X será liberado automaticamente.</p><div class="payx-alert" id="payx-alert"></div>
 <div class="payx-actions"><button class="btn btn-lg" data-payx-start style="width:100%;justify-content:center" onclick="irParaPagamento()">Ir para pagamento →</button><button class="btn btn-ghost" id="payx-check" style="width:100%;justify-content:center" onclick="checkPayment()">Verificar pagamento</button></div>
 <div class="payx-code"><div class="payx-code-k">Contingência de acesso</div><p>Se o pagamento já foi confirmado pela YM e você recebeu um código de acesso, use-o aqui.</p><input class="payx-input" id="payx-code" placeholder="YM-XXXX-XXXX" maxlength="16" oninput="formatarCodigo(this)" onkeydown="if(event.key==='Enter')validarCodigo()"><button class="btn btn-ghost" id="payx-code-btn" style="width:100%;justify-content:center" onclick="validarCodigo()">Liberar meu Raio-X</button></div>
-<a class="payx-support" id="payx-whatsapp" target="_blank" rel="noopener">Preciso de ajuda pelo WhatsApp</a><div class="payx-back" onclick="go('intro')">← Voltar ao início</div></div>
+<a class="payx-support" id="payx-whatsapp" target="_blank" rel="noopener">Preciso de ajuda pelo WhatsApp</a><a class="payx-back" href="/">← Voltar ao site da YM</a></div>
 </div></div></div>
 
 <!-- QUIZ -->
@@ -2016,8 +2032,8 @@ if(typeof window!=='undefined'){ window.__renderReport=renderReport; window.__ge
 
 </script>
 <!-- ETAPA 3 · integrações aditivas -->
-<script src="assets/js/raiox-v3.1-persist.js"></script>
-<script src="assets/js/raiox-payment-shell-v1.js"></script>
-<script src="assets/js/raiox-report-v1-1.js"></script>
+<script src="assets/js/raiox-v3.1-persist.js?v=20260820-0947"></script>
+<script src="assets/js/raiox-payment-shell-v1.js?v=20260820-0947"></script>
+<script src="assets/js/raiox-report-v1-1.js?v=20260820-0947"></script>
 </body>
 </html>
