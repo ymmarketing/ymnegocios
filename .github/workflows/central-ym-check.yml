@@ -1,0 +1,40 @@
+name: Central YM checks
+
+on:
+  pull_request:
+    paths:
+      - 'areadocliente/**'
+      - 'Identidade/**'
+      - 'assets/client-portal.*'
+      - 'assets/central-ym-*.js'
+      - 'assets/crm15-runtime.js'
+      - 'assets/internal-shell.css'
+      - 'interno/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax
+        run: |
+          node --check assets/client-portal.js
+          node --check assets/central-ym-admin.js
+          node --check assets/central-ym-identity.js
+          node --check assets/crm15-runtime.js
+      - name: No file upload in Central YM
+        run: |
+          ! grep -Rni 'type="file"' areadocliente assets/client-portal.js assets/central-ym-admin.js Identidade assets/central-ym-identity.js
+          ! grep -Rni "type='file'" areadocliente assets/client-portal.js assets/central-ym-admin.js Identidade assets/central-ym-identity.js
+          ! grep -RniE 'storage\.from\(|upload\(' areadocliente assets/client-portal.js assets/central-ym-admin.js Identidade assets/central-ym-identity.js
+      - name: Drive-link architecture present
+        run: |
+          grep -qi 'Drive' areadocliente/index.html
+          grep -qi 'Drive' Identidade/index.html
