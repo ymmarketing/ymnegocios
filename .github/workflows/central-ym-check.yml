@@ -31,7 +31,9 @@ jobs:
           node --check assets/crm15-runtime.js
       - name: No file upload in Central YM
         run: |
-          ! grep -RniE 'type=["'"']file|storage\.from\(|upload\(' areadocliente assets/client-portal.js assets/central-ym-admin.js Identidade assets/central-ym-identity.js
+          ! grep -Rni 'type="file"' areadocliente assets/client-portal.js assets/central-ym-admin.js Identidade assets/central-ym-identity.js
+          ! grep -Rni "type='file'" areadocliente assets/client-portal.js assets/central-ym-admin.js Identidade assets/central-ym-identity.js
+          ! grep -RniE 'storage\.from\(|upload\(' areadocliente assets/client-portal.js assets/central-ym-admin.js Identidade assets/central-ym-identity.js
       - name: Drive-link architecture present
         run: |
           grep -qi 'Drive' areadocliente/index.html
