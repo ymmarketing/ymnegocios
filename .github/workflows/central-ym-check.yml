@@ -52,3 +52,7 @@ jobs:
           grep -qi 'Visão Admin' assets/central-ym-console.js
           grep -qi 'Adicionar evento' CRM/CENTRAL/index.html
           grep -qi 'Vincular este evento a um cliente' assets/central-ym-calendar-add.js
+          grep -qi 'Editar evento' assets/central-ym-calendar-add.js
+          grep -qi 'Salvar alterações' assets/central-ym-calendar-add.js
+          grep -qi 'Excluir evento' assets/central-ym-calendar-add.js
+          grep -qi "action:'DELETE_EVENT'" assets/central-ym-calendar-add.js
