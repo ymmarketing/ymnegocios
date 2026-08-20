@@ -1,0 +1,46 @@
+name: Patch RX_REPORT_1.1 traceability
+on:
+  push:
+    branches:
+      - feat/rx-report-1-1-interpretativo-20260819
+    paths:
+      - '.github/workflows/patch-rx11-trace.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enriquecer rótulos de origem e mapa de uso
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/js/raiox-report-v1-1.js')
+          s=p.read_text(encoding='utf-8')
+
+          old='''  function sourcesHtml(xs) {\n    if (!Array.isArray(xs) || !xs.length) return '';\n    return '<div class="rx11-source-row">' + xs.map(function (s) { return '<span class="rx11-source">Origem · ' + esc(s) + '</span>'; }).join('') + '</div>';\n  }'''
+          new='''  function sourceLabel(id) {\n    var q = Q.find(function (item) { return item.id === id; });\n    if (!q) return id;\n    var parts = [id];\n    if (q.bloco) parts.push(q.bloco);\n    if (q.visao && q.visao !== q.bloco) parts.push(q.visao);\n    return parts.join(' · ');\n  }\n\n  function sourcesHtml(xs) {\n    if (!Array.isArray(xs) || !xs.length) return '';\n    return '<div class="rx11-source-row">' + xs.map(function (s) { return '<span class="rx11-source">Origem · ' + esc(sourceLabel(s)) + '</span>'; }).join('') + '</div>';\n  }'''
+          if old not in s: raise SystemExit('sourcesHtml anchor not found')
+          s=s.replace(old,new,1)
+
+          anchor='''    // limites / ações\n    h += '<section class="rep-sec"><div class="sec-num">13 — Limites da leitura</div><h3 class="rep-h">O que este Raio-X não pretende concluir sozinho</h3><ul class="rep-lims">';'''
+          replacement='''    // 13 — rastreabilidade: cada pergunta tem um papel analítico definido\n    h += '<section class="rep-sec"><div class="sec-num">13 — Rastreabilidade</div><h3 class="rep-h">Como suas respostas entram na análise</h3><p class="rep-p">Nem toda resposta precisa virar um card. Mas nenhuma pergunta existe sem função: os dados alimentam contexto, Score, cruzamentos, hipóteses ou destino.</p><div class="rx11-grid2">';\n    [\n      {t:'Contexto e modelo do negócio',ids:['RX01','RX02','RX03','RX04','RX05','RX06','RX07','RX08'],d:'Identidade, operação, oferta, público e canais que sustentam a leitura executiva.'},\n      {t:'Maturidade e jornada',ids:['RX09','RX10','RX11','RX12','RX13','RX14','RX15','RX16','RX17','RX18','RX19','RX20','RX21','RX22','RX23','RX24'],d:'Base do Score dos 8Ps, das quatro visões da jornada e dos pontos de atenção.'},\n      {t:'Contexto de investigação',ids:['RX25','RX26','RX27','RX28'],d:'Capacidade, patrimônio, dificuldade percebida e tentativas anteriores usados para qualificar leituras cruzadas e hipóteses — sem virar nota.'},\n      {t:'Destino e evidência de avanço',ids:['RX29','RX30'],d:'Transformados em destino estratégico e sinal de sucesso; não são reproduzidos como simples citação.'}\n    ].forEach(function (g) {\n      h += '<div class="rx11-box soft"><div class="rx11-title">' + esc(g.t) + '</div><div class="rx11-text">' + esc(g.d) + '</div>' + sourcesHtml(g.ids) + '</div>';\n    });\n    h += '</div></section>';\n\n    // limites / ações\n    h += '<section class="rep-sec"><div class="sec-num">14 — Limites da leitura</div><h3 class="rep-h">O que este Raio-X não pretende concluir sozinho</h3><ul class="rep-lims">';'''
+          if anchor not in s: raise SystemExit('limits anchor not found')
+          s=s.replace(anchor,replacement,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Validar
+        run: |
+          node --check assets/js/raiox-report-v1-1.js
+          grep -q '13 — Rastreabilidade' assets/js/raiox-report-v1-1.js
+          grep -q 'Contexto de investigação' assets/js/raiox-report-v1-1.js
+          grep -q 'Origem · ' assets/js/raiox-report-v1-1.js
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/js/raiox-report-v1-1.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'Raio-X: adiciona rastreabilidade visível das 30 respostas'
+          git push
