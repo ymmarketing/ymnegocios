@@ -31,13 +31,14 @@ jobs:
           node --check assets/central-ym-admin.js
           node --check assets/central-ym-identity.js
           node --check assets/central-ym-console.js
+          node --check assets/central-ym-calendar-add.js
           node --check assets/central-ym-shortcut.js
           node --check assets/crm15-runtime.js
       - name: No file upload in Central YM
         run: |
-          ! grep -Rni 'type="file"' areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js Identidade assets/central-ym-identity.js
-          ! grep -Rni "type='file'" areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js Identidade assets/central-ym-identity.js
-          ! grep -RniE 'storage\.from\(|upload\(' areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js Identidade assets/central-ym-identity.js
+          ! grep -Rni 'type="file"' areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js Identidade assets/central-ym-identity.js
+          ! grep -Rni "type='file'" areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js Identidade assets/central-ym-identity.js
+          ! grep -RniE 'storage\.from\(|upload\(' areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js Identidade assets/central-ym-identity.js
       - name: Drive-link architecture present
         run: |
           grep -qi 'Drive' areadocliente/index.html
@@ -49,3 +50,5 @@ jobs:
           grep -qi 'Novo cliente' CRM/CENTRAL/index.html
           grep -qi 'Calendário geral' CRM/CENTRAL/index.html
           grep -qi 'Visão Admin' assets/central-ym-console.js
+          grep -qi 'Adicionar evento' CRM/CENTRAL/index.html
+          grep -qi 'Vincular este evento a um cliente' assets/central-ym-calendar-add.js
