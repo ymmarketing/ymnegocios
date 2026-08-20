@@ -32,13 +32,14 @@ jobs:
           node --check assets/central-ym-identity.js
           node --check assets/central-ym-console.js
           node --check assets/central-ym-calendar-add.js
+          node --check assets/central-ym-timezone.js
           node --check assets/central-ym-shortcut.js
           node --check assets/crm15-runtime.js
       - name: No file upload in Central YM
         run: |
-          ! grep -Rni 'type="file"' areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js Identidade assets/central-ym-identity.js
-          ! grep -Rni "type='file'" areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js Identidade assets/central-ym-identity.js
-          ! grep -RniE 'storage\.from\(|upload\(' areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js Identidade assets/central-ym-identity.js
+          ! grep -Rni 'type="file"' areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js assets/central-ym-timezone.js Identidade assets/central-ym-identity.js
+          ! grep -Rni "type='file'" areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js assets/central-ym-timezone.js Identidade assets/central-ym-identity.js
+          ! grep -RniE 'storage\.from\(|upload\(' areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js assets/central-ym-timezone.js Identidade assets/central-ym-identity.js
       - name: Drive-link architecture present
         run: |
           grep -qi 'Drive' areadocliente/index.html
@@ -56,3 +57,10 @@ jobs:
           grep -qi 'Salvar alterações' assets/central-ym-calendar-add.js
           grep -qi 'Excluir evento' assets/central-ym-calendar-add.js
           grep -qi "action:'DELETE_EVENT'" assets/central-ym-calendar-add.js
+      - name: Timezone normalization present
+        run: |
+          grep -qi 'central-ym-timezone.js' CRM/CENTRAL/index.html
+          grep -qi 'central-ym-timezone.js' assets/crm15-runtime.js
+          grep -qi 'localToIso' assets/central-ym-timezone.js
+          grep -qi 'UPSERT_EVENT' assets/central-ym-timezone.js
+          grep -qi 'CREATE_APPROVAL' assets/central-ym-timezone.js
