@@ -1,0 +1,40 @@
+name: Liberar teste direto do Raio-X
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-raiox-direct-test-bypass.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch test execution bypass
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/js/raiox-payment-shell-v1.js')
+          s=p.read_text()
+          old="""  function resumeFromPayment() {\n    if (isFreshCheckout()) {"""
+          new="""  function resumeFromPayment() {\n    try {\n      var testParams = new URLSearchParams(root.location.search);\n      if (testParams.get('teste_execucao') === '1' && getRef()) {\n        paymentStatus = 'approved';\n        originalGo('quiz');\n        root.renderQuiz();\n        markFlowReady();\n        try { root.history.replaceState(null, '', root.location.pathname + '?ref=' + encodeURIComponent(getRef())); } catch (e) {}\n        return;\n      }\n    } catch (e) {}\n    if (isFreshCheckout()) {"""
+          if old not in s:
+              raise SystemExit('resumeFromPayment target not found')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+
+          h=Path('raio-x.html')
+          x=h.read_text()
+          import re
+          x2,n=re.subn(r'raiox-payment-shell-v1\.js\?v=[0-9-]+', 'raiox-payment-shell-v1.js?v=20260821-1722', x, count=1)
+          if n!=1:
+              raise SystemExit('payment shell cache target not found')
+          h.write_text(x2)
+          PY
+      - name: Commit patch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/js/raiox-payment-shell-v1.js raio-x.html
+          git commit -m 'Raio-X: teste de execução abre direto no questionário'
+          git push
