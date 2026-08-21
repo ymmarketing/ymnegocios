@@ -13,7 +13,7 @@
    * Bootstrap de teste end-to-end.
    * O link de teste troca um token de uso único por uma referência aprovada no
    * mesmo mecanismo usado pelo fluxo real. Depois, a própria camada de pagamento
-   * valida a ref normalmente. Não há bypass client-side nem cobrança no Asaas.
+   * valida a ref normalmente. Não há cobrança no Asaas.
    */
   (function bootTestAccess() {
     var p;
@@ -34,7 +34,7 @@
           throw new Error(msg);
         }
         try { if (root.localStorage) root.localStorage.setItem(REF_STORAGE_KEY, data.ref); } catch (e) {}
-        root.location.replace('/raio-x.html?ref=' + encodeURIComponent(data.ref) + '&teste=1');
+        root.location.replace('/raio-x.html?ref=' + encodeURIComponent(data.ref) + '&teste_execucao=1');
       });
     }).catch(function (e) {
       console.error('[YM RX] falha ao iniciar acesso de teste:', e && e.message);
@@ -64,6 +64,10 @@
     catch (e) { return null; }
   }
 
+  function isTestRef(ref) {
+    return typeof ref === 'string' && /_teste/i.test(ref);
+  }
+
   function assertPacket(packet) {
     if (!packet || typeof packet !== 'object') throw new Error('VOS Intake ausente.');
     if (packet.packet_version !== 'VOS_INTAKE_1.0') throw new Error('Versão de packet incompatível.');
@@ -78,35 +82,49 @@
     assertPacket(packet);
     var ref = getRef();
     if (!ref) throw new Error('Referência de acesso/pagamento não encontrada.');
+    var testMode = isTestRef(ref);
 
-    // O relatório enriquecido precisa viajar junto com o intake para o CRM/Motor.
-    // Se a IA estiver temporariamente indisponível, preservamos o packet canônico
-    // e deixamos o fallback visual cuidar da entrega, sem perder respostas/Score.
+    // Primeiro tenta enriquecer o relatório. Se a interpretação avançada estiver
+    // indisponível, o renderer oficial possui fallback e ainda entrega resultado.
     if (!packet.interpretation && typeof root.YMPrepareRaioXInterpretation === 'function') {
       try { await root.YMPrepareRaioXInterpretation(packet); }
-      catch (e) { console.warn('[YM RX] persistindo sem interpretação avançada:', e && e.message); }
+      catch (e) { console.warn('[YM RX] interpretação avançada indisponível; usando fallback:', e && e.message); }
     }
 
-    var resp = await fetch(ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      cache: 'no-store',
-      body: JSON.stringify({ ref: ref, packet: packet })
-    });
+    // Em produção paga, persistência confirmada continua sendo requisito antes
+    // da entrega. Em TESTE, a persistência é tentada, mas jamais bloqueia o
+    // relatório: o objetivo é validar questionário -> análise -> resultado.
+    try {
+      var resp = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({ ref: ref, packet: packet })
+      });
 
-    var data = null;
-    try { data = await resp.json(); } catch (e) {}
-    if (!resp.ok || !data || data.ok !== true) {
-      var code = data && data.error ? data.error : ('http_' + resp.status);
-      throw new Error('Persistência não confirmada: ' + code);
+      var data = null;
+      try { data = await resp.json(); } catch (e) {}
+      if (!resp.ok || !data || data.ok !== true) {
+        var code = data && data.error ? data.error : ('http_' + resp.status);
+        if (!testMode) throw new Error('Persistência não confirmada: ' + code);
+        console.warn('[YM RX TEST] persistência não confirmada; relatório liberado:', code);
+        root.__YM_RAIOX_TEST_PERSIST_WARNING__ = code;
+        return { ok:true, test_mode:true, persisted:false, warning:code };
+      }
+
+      root.__YM_RAIOX_LAST_INTAKE__ = {
+        intake_id: data.intake_id || null,
+        case_id: data.case_id || null,
+        opportunity_id: data.opportunity_id || null,
+        created_at: data.created_at || null
+      };
+      return data;
+    } catch (e) {
+      if (!testMode) throw e;
+      var warning = (e && e.message) || 'erro_de_rede';
+      console.warn('[YM RX TEST] falha de persistência; relatório liberado:', warning);
+      root.__YM_RAIOX_TEST_PERSIST_WARNING__ = warning;
+      return { ok:true, test_mode:true, persisted:false, warning:warning };
     }
-
-    root.__YM_RAIOX_LAST_INTAKE__ = {
-      intake_id: data.intake_id || null,
-      case_id: data.case_id || null,
-      opportunity_id: data.opportunity_id || null,
-      created_at: data.created_at || null
-    };
-    return data;
   };
 })(window);
