@@ -56,7 +56,7 @@
     if(!table) return;
     const rows=dataRows(table);
     const q=normalize(state.query.trim());
-    let visible=[];
+    const visible=[];
     rows.forEach(row=>{
       const name=row.cells[0]?.textContent?.trim()||'';
       const group=groupOf(name);
@@ -120,11 +120,17 @@
   }
 
   let queued=false;
+  let obs;
+  const observe=()=>obs.observe(document.body,{childList:true,subtree:true});
   const schedule=()=>{
     if(queued) return;queued=true;
-    requestAnimationFrame(()=>{queued=false;ensure()});
+    requestAnimationFrame(()=>{
+      queued=false;
+      obs.disconnect();
+      try{ensure()}finally{observe()}
+    });
   };
-  const obs=new MutationObserver(schedule);
-  obs.observe(document.body,{childList:true,subtree:true});
+  obs=new MutationObserver(schedule);
+  observe();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();
 })();
