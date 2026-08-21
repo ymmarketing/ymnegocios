@@ -6,7 +6,48 @@
   'use strict';
 
   var ENDPOINT = 'https://srzdikgztpdtwbggwniz.supabase.co/functions/v1/save-raiox-intake';
+  var TEST_ACCESS_ENDPOINT = 'https://ym-raiox-backend.vercel.app/api/acesso/teste';
   var REF_STORAGE_KEY = 'ym_raiox_ref';
+
+  /*
+   * Bootstrap de teste end-to-end.
+   * O link de teste troca um token de uso único por uma referência aprovada no
+   * mesmo mecanismo usado pelo fluxo real. Depois, a própria camada de pagamento
+   * valida a ref normalmente. Não há bypass client-side nem cobrança no Asaas.
+   */
+  (function bootTestAccess() {
+    var p;
+    try { p = new URLSearchParams(root.location.search); } catch (e) { return; }
+    var token = p.get('token');
+    if (p.get('teste') !== '1' || !token || root.__YM_RX_TEST_BOOTSTRAP__) return;
+    root.__YM_RX_TEST_BOOTSTRAP__ = true;
+
+    fetch(TEST_ACCESS_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
+      body: JSON.stringify({ token: token })
+    }).then(function (resp) {
+      return resp.json().catch(function () { return {}; }).then(function (data) {
+        if (!resp.ok || !data || data.ok !== true || !data.ref) {
+          var msg = data && data.error ? data.error : ('http_' + resp.status);
+          throw new Error(msg);
+        }
+        try { if (root.localStorage) root.localStorage.setItem(REF_STORAGE_KEY, data.ref); } catch (e) {}
+        root.location.replace('/raio-x.html?ref=' + encodeURIComponent(data.ref) + '&teste=1');
+      });
+    }).catch(function (e) {
+      console.error('[YM RX] falha ao iniciar acesso de teste:', e && e.message);
+      try { document.documentElement.classList.remove('ym-flow-booting'); } catch (x) {}
+      root.setTimeout(function () {
+        var alert = document.getElementById('payx-alert');
+        if (alert) {
+          alert.style.display = 'block';
+          alert.innerHTML = '<b>Não foi possível iniciar este teste.</b><br>' + String((e && e.message) || 'Tente gerar um novo link de teste.');
+        }
+      }, 250);
+    });
+  })();
 
   function getRef() {
     try {
