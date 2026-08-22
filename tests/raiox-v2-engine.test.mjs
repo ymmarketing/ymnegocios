@@ -3,12 +3,25 @@ import vm from 'node:vm';
 import assert from 'node:assert/strict';
 
 const sandbox={window:{},console};sandbox.window.window=sandbox.window;vm.createContext(sandbox);
-for(const file of ['assets/js/raiox-digital-v2-schema.js','assets/js/raiox-digital-v2-engine.js']){
+for(const file of ['assets/js/raiox-digital-v2-schema.js','assets/js/raiox-digital-v2-pages.js','assets/js/raiox-digital-v2-engine.js']){
   vm.runInContext(fs.readFileSync(new URL('../'+file,import.meta.url),'utf8'),sandbox,{filename:file});
 }
 const W=sandbox.window,engine=W.RX_DIGITAL_ENGINE,cfg=W.RX_DIGITAL_V2;
 assert.ok(cfg,'schema V2 deve existir');assert.ok(engine,'engine V2 deve existir');
-assert.equal(cfg.questionnaire_version,'RX_DIGITAL_2.0');assert.equal(cfg.questions.length,30);
+assert.equal(cfg.questionnaire_version,'RX_DIGITAL_2.0');
+assert.equal(cfg.questions.length,30,'schema mantém 2 campos de identificação + 28 perguntas diagnósticas');
+assert.equal(cfg.diagnostic_question_count,28,'contagem oficial do diagnóstico deve ser 28');
+assert.equal(cfg.identification_field_count,2,'nome e empresa são identificação, não perguntas diagnósticas');
+assert.equal(cfg.pages.length,16,'UX agrupada deve ter 16 etapas antes das evidências');
+
+const pageQuestionIds=cfg.pages.flatMap(p=>p.question_ids);
+assert.equal(pageQuestionIds.length,30,'todas as perguntas/campos devem permanecer na paginação');
+assert.equal(new Set(pageQuestionIds).size,30,'nenhuma pergunta pode aparecer duas vezes');
+assert.deepEqual(pageQuestionIds,cfg.questions.map(q=>q.id),'a ordem das perguntas não pode ser alterada');
+assert.deepEqual(cfg.pages[0].question_ids,['RXD01','RXD02'],'nome e empresa devem aparecer juntos');
+assert.deepEqual(cfg.pages[1].question_ids,['RXD03','RXD04'],'contexto do negócio deve ser agrupado');
+assert.deepEqual(cfg.pages[2].question_ids,['RXD05','RXD06'],'oferta e público devem ser agrupados');
+assert.deepEqual(cfg.pages.at(-1).question_ids,['RXD30'],'destino final permanece em etapa própria');
 assert.equal(Object.keys(engine.axes).length,8,'cliente deve enxergar 8 eixos digitais');
 assert.equal(Object.keys(engine.journey).length,5,'jornada deve ter 5 visões');
 
@@ -48,4 +61,4 @@ const partial={...A};delete partial.RXD26;
 const pp=engine.buildPacket(partial,[],{});
 assert.ok(pp.score.coverage_pct<100);assert.equal(pp.score.status,'PARCIAL');
 
-console.log('RX_DIGITAL_2.0 tests OK');
+console.log('RX_DIGITAL_2.0 tests OK — 28 perguntas em 16 etapas');
