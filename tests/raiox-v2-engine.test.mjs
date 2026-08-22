@@ -7,6 +7,7 @@ for(const file of ['assets/js/raiox-digital-v2-schema.js','assets/js/raiox-digit
   vm.runInContext(fs.readFileSync(new URL('../'+file,import.meta.url),'utf8'),sandbox,{filename:file});
 }
 const W=sandbox.window,engine=W.RX_DIGITAL_ENGINE,cfg=W.RX_DIGITAL_V2;
+const plain=v=>JSON.parse(JSON.stringify(v));
 assert.ok(cfg,'schema V2 deve existir');assert.ok(engine,'engine V2 deve existir');
 assert.equal(cfg.questionnaire_version,'RX_DIGITAL_2.0');
 assert.equal(cfg.questions.length,30,'schema mantém 2 campos de identificação + 28 perguntas diagnósticas');
@@ -17,11 +18,11 @@ assert.equal(cfg.pages.length,16,'UX agrupada deve ter 16 etapas antes das evid�
 const pageQuestionIds=cfg.pages.flatMap(p=>p.question_ids);
 assert.equal(pageQuestionIds.length,30,'todas as perguntas/campos devem permanecer na paginação');
 assert.equal(new Set(pageQuestionIds).size,30,'nenhuma pergunta pode aparecer duas vezes');
-assert.deepEqual(pageQuestionIds,cfg.questions.map(q=>q.id),'a ordem das perguntas não pode ser alterada');
-assert.deepEqual(cfg.pages[0].question_ids,['RXD01','RXD02'],'nome e empresa devem aparecer juntos');
-assert.deepEqual(cfg.pages[1].question_ids,['RXD03','RXD04'],'contexto do negócio deve ser agrupado');
-assert.deepEqual(cfg.pages[2].question_ids,['RXD05','RXD06'],'oferta e público devem ser agrupados');
-assert.deepEqual(cfg.pages.at(-1).question_ids,['RXD30'],'destino final permanece em etapa própria');
+assert.deepEqual(plain(pageQuestionIds),plain(cfg.questions.map(q=>q.id)),'a ordem das perguntas não pode ser alterada');
+assert.deepEqual(plain(cfg.pages[0].question_ids),['RXD01','RXD02'],'nome e empresa devem aparecer juntos');
+assert.deepEqual(plain(cfg.pages[1].question_ids),['RXD03','RXD04'],'contexto do negócio deve ser agrupado');
+assert.deepEqual(plain(cfg.pages[2].question_ids),['RXD05','RXD06'],'oferta e público devem ser agrupados');
+assert.deepEqual(plain(cfg.pages.at(-1).question_ids),['RXD30'],'destino final permanece em etapa própria');
 assert.equal(Object.keys(engine.axes).length,8,'cliente deve enxergar 8 eixos digitais');
 assert.equal(Object.keys(engine.journey).length,5,'jornada deve ter 5 visões');
 
@@ -48,7 +49,7 @@ assert.equal(withVision.digital_presence.evidence_coverage_pct,25);
 
 const onlyLinkedin={...A,RXD07:['LinkedIn','Google Perfil da Empresa'],RXD08:{LinkedIn:'li','Google Perfil da Empresa':'google'},RXD09:'LinkedIn'};
 const p2=engine.buildPacket(onlyLinkedin,[],{});
-assert.deepEqual(JSON.parse(JSON.stringify(p2.digital_presence.channels.map(x=>x.channel))),['LinkedIn','Google Perfil da Empresa']);
+assert.deepEqual(plain(p2.digital_presence.channels.map(x=>x.channel)),['LinkedIn','Google Perfil da Empresa']);
 assert.equal(p2.digital_presence.channels.some(x=>x.channel==='Instagram'),false,'Instagram não pode ser obrigatório para a análise digital');
 
 const igRule=cfg.evidence.channel_rules['Instagram'];
