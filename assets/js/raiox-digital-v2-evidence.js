@@ -6,7 +6,8 @@
   'use strict';
   var cfg=function(){return root.RX_DIGITAL_V2&&root.RX_DIGITAL_V2.evidence||{};};
   var ACCEPT=['image/jpeg','image/png','image/webp'];
-  var TOKEN_ENDPOINT='https://ym-raiox-backend.vercel.app/api/raiox/evidence/token';
+  // Reaproveita função já existente para não ultrapassar o limite de funções do plano Vercel.
+  var TOKEN_ENDPOINT='https://ym-raiox-backend.vercel.app/api/raiox/interpretar';
 
   function uuid(){
     if(root.crypto&&root.crypto.randomUUID)return root.crypto.randomUUID();
@@ -62,7 +63,7 @@
   }
   async function requestUploadGrant(ref,endpoint){
     if(!ref)throw new Error('ref_ausente');
-    var resp=await fetch(endpoint||TOKEN_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ref:ref}),cache:'no-store'});
+    var resp=await fetch(endpoint||TOKEN_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'EVIDENCE_TOKEN',ref:ref}),cache:'no-store'});
     var data=await resp.json().catch(function(){return {};});
     if(!resp.ok||!data.ok||!data.upload_token||!data.upload_url)throw new Error(data.error||'upload_indisponivel');
     return data;
