@@ -246,7 +246,7 @@
       var r = await fetch(API_BASE + '/api/pagamento/status?ref=' + encodeURIComponent(ref), { cache: 'no-store' });
       if (!r.ok) throw new Error('status_' + r.status);
       var d = await r.json(); paymentStatus = d.status || 'pending';
-      if (paymentStatus === 'approved') { stopPolling(); clearPaymentMessage(); hideContingency(); originalGo('quiz'); root.renderQuiz(); return true; }
+      if (paymentStatus === 'approved') { stopPolling(); clearPaymentMessage(); hideContingency(); root.location.replace('/raio-x-app.html?ref=' + encodeURIComponent(ref)); return true; }
       var map = { awaiting_pix:'<b>Aguardando a confirmação do Pix.</b><br>Normalmente isso leva poucos segundos.', refused:'<b>O pagamento não foi aprovado.</b><br>Você pode tentar novamente ou falar com a YM.', canceled:'<b>A cobrança foi cancelada.</b><br>Inicie um novo pagamento para continuar.', expired:'<b>A cobrança expirou.</b><br>Inicie um novo pagamento para continuar.', refunded:'<b>Este pagamento foi estornado.</b><br>Fale com a YM se precisar de ajuda.' };
       showPaymentMessage(map[paymentStatus] || '<b>Pagamento ainda não confirmado.</b><br>Assim que o Asaas confirmar, o questionário será liberado.', false); return false;
     } catch (e) {
