@@ -3,6 +3,16 @@
   const BACKEND='https://ym-raiox-backend.vercel.app';
   const TARGET='/raio-x-app.html';
   let redirecting=false;
+
+  // O quiz/relatório legado continua somente como arquivo histórico da página de checkout.
+  // Nunca deve piscar ou ser exibido no fluxo oficial V2.2.
+  try{
+    const style=document.createElement('style');
+    style.id='ym-v22-production-guard';
+    style.textContent='#view-quiz,#view-proc,#view-report{display:none!important}';
+    document.head.appendChild(style);
+  }catch{}
+
   function getRef(){
     try{
       const q=new URLSearchParams(location.search);
@@ -10,10 +20,11 @@
     }catch{return'';}
   }
   function go(ref){
-    if(redirecting||!ref)return;
+    if(redirecting||!ref)return false;
     redirecting=true;
     try{localStorage.setItem('ym_raiox_ref',ref);}catch{}
     location.replace(TARGET+'?ref='+encodeURIComponent(ref));
+    return true;
   }
   async function resumeIfApproved(){
     const ref=getRef();
@@ -27,8 +38,7 @@
   function patch(){
     root.renderQuiz=function(){
       const ref=getRef();
-      if(ref) return go(ref);
-      return false;
+      return ref ? go(ref) : false;
     };
   }
   patch();
