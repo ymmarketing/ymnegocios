@@ -1,0 +1,42 @@
+name: Promote Raio-X V2.2 Official
+on:
+  push:
+    paths:
+      - '.trigger-raiox-v22-official'
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch paid production entrypoint
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('raio-x.html')
+          s=p.read_text(encoding='utf-8')
+          tag='<script src="/assets/js/raiox-v2-official-router.js?v=20260824"></script>'
+          if tag not in s:
+              if '</body>' not in s:
+                  raise SystemExit('raio-x.html sem </body>')
+              s=s.replace('</body>',tag+'\n</body>')
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Verify router is last production controller
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('raio-x.html').read_text(encoding='utf-8')
+          assert '/assets/js/raiox-v2-official-router.js?v=20260824' in s
+          assert s.rfind('raiox-v2-official-router.js') > s.rfind('raiox-report-v1-1.js')
+          print('router oficial V2.2 confirmado')
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'YM Automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add raio-x.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'feat(raiox): promote V2.2 to paid production flow'
+          git push
