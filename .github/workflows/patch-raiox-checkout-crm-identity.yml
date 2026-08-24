@@ -1,0 +1,52 @@
+name: Patch Raio-X checkout CRM identity
+on:
+  push:
+    paths:
+      - '.trigger-raiox-checkout-crm-identity'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Capture non-sensitive contact identity at checkout
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/js/raiox-payment-shell-v1.js')
+          s=p.read_text(encoding='utf-8')
+          old="""box.innerHTML = '<label for=\"payx-documento\" style=\"display:block;font-size:13px;font-weight:700;margin-bottom:7px\">CPF ou CNPJ do pagador</label>' +
+      '<input id=\"payx-documento\" type=\"text\" inputmode=\"numeric\" autocomplete=\"off\" maxlength=\"18\" placeholder=\"000.000.000-00\" style=\"width:100%;padding:14px 15px;background:#fff;outline:none\">' +"""
+          new="""box.innerHTML = '<label for=\"payx-nome\" style=\"display:block;font-size:13px;font-weight:700;margin-bottom:7px\">Seu nome</label>' +
+      '<input id=\"payx-nome\" type=\"text\" autocomplete=\"name\" maxlength=\"100\" placeholder=\"Nome e sobrenome\" style=\"width:100%;padding:14px 15px;background:#fff;outline:none;margin-bottom:12px\">' +
+      '<label for=\"payx-email\" style=\"display:block;font-size:13px;font-weight:700;margin-bottom:7px\">E-mail</label>' +
+      '<input id=\"payx-email\" type=\"email\" autocomplete=\"email\" maxlength=\"120\" placeholder=\"voce@empresa.com.br\" style=\"width:100%;padding:14px 15px;background:#fff;outline:none;margin-bottom:12px\">' +
+      '<label for=\"payx-telefone\" style=\"display:block;font-size:13px;font-weight:700;margin-bottom:7px\">WhatsApp</label>' +
+      '<input id=\"payx-telefone\" type=\"tel\" inputmode=\"tel\" autocomplete=\"tel\" maxlength=\"20\" placeholder=\"(31) 99999-9999\" style=\"width:100%;padding:14px 15px;background:#fff;outline:none;margin-bottom:12px\">' +
+      '<label for=\"payx-documento\" style=\"display:block;font-size:13px;font-weight:700;margin-bottom:7px\">CPF ou CNPJ do pagador</label>' +
+      '<input id=\"payx-documento\" type=\"text\" inputmode=\"numeric\" autocomplete=\"off\" maxlength=\"18\" placeholder=\"000.000.000-00\" style=\"width:100%;padding:14px 15px;background:#fff;outline:none\">' +"""
+          if 'id="payx-nome"' not in s:
+              if old not in s: raise SystemExit('customer fields anchor not found')
+              s=s.replace(old,new,1)
+          oldbody="body: JSON.stringify({ documento: documento })"
+          newbody="body: JSON.stringify({ documento: documento, nome: (document.getElementById('payx-nome') || {}).value || '', email: (document.getElementById('payx-email') || {}).value || '', telefone: (document.getElementById('payx-telefone') || {}).value || '' })"
+          if newbody not in s:
+              if oldbody not in s: raise SystemExit('payment body anchor not found')
+              s=s.replace(oldbody,newbody,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Verify checkout identity
+        run: |
+          grep -q 'payx-nome' assets/js/raiox-payment-shell-v1.js
+          grep -q 'payx-email' assets/js/raiox-payment-shell-v1.js
+          grep -q 'payx-telefone' assets/js/raiox-payment-shell-v1.js
+          grep -q "nome: (document.getElementById('payx-nome')" assets/js/raiox-payment-shell-v1.js
+      - name: Commit
+        run: |
+          git config user.name 'YM Automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add assets/js/raiox-payment-shell-v1.js
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'feat(raiox): capture checkout identity for CRM'
+          git push
