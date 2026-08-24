@@ -50,7 +50,7 @@ body{margin:0;background:#F7F9FC;color:#0A2540;font:15px Arial,sans-serif;displa
     const r=await fetch(BASE,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
     let html=await r.text();
     html=html.replace('</head>','<style>'+CSS+'</style></head>');
-    html=html.replace('</body>','<script>'+ENHANCE+'<\\/script></body>');
+    html=html.replace('</body>','<script>'+ENHANCE+'</scr'+'ipt></body>');
     document.open();document.write(html);document.close();
   }catch(e){document.body.innerHTML='<div class="load"><b>Não foi possível carregar a validação.</b><br><small>'+String(e.message||e)+'</small></div>'}
 })();
