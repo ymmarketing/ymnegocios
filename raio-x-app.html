@@ -31,7 +31,7 @@ function iconFor(name){name=(name||'').toLowerCase();if(name.includes('clareza')
 function enhance(win){
  const d=win.document;if(!d||!d.head)return;
  if(!d.getElementById('ym-final-patch')){const s=d.createElement('style');s.id='ym-final-patch';s.textContent=CSS;d.head.appendChild(s)}
- const hero=d.querySelector('.reporthero');if(!hero||hero.dataset.finalized)return;hero.dataset.finalized='1';
+ const hero=d.querySelector('.reporthero');if(!hero||hero.dataset.finalized)return;hero.dataset.finalized='1';syncCrm();
  try{d.title='Raio-X Estratégico | YM Marketing & Negócios';const tag=d.querySelector('.tag');if(tag)tag.textContent='Raio-X Estratégico'}catch(e){}
  const lead=hero.querySelector('.leadgrid>div:first-child');
  function applyCompany(company){company=String(company||'').trim();if(!lead||!company||lead.querySelector('.companyKicker'))return;const old=lead.querySelector('.eyebrow');if(old)old.remove();const k=d.createElement('div');k.className='companyKicker';k.textContent='Raio-X Estratégico de '+company.toUpperCase();const r=d.createElement('div');r.className='readyLine';r.textContent='Sua análise está pronta';lead.prepend(r);lead.prepend(k)}
@@ -45,6 +45,42 @@ function enhance(win){
  d.querySelectorAll('.j').forEach(j=>{if(j.querySelector('.journeyIcon'))return;const i=d.createElement('span');i.className='journeyIcon';const st=j.querySelector('b')?.textContent||'';i.textContent=st==='Encontrar'?'⌕':st==='Entender'?'◉':st==='Confiar'?'✓':st==='Contatar'?'↗':st==='Comprar'?'◆':'↻';j.prepend(i)});
  const ps=[...d.querySelectorAll('.prioritiesGrid .prio')];ps.forEach((p,i)=>{if(p.querySelector('.priorityNum'))return;const n=d.createElement('div');n.className='priorityNum';n.textContent='0'+(i+1);p.prepend(n)});
  d.querySelectorAll('.timeline .phase').forEach((p,i)=>{if(p.querySelector('.phaseNum'))return;const n=d.createElement('div');n.className='phaseNum';n.textContent=['30','60','90'][i]||'';p.prepend(n)});
+}
+
+async function syncCrm(){
+ if(!ref)return;
+ const once='ym_rx_crm_synced_'+ref;
+ try{if(sessionStorage.getItem(once)==='1')return}catch(e){}
+ try{
+   const rr=await fetch('https://ym-raiox-backend.vercel.app/api/raiox/rascunho-v2?ref='+encodeURIComponent(ref),{cache:'no-store'});
+   if(!rr.ok)return;
+   const data=await rr.json();
+   if(!data?.report||!data?.draft)return;
+   const draft=data.draft,report=data.report;
+   const answers={};
+   for(let i=1;i<=18;i++){
+     const id='Q'+String(i).padStart(2,'0');
+     const v=draft.answers?.[id];
+     answers[id]=Array.isArray(v)?v.join(' | '):String(v??'').trim();
+   }
+   if(draft.q06main&&answers.Q06)answers.Q06+=' | Principal origem de clientes: '+draft.q06main;
+   const overall=Number(report?.score_panel?.overall_score);
+   if(!Number.isFinite(overall))return;
+   const packet={
+     source_product:'RAIO_X_ESTRATEGICO',source_system:'ym_raiox_oficial',source_session_id:ref,
+     client_ref:draft.business_name||null,
+     packet_version:'VOS_INTAKE_2.0',questionnaire_version:'RX_CANONICO_2.0',scoring_version:'RX_SCORE_2.2',report_version:'RX_REPORT_2.2',
+     business_name:String(draft.business_name||'').trim(),answers,
+     complements:draft.complements||{},links:draft.links||[],
+     score:{overall,status:'FINAL',coverage_pct:100},
+     report,route_signal:null,human_validation_required:true,completed_at:new Date().toISOString()
+   };
+   const r=await fetch('https://srzdikgztpdtwbggwniz.supabase.co/functions/v1/save-raiox-intake',{
+     method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ref,packet})
+   });
+   if(r.ok){try{sessionStorage.setItem(once,'1')}catch(e){};console.info('[YM Raio-X] CRM sincronizado.');}
+   else console.warn('[YM Raio-X] CRM sync pendente:',r.status);
+ }catch(e){console.warn('[YM Raio-X] CRM sync será tentado novamente no próximo acesso.');}
 }
 function wrapItems(sec,cls){if(sec.querySelector('.'+cls))return;const items=[...sec.children].filter(x=>x.classList&&x.classList.contains('item'));if(!items.length)return;const w=sec.ownerDocument.createElement('div');w.className=cls;items[0].before(w);items.forEach(x=>w.appendChild(x))}
 frame.addEventListener('load',()=>{let win;try{win=frame.contentWindow}catch(e){return}const run=()=>{try{enhance(win)}catch(e){console.error(e)}};run();const mo=new MutationObserver(()=>setTimeout(run,20));mo.observe(win.document.documentElement,{childList:true,subtree:true});});
