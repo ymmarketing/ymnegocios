@@ -25,11 +25,13 @@ const CSS=`
 function scoreTone(n){n=Number(n)||0;return n<4?'critical':n<6?'attention':n<8?'good':'strong'}
 function scoreColor(n){return scoreTone(n)==='critical'?'#B42318':scoreTone(n)==='attention'?'#D9821B':scoreTone(n)==='strong'?'#067A55':'#0066FF'}
 function iconFor(name){name=(name||'').toLowerCase();if(name.includes('clareza')||name.includes('oferta'))return'◎';if(name.includes('conteúdo')||name.includes('conteudo'))return'▤';if(name.includes('prova')||name.includes('autoridade'))return'★';if(name.includes('presença')||name.includes('presenca')||name.includes('descoberta'))return'⌕';if(name.includes('captação')||name.includes('captacao')||name.includes('convers'))return'↗';if(name.includes('tangib'))return'◆';return'•'}
-function enhance(win){
+async function enhance(win){
  const d=win.document;if(!d||!d.head)return;
  if(!d.getElementById('ym-final-patch')){const s=d.createElement('style');s.id='ym-final-patch';s.textContent=CSS;d.head.appendChild(s)}
  const hero=d.querySelector('.reporthero');if(!hero||hero.dataset.finalized)return;hero.dataset.finalized='1';
- let company='';try{company=String(win.eval('state.business_name')||'').trim()}catch(e){}if(!company){try{const q=new URLSearchParams(location.search);const ref=q.get('ref');const raw=win.localStorage.getItem('ym_rx_v2_'+ref);if(raw)company=(JSON.parse(raw).business_name||'').trim()}catch(e){}}
+ let company='';try{company=String(win.eval('state.business_name')||'').trim()}catch(e){}
+ if(!company){try{const q=new URLSearchParams(location.search);const ref=q.get('ref');const raw=win.localStorage.getItem('ym_rx_v2_'+ref)||win.localStorage.getItem('ym_rx_v22_'+ref);if(raw)company=(JSON.parse(raw).business_name||'').trim()}catch(e){}}
+ if(!company){try{const q=new URLSearchParams(location.search);const ref=q.get('ref');if(ref){const rr=await fetch('https://ym-raiox-backend.vercel.app/api/raiox/rascunho-v2?ref='+encodeURIComponent(ref),{cache:'no-store'});if(rr.ok){const dd=await rr.json();company=String(dd&&dd.draft&&dd.draft.business_name||'').trim()}}}catch(e){}}
  const lead=hero.querySelector('.leadgrid>div:first-child');if(lead&&company){const old=lead.querySelector('.eyebrow');if(old)old.remove();const k=d.createElement('div');k.className='companyKicker';k.textContent='Raio-X Estratégico de '+company.toUpperCase();const r=d.createElement('div');r.className='readyLine';r.textContent='Sua análise está pronta';lead.prepend(r);lead.prepend(k)}
  const overall=hero.querySelector('.overall');if(overall&&!overall.dataset.ring){const strong=overall.querySelector('strong');const val=parseFloat((strong?.textContent||'0').replace(',','.'))||0;const band=overall.querySelector('.band')?.textContent||'';overall.dataset.ring='1';overall.style.setProperty('--tone',scoreColor(val));overall.style.setProperty('--pct',Math.max(0,Math.min(100,val*10)));overall.innerHTML='<div class="overallTitle">Score geral da jornada</div><div class="ring"><div class="ringInner"><strong>'+val.toFixed(1).replace('.',',')+'</strong><span class="den">/10</span></div></div><div class="overallBand">'+band+'</div>'}
  d.querySelectorAll('.summarycards>div').forEach((el,i)=>{if(el.querySelector('.summaryIcon'))return;const x=d.createElement('span');x.className='summaryIcon';x.textContent=i===0?'✓':i===1?'!':'◎';el.prepend(x)});
@@ -41,7 +43,7 @@ function enhance(win){
  d.querySelectorAll('.timeline .phase').forEach((p,i)=>{if(p.querySelector('.phaseNum'))return;const n=d.createElement('div');n.className='phaseNum';n.textContent=['30','60','90'][i]||'';p.prepend(n)});
 }
 function wrapItems(sec,cls){if(sec.querySelector('.'+cls))return;const items=[...sec.children].filter(x=>x.classList&&x.classList.contains('item'));if(!items.length)return;const w=sec.ownerDocument.createElement('div');w.className=cls;items[0].before(w);items.forEach(x=>w.appendChild(x))}
-frame.addEventListener('load',()=>{let win;try{win=frame.contentWindow}catch(e){return}const run=()=>{try{enhance(win)}catch(e){console.error(e)}};run();const mo=new MutationObserver(()=>setTimeout(run,20));mo.observe(win.document.documentElement,{childList:true,subtree:true});});
+frame.addEventListener('load',()=>{let win;try{win=frame.contentWindow}catch(e){return}const run=()=>{enhance(win).catch(e=>console.error(e))};run();const mo=new MutationObserver(()=>setTimeout(run,20));mo.observe(win.document.documentElement,{childList:true,subtree:true});});
 })();
 </script>
 </body>
