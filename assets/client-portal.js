@@ -49,5 +49,5 @@
   if(session){try{await loadPortal();return}catch(e){if(String(e.message).includes('client_access_not_found'))await sb.auth.signOut()}}
   showAuth();
  }
- boot();
+ window.CentralYMClientPortal={get data(){return portal},reload:loadPortal};const performanceScript=document.createElement('script');performanceScript.src='/assets/client-performance-portal.js?v=20260824-1';performanceScript.defer=true;document.head.append(performanceScript);boot();
 })();

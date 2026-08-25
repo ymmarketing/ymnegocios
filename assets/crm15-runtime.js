@@ -137,6 +137,7 @@
     .then(() => loadScript('/assets/crm15-copy-prospect-message-v1.js?v=20260820-1', 'ymProspectMessageV1'))
     .then(() => loadScript('/assets/central-ym-timezone.js?v=20260820-1', 'ymCentralTimezone'))
     .then(() => loadScript('/assets/central-ym-admin.js?v=20260820-1', 'ymCentralClientAdmin'))
+    .then(() => loadScript('/assets/client-performance-admin.js?v=20260824-1', 'ymClientPerformanceAdmin'))
     .then(() => loadScript('/assets/central-ym-shortcut.js?v=20260820-2', 'ymCentralAdminShortcut'))
     .then(startNativeClientDetails)
     .catch((error) => console.error('CRM interaction layer', error));
