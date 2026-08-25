@@ -19,6 +19,12 @@ function safeEqual(a: string, b: string) {
   return diff === 0;
 }
 
+function addDays(dateString: string, days: number) {
+  const date = new Date(`${dateString}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
 async function findAccess(payload: any) {
   const payment = payload?.payment || {};
   const subscription = payload?.subscription || {};
@@ -39,12 +45,9 @@ async function findAccess(payload: any) {
 async function activateJourney(access: any, eventName: string, payment: any) {
   const now = new Date();
   const today = now.toISOString().slice(0, 10);
-  const end = new Date(`${today}T12:00:00Z`);
-  end.setUTCDate(end.getUTCDate() + 29);
-  const endDate = end.toISOString().slice(0, 10);
   const periodEnd = new Date(now.getTime() + 30 * 86400000).toISOString();
 
-  const patch: Record<string, unknown> = {
+  await admin.from('mb_subscriptions').update({
     status: 'active',
     last_payment_status: eventName,
     asaas_payment_id: payment?.id || access.asaas_payment_id,
@@ -53,28 +56,68 @@ async function activateJourney(access: any, eventName: string, payment: any) {
     current_period_end: periodEnd,
     activated_at: access.activated_at || now.toISOString(),
     updated_at: now.toISOString()
-  };
-  await admin.from('mb_subscriptions').update(patch).eq('id', access.id);
+  }).eq('id', access.id);
 
   const { data: activeJourney } = await admin
     .from('mb_journeys')
-    .select('id,starts_on,ends_on,status')
+    .select('id,subscription_id,starts_on,ends_on,status')
     .eq('user_id', access.user_id)
     .eq('status', 'active')
     .maybeSingle();
 
-  if (activeJourney && activeJourney.ends_on >= today) return;
+  if (activeJourney && activeJourney.ends_on >= today) {
+    const { data: scheduled } = await admin
+      .from('mb_journeys')
+      .select('id,subscription_id,starts_on,ends_on')
+      .eq('user_id', access.user_id)
+      .eq('status', 'scheduled')
+      .maybeSingle();
+
+    if (!scheduled) {
+      const startsOn = addDays(activeJourney.ends_on, 1);
+      await admin.from('mb_journeys').insert({
+        user_id: access.user_id,
+        subscription_id: access.id,
+        starts_on: startsOn,
+        ends_on: addDays(startsOn, 29),
+        status: 'scheduled',
+        source: 'renewal'
+      });
+    } else if (scheduled.subscription_id !== access.id) {
+      throw new Error('scheduled_journey_conflict');
+    }
+    return;
+  }
+
   if (activeJourney?.id) {
-    await admin.from('mb_journeys').update({ status: 'completed', completed_at: now.toISOString() }).eq('id', activeJourney.id);
+    await admin.from('mb_journeys').update({
+      status: 'completed',
+      completed_at: now.toISOString()
+    }).eq('id', activeJourney.id);
+  }
+
+  const { data: dueScheduled } = await admin
+    .from('mb_journeys')
+    .select('id,subscription_id,starts_on,ends_on')
+    .eq('user_id', access.user_id)
+    .eq('status', 'scheduled')
+    .lte('starts_on', today)
+    .order('starts_on', { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (dueScheduled?.id) {
+    await admin.from('mb_journeys').update({ status: 'active' }).eq('id', dueScheduled.id);
+    return;
   }
 
   await admin.from('mb_journeys').insert({
     user_id: access.user_id,
     subscription_id: access.id,
     starts_on: today,
-    ends_on: endDate,
+    ends_on: addDays(today, 29),
     status: 'active',
-    source: access.activated_at ? 'renewal' : 'purchase'
+    source: 'purchase'
   });
 }
 
@@ -117,13 +160,21 @@ Deno.serve(async (req) => {
         await activateJourney(access, eventName, payment);
       } else if (eventName === 'PAYMENT_OVERDUE') {
         await admin.from('mb_subscriptions').update({
-          status: 'past_due', last_payment_status: eventName, updated_at: new Date().toISOString()
+          status: 'past_due',
+          last_payment_status: eventName,
+          updated_at: new Date().toISOString()
         }).eq('id', access.id);
       } else if (['PAYMENT_REFUNDED','PAYMENT_DELETED','PAYMENT_REVERSED'].includes(eventName)) {
         await admin.from('mb_subscriptions').update({
-          status: 'canceled', last_payment_status: eventName, canceled_at: new Date().toISOString(), updated_at: new Date().toISOString()
+          status: 'canceled',
+          last_payment_status: eventName,
+          canceled_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         }).eq('id', access.id);
-        await admin.from('mb_journeys').update({ status: 'expired' }).eq('user_id', access.user_id).eq('status', 'active');
+
+        await admin.from('mb_journeys').update({ status: 'expired' })
+          .eq('subscription_id', access.id)
+          .in('status', ['active','scheduled']);
       }
     }
 
