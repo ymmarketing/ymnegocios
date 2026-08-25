@@ -4,7 +4,7 @@
   let manualEvents=[];
 
   async function calendarApi(body){
-    const s=await YM.requireSession('/CRM/CENTRAL');
+    const s=await YM.requireSession('/CENTRAL');
     if(!s)throw new Error('Sessão necessária');
     const r=await fetch(YM.SUPABASE_URL+'/functions/v1/central-ym-calendar-admin',{
       method:'POST',
@@ -225,6 +225,12 @@
   }
 
   async function boot(){
+    if(!window.ClientJourneyAdmin&&!document.querySelector('script[data-client-journey-admin]')){
+      const script=document.createElement('script');
+      script.src='/assets/client-journey-admin.js?v=20260825-1';
+      script.dataset.clientJourneyAdmin='1';
+      document.head.append(script);
+    }
     const btn=$('caAddEvent');
     if(btn)btn.onclick=()=>openEventModal();
     await loadManualEvents();
