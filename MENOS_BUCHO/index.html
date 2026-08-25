@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#173b2d">
+  <meta name="description" content="Menos Bucho — jornada de 30 dias para construir novos hábitos com desafios simples e personalizados.">
+  <title>Menos Bucho — Novos Hábitos</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-wrap">
+      <div class="brand-mark">MB</div>
+      <div>
+        <strong>MENOS BUCHO</strong>
+        <small>NOVOS HÁBITOS</small>
+      </div>
+    </div>
+    <button id="resetDemo" class="ghost-btn" type="button" hidden>Recomeçar</button>
+  </header>
+
+  <main id="app" class="app-shell" aria-live="polite"></main>
+
+  <footer class="footer">
+    <span>Desenvolvido pela YM Marketing & Negócios</span>
+    <span>•</span>
+    <span>Hábitos sustentáveis, sem promessas milagrosas.</span>
+  </footer>
+
+  <template id="onboardingTemplate">
+    <section class="hero-card">
+      <span class="eyebrow">Sua jornada começa aqui</span>
+      <h1>30 dias para criar hábitos que cabem na sua vida.</h1>
+      <p>Você recebe desafios diários simples, registra como foi e a jornada ajusta o ritmo conforme sua constância.</p>
+    </section>
+
+    <form id="onboardingForm" class="panel form-panel">
+      <div class="step-head">
+        <div>
+          <span class="eyebrow">Diagnóstico inicial</span>
+          <h2>Conte como você quer começar</h2>
+        </div>
+        <span class="step-pill">1 de 1</span>
+      </div>
+
+      <label>
+        Como podemos te chamar?
+        <input name="name" type="text" maxlength="60" required placeholder="Seu primeiro nome">
+      </label>
+
+      <label>
+        Seu principal objetivo agora
+        <select name="goal" required>
+          <option value="">Selecione</option>
+          <option value="rotina">Ter uma rotina mais organizada</option>
+          <option value="alimentacao">Melhorar hábitos de alimentação</option>
+          <option value="movimento">Me movimentar com mais frequência</option>
+          <option value="energia">Ter mais disposição no dia a dia</option>
+          <option value="consistencia">Criar constância e parar de começar do zero</option>
+        </select>
+      </label>
+
+      <fieldset>
+        <legend>O que você quer fortalecer? <small>Escolha até 3</small></legend>
+        <div class="choice-grid" data-max="3">
+          <label class="choice"><input type="checkbox" name="focus" value="hidratacao"><span>Hidratação</span></label>
+          <label class="choice"><input type="checkbox" name="focus" value="alimentacao"><span>Alimentação</span></label>
+          <label class="choice"><input type="checkbox" name="focus" value="movimento"><span>Movimento</span></label>
+          <label class="choice"><input type="checkbox" name="focus" value="sono"><span>Sono</span></label>
+          <label class="choice"><input type="checkbox" name="focus" value="planejamento"><span>Planejamento</span></label>
+          <label class="choice"><input type="checkbox" name="focus" value="mente"><span>Bem-estar</span></label>
+        </div>
+      </fieldset>
+
+      <label>
+        Quanto tempo você consegue reservar por dia?
+        <select name="minutes" required>
+          <option value="5">Até 5 minutos</option>
+          <option value="10" selected>Até 10 minutos</option>
+          <option value="15">Até 15 minutos</option>
+          <option value="20">Até 20 minutos</option>
+        </select>
+      </label>
+
+      <label>
+        Qual ritmo combina mais com você?
+        <select name="pace" required>
+          <option value="1">Leve — quero começar pequeno</option>
+          <option value="2" selected>Moderado — consigo me desafiar um pouco</option>
+          <option value="3">Ativo — gosto de metas um pouco maiores</option>
+        </select>
+      </label>
+
+      <label>
+        Existe algo que devemos considerar ao sugerir seus desafios? <small>Opcional</small>
+        <textarea name="notes" rows="3" maxlength="400" placeholder="Ex.: horários apertados, pouca mobilidade, rotina noturna..."></textarea>
+      </label>
+
+      <div class="info-box">
+        O Menos Bucho trabalha com hábitos gerais de rotina e bem-estar. Ele não substitui orientação médica, nutricional ou de atividade física individualizada.
+      </div>
+
+      <button class="primary-btn" type="submit">Montar minha jornada</button>
+    </form>
+  </template>
+
+  <script src="./assets/challenges.js"></script>
+  <script src="./assets/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>
