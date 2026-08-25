@@ -6,7 +6,9 @@ on:
       - 'areadocliente/**'
       - 'Identidade/**'
       - 'CRM/CENTRAL/**'
+      - 'CENTRAL/**'
       - 'assets/client-portal.*'
+      - 'assets/client-journey-admin.js'
       - 'assets/central-ym-*.js'
       - 'assets/central-ym-*.css'
       - 'assets/crm15-runtime.js'
@@ -28,6 +30,7 @@ jobs:
       - name: JavaScript syntax
         run: |
           node --check assets/client-portal.js
+          node --check assets/client-journey-admin.js
           node --check assets/central-ym-admin.js
           node --check assets/central-ym-identity.js
           node --check assets/central-ym-console.js
@@ -37,15 +40,16 @@ jobs:
           node --check assets/crm15-runtime.js
       - name: No file upload in Central YM
         run: |
-          ! grep -Rni 'type="file"' areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js assets/central-ym-timezone.js Identidade assets/central-ym-identity.js
-          ! grep -Rni "type='file'" areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js assets/central-ym-timezone.js Identidade assets/central-ym-identity.js
-          ! grep -RniE 'storage\.from\(|upload\(' areadocliente CRM/CENTRAL assets/client-portal.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js assets/central-ym-timezone.js Identidade assets/central-ym-identity.js
+          ! grep -Rni 'type="file"' areadocliente CENTRAL CRM/CENTRAL assets/client-portal.js assets/client-journey-admin.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js assets/central-ym-timezone.js Identidade assets/central-ym-identity.js
+          ! grep -Rni "type='file'" areadocliente CENTRAL CRM/CENTRAL assets/client-portal.js assets/client-journey-admin.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js assets/central-ym-timezone.js Identidade assets/central-ym-identity.js
+          ! grep -RniE 'storage\.from\(|upload\(' areadocliente CENTRAL CRM/CENTRAL assets/client-portal.js assets/client-journey-admin.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js assets/central-ym-timezone.js Identidade assets/central-ym-identity.js
       - name: Drive-link architecture present
         run: |
           grep -qi 'Drive' areadocliente/index.html
           grep -qi 'Drive' Identidade/index.html
           grep -qi 'Drive' CRM/CENTRAL/index.html
           grep -qi 'Google Drive' assets/central-ym-console.js
+          grep -qi 'Google Drive' assets/client-journey-admin.js
       - name: Admin architecture present
         run: |
           grep -qi 'Novo cliente' CRM/CENTRAL/index.html
@@ -57,6 +61,9 @@ jobs:
           grep -qi 'Salvar alterações' assets/central-ym-calendar-add.js
           grep -qi 'Excluir evento' assets/central-ym-calendar-add.js
           grep -qi "action:'DELETE_EVENT'" assets/central-ym-calendar-add.js
+          grep -qi 'Gates oficiais' assets/client-journey-admin.js
+          grep -qi 'UPSERT_CONTRACT' assets/client-journey-admin.js
+          grep -qi 'UPSERT_ACCESS' assets/client-journey-admin.js
       - name: Timezone normalization present
         run: |
           grep -qi 'central-ym-timezone.js' CRM/CENTRAL/index.html
