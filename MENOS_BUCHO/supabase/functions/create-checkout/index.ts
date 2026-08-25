@@ -24,6 +24,13 @@ function isRecent(iso?: string | null, minutes = 45) {
   return Date.now() - new Date(iso).getTime() < minutes * 60_000;
 }
 
+function daysUntil(dateString: string) {
+  const today = new Date();
+  const current = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  const target = new Date(`${dateString}T00:00:00Z`).getTime();
+  return Math.floor((target - current) / 86400000);
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
   if (req.method !== 'POST') return json({ ok: false, error: 'method_not_allowed' }, 405);
@@ -61,6 +68,43 @@ Deno.serve(async (req) => {
   }
   if (existing?.id) {
     await admin.from('mb_subscriptions').update({ status: 'expired', updated_at: new Date().toISOString() }).eq('id', existing.id);
+  }
+
+  const { data: liveAutoRenew } = await admin
+    .from('mb_subscriptions')
+    .select('id,status')
+    .eq('user_id', user.id)
+    .eq('auto_renew', true)
+    .in('status', ['active','past_due'])
+    .limit(1)
+    .maybeSingle();
+
+  if (liveAutoRenew) {
+    return json({ ok: false, error: 'auto_renew_already_active' }, 409);
+  }
+
+  const { data: scheduledJourney } = await admin
+    .from('mb_journeys')
+    .select('id,starts_on,ends_on')
+    .eq('user_id', user.id)
+    .eq('status', 'scheduled')
+    .limit(1)
+    .maybeSingle();
+
+  if (scheduledJourney) {
+    return json({ ok: false, error: 'renewal_already_paid' }, 409);
+  }
+
+  const { data: activeJourney } = await admin
+    .from('mb_journeys')
+    .select('id,ends_on')
+    .eq('user_id', user.id)
+    .eq('status', 'active')
+    .limit(1)
+    .maybeSingle();
+
+  if (activeJourney?.ends_on && daysUntil(activeJourney.ends_on) > 7) {
+    return json({ ok: false, error: 'renewal_not_open' }, 409);
   }
 
   const externalReference = `mb_${user.id}_${crypto.randomUUID()}`;
