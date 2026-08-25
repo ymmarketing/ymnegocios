@@ -83,9 +83,10 @@
       try { const parsed = new URL(driveUrl); if (!['http:','https:'].includes(parsed.protocol)) throw new Error(); } catch { throw new Error('Inclua o link do roteiro ou da arte/vídeo no Drive antes de enviar para aprovação.'); }
       const saved = await YM.sb.from('central_ym_content_items').update(payload).eq('id', contentId); if (saved.error) throw saved.error;
       const scheduledAt = payload.publish_date ? `${payload.publish_date}T${payload.publish_time || '12:00'}:00-03:00` : null;
-      await adminApi({ action:'CREATE_APPROVAL', client_id:payload.client_id, title:payload.client_title || payload.title_internal, content_type:payload.format, description:payload.client_objective || payload.client_notes || '', drive_url:driveUrl, scheduled_at:scheduledAt, version_notes:'Enviado pelo calendário de conteúdos da Central YM.' });
+      const approval = await adminApi({ action:'CREATE_APPROVAL', client_id:payload.client_id, title:payload.client_title || payload.title_internal, content_type:payload.format, description:payload.client_objective || payload.client_notes || '', drive_url:driveUrl, scheduled_at:scheduledAt, version_notes:'Enviado pelo calendário de conteúdos da Central YM.' });
       const review = await YM.sb.from('central_ym_content_items').update({ status:'REVISAO', visible_to_client:true, updated_at:new Date().toISOString() }).eq('id', contentId); if (review.error) throw review.error;
-      root.remove(); YM.toast('Conteúdo salvo e enviado para aprovação do cliente.'); document.querySelector('[data-tab="clientes"]')?.click();
+      const delivery = approval?.email_delivery?.status; const feedback = delivery === 'SENT' ? 'Conteúdo salvo, enviado para aprovação e cliente avisado por e-mail.' : delivery === 'FAILED' ? 'Conteúdo salvo e enviado para aprovação, mas o e-mail não pôde ser enviado.' : delivery === 'SKIPPED' ? 'Conteúdo salvo e enviado para aprovação; cliente sem e-mail transacional cadastrado.' : delivery === 'DUPLICATE' ? 'Conteúdo salvo e enviado para aprovação; este aviso já havia sido enviado.' : 'Conteúdo salvo e enviado para aprovação do cliente.';
+      root.remove(); YM.toast(feedback, delivery === 'FAILED'); document.querySelector('[data-tab="clientes"]')?.click();
     } catch (error) { YM.toast(error.message, true); button.disabled = false; button.textContent = original; }
   }
   function enhanceClientCalendarModal() {

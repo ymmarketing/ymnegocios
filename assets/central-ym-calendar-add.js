@@ -130,7 +130,7 @@
       const btn=m.querySelector('#ceSave');
       btn.disabled=true;btn.textContent=editing?'Salvando alterações…':'Salvando…';
       try{
-        await calendarApi({
+        const saved=await calendarApi({
           action:'UPSERT_EVENT',
           id:editing?event.id:null,
           client_id:clientId||null,
@@ -143,7 +143,9 @@
           visible_to_client:isLinked&&m.querySelector('#ceVisible').checked
         });
         m.remove();
-        toast(editing?'Evento atualizado.':(isLinked?'Evento salvo e vinculado ao cliente.':'Evento interno da YM salvo.'));
+        const delivery=saved?.email_delivery?.status;
+        const feedback=delivery==='SENT'?'Evento salvo e e-mail enviado ao cliente.':delivery==='FAILED'?'Evento salvo, mas o e-mail não pôde ser enviado.':delivery==='SKIPPED'?'Evento salvo; o cliente não possui e-mail transacional cadastrado.':delivery==='DUPLICATE'?'Evento salvo; este aviso já havia sido enviado.':'';
+        toast(feedback||(editing?'Evento atualizado.':(isLinked?'Evento salvo e vinculado ao cliente.':'Evento interno da YM salvo.')),delivery==='FAILED');
         await loadManualEvents();
         $('refreshAdmin')?.click();
       }catch(e){
