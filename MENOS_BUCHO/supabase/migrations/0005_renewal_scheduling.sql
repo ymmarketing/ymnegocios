@@ -25,6 +25,7 @@ set search_path = public
 as $$
 declare
   uid uuid := auth.uid();
+  v_today date := (now() at time zone 'America/Sao_Paulo')::date;
 begin
   if uid is null then
     raise exception 'not_authenticated';
@@ -34,7 +35,7 @@ begin
      set status = 'completed', completed_at = coalesce(completed_at, now())
    where user_id = uid
      and status = 'active'
-     and ends_on < current_date;
+     and ends_on < v_today;
 
   if not exists (
     select 1 from public.mb_journeys where user_id = uid and status = 'active'
@@ -45,7 +46,7 @@ begin
        select id from public.mb_journeys
         where user_id = uid
           and status = 'scheduled'
-          and starts_on <= current_date
+          and starts_on <= v_today
         order by starts_on asc
         limit 1
      );
