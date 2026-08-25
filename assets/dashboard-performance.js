@@ -1,0 +1,21 @@
+(() => {
+  if (window.__ymDashboardPerformance) return; window.__ymDashboardPerformance = true;
+  const E = (value) => window.YM?.esc ? YM.esc(value) : String(value ?? '').replace(/[&<>"']/g, '');
+  const money = (value) => Number(value || 0).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+  const currentMonth = () => new Date().toISOString().slice(0, 7) + '-01';
+  let snapshot = null;
+  async function fetchJson(path, body) {
+    const session = await YM.requireSession('/DASHBOARD'); if (!session) throw new Error('Sessão necessária.');
+    const response = await fetch(YM.SUPABASE_URL + '/functions/v1/' + path, { method:body ? 'POST' : 'GET', headers:{ Authorization:'Bearer ' + session.access_token, apikey:YM.PUBLISHABLE_KEY, 'Content-Type':'application/json' }, body:body ? JSON.stringify(body) : undefined });
+    const json = await response.json().catch(() => ({})); if (!response.ok) throw new Error(json.detail || json.error || 'Falha ao carregar indicadores.'); return json;
+  }
+  function targetForMonth(history, month) { return [...(history || [])].filter((x) => x.effective_month <= month).sort((a, b) => String(b.effective_month).localeCompare(String(a.effective_month)))[0]?.monthly_revenue_target ?? 0; }
+  function render() {
+    const root = document.getElementById('dashRoot'); if (!root || !snapshot || root.querySelector('#dashPerformanceEvidence')) return;
+    const clients = snapshot.clients.filter((x) => x.status === 'ATIVO'); const measured = clients.filter((x) => x.kpis_measured > 0).length; const growing = clients.filter((x) => x.evolution_status === 'CRESCENDO').length; const actions = clients.reduce((sum, x) => sum + Number(x.actions_total || 0), 0); const target = targetForMonth(snapshot.targets, currentMonth());
+    const section = document.createElement('section'); section.id = 'dashPerformanceEvidence'; section.className = 'dash-section'; section.innerHTML = `<div class="section-divider"></div><div class="dash-section-head"><div><h2>Performance e evidências dos clientes</h2><p>Baseline, meta, resultado mensal e ações implantadas — leitura de contribuição observada, não causalidade automática.</p></div><a class="ym-btn secondary" href="/CENTRAL">Abrir Central YM</a></div><div class="dash-grid dash-kpis"><div class="dash-kpi"><b>${clients.length}</b><span>Clientes ativos acompanhados</span></div><div class="dash-kpi green"><b>${measured}</b><span>Clientes com medição</span><small>${clients.length ? Math.round(measured / clients.length * 100) : 0}% da carteira ativa</small></div><div class="dash-kpi green"><b>${growing}</b><span>Clientes em evolução positiva</span></div><div class="dash-kpi orange"><b>${actions}</b><span>Ações implantadas registradas</span></div><div class="dash-kpi"><b>${money(target)}</b><span>Meta financeira vigente</span><small>Editável na aba Financeiro</small></div></div><div class="dash-card"><table class="mini-table"><thead><tr><th>Cliente</th><th>KPIs</th><th>Medidos</th><th>Na meta</th><th>Ações</th><th>Evolução</th></tr></thead><tbody>${clients.length ? clients.map((client) => { const contact = client.contact || {}; const status = { CRESCENDO:'Crescendo', QUEDA:'Atenção', ESTAVEL:'Estável', SEM_DADOS:'Sem dados' }[client.evolution_status] || 'Sem dados'; return `<tr><td><b>${E(contact.business_name || contact.name || 'Cliente')}</b><div class="updated">${E(contact.segment || '')}</div></td><td>${client.kpis_total || 0}</td><td>${client.kpis_measured || 0}</td><td>${client.kpis_on_target || 0}</td><td>${client.actions_total || 0}</td><td><span class="pill">${E(status)}</span></td></tr>`; }).join('') : '<tr><td colspan="6">Nenhum cliente com estrutura de performance cadastrada.</td></tr>'}</tbody></table></div>`;
+    root.append(section);
+  }
+  async function load() { try { const [performance, targets] = await Promise.all([fetchJson('performance-admin', { action:'OVERVIEW' }), fetchJson('finance-targets')]); snapshot = { clients:performance.clients || [], targets:targets.target_history || [] }; render(); } catch (error) { console.warn('Dashboard performance', error); } }
+  new MutationObserver(() => requestAnimationFrame(render)).observe(document.getElementById('dashRoot') || document.body, { childList:true, subtree:false }); setInterval(render, 1000); load();
+})();
