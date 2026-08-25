@@ -43,15 +43,35 @@ async function findAccess(payload: any) {
 }
 
 async function activateJourney(access: any, eventName: string, payment: any) {
+  const paymentId = payment?.id ? String(payment.id) : null;
+  if (paymentId && access.asaas_payment_id === paymentId && ['active','paid_unclaimed'].includes(access.status)) {
+    return;
+  }
+
   const now = new Date();
   const today = now.toISOString().slice(0, 10);
   const periodEnd = new Date(now.getTime() + 30 * 86400000).toISOString();
+  const subscriptionId = payment?.subscription || access.asaas_subscription_id || null;
+
+  if (!access.user_id) {
+    await admin.from('mb_subscriptions').update({
+      status: 'paid_unclaimed',
+      last_payment_status: eventName,
+      asaas_payment_id: paymentId || access.asaas_payment_id,
+      asaas_subscription_id: subscriptionId,
+      current_period_start: now.toISOString(),
+      current_period_end: periodEnd,
+      activated_at: access.activated_at || now.toISOString(),
+      updated_at: now.toISOString()
+    }).eq('id', access.id);
+    return;
+  }
 
   await admin.from('mb_subscriptions').update({
     status: 'active',
     last_payment_status: eventName,
-    asaas_payment_id: payment?.id || access.asaas_payment_id,
-    asaas_subscription_id: payment?.subscription || access.asaas_subscription_id,
+    asaas_payment_id: paymentId || access.asaas_payment_id,
+    asaas_subscription_id: subscriptionId,
     current_period_start: now.toISOString(),
     current_period_end: periodEnd,
     activated_at: access.activated_at || now.toISOString(),
@@ -160,7 +180,7 @@ Deno.serve(async (req) => {
         await activateJourney(access, eventName, payment);
       } else if (eventName === 'PAYMENT_OVERDUE') {
         await admin.from('mb_subscriptions').update({
-          status: 'past_due',
+          status: access.user_id ? 'past_due' : 'pending',
           last_payment_status: eventName,
           updated_at: new Date().toISOString()
         }).eq('id', access.id);
@@ -172,9 +192,11 @@ Deno.serve(async (req) => {
           updated_at: new Date().toISOString()
         }).eq('id', access.id);
 
-        await admin.from('mb_journeys').update({ status: 'expired' })
-          .eq('subscription_id', access.id)
-          .in('status', ['active','scheduled']);
+        if (access.user_id) {
+          await admin.from('mb_journeys').update({ status: 'expired' })
+            .eq('subscription_id', access.id)
+            .in('status', ['active','scheduled']);
+        }
       }
     }
 
