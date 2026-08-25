@@ -15,6 +15,7 @@ as $$
 declare
   v_uid uuid := auth.uid();
   v_email text := lower(btrim(coalesce(auth.jwt() ->> 'email', '')));
+  v_today date := (now() at time zone 'America/Sao_Paulo')::date;
   v_purchase public.mb_subscriptions%rowtype;
   v_active public.mb_journeys%rowtype;
   v_scheduled public.mb_journeys%rowtype;
@@ -88,7 +89,7 @@ begin
    limit 1
    for update;
 
-  if v_active.id is not null and v_active.ends_on >= current_date then
+  if v_active.id is not null and v_active.ends_on >= v_today then
     select j.* into v_scheduled
       from public.mb_journeys j
      where j.user_id = v_uid
@@ -133,8 +134,8 @@ begin
   values (
     v_uid,
     v_purchase.id,
-    current_date,
-    current_date + 29,
+    v_today,
+    v_today + 29,
     'active',
     'purchase'
   )
