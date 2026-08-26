@@ -1,0 +1,58 @@
+name: UX internal dynamic components 2026-08-26
+
+on:
+  push:
+    paths:
+      - '.github/workflows/ux-internal-dynamic-components-20260826.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch dynamic component readability
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/central-ym-console.css')
+          s=p.read_text(encoding='utf-8')
+          marker='YM DYNAMIC COMPONENT READABILITY 20260826'
+          if marker not in s:
+              s += r'''
+
+/* YM DYNAMIC COMPONENT READABILITY 20260826 */
+body .cap-kpi span{font-size:12px;line-height:1.45}body .cap-filter label{font-size:12px}body .cap-panel h2{font-size:17px}body .cap-note{font-size:12.5px;line-height:1.55}
+body .cap-table th{font-size:11.5px}body .cap-table td{font-size:13px;line-height:1.45}body .cap-sub{font-size:11.5px;line-height:1.4}body .cap-status{font-size:11px;padding:6px 8px}body .cap-int b{font-size:13px}body .cap-int span{font-size:12px;line-height:1.45}
+body .perf-modal h2{font-size:19px}body .perf-modal header small{font-size:12px;line-height:1.4}body .perf-close{width:40px;height:40px}body .perf-tabs button{font-size:13px;min-height:40px;padding:9px 12px}
+body .perf-stat span{font-size:12px}body .perf-card h3,body .perf-form h3{font-size:14px}body .perf-card p{font-size:12.5px;line-height:1.55}body .perf-badge{font-size:11px;padding:6px 8px}
+body .perf-values small{font-size:11px}body .perf-values b{font-size:13px}body .perf-btn{font-size:13px;min-height:40px;padding:9px 12px}body .perf-label{font-size:12px}body .perf-input,body .perf-select,body .perf-textarea{font-size:14px;min-height:42px}body .perf-empty{font-size:13px;line-height:1.55}body .perf-note{font-size:12.5px;line-height:1.55}
+#pkGovernance small{font-size:12px!important;line-height:1.45!important}#pkGovernance [style*="font-size:8px"],#pkGovernance [style*="font-size:8.5px"],#reporteiAdminPanel [style*="font-size:8px"],#repKpiMappingPanel [style*="font-size:8px"]{font-size:12px!important;line-height:1.5!important}
+body .cja-head h3{font-size:16px}body .cja-head p{font-size:13px;line-height:1.55}body .cja-summary span{font-size:12px}body .cja-gates-title h4{font-size:14px}body .cja-gates-title small{font-size:12px}
+body .cja-gate h5{font-size:13px}body .cja-gate-status{font-size:10.5px}body .cja-gate small{font-size:11.5px;line-height:1.45}body .cja-gate-block{font-size:11.5px;line-height:1.5}body .cja-gate-tools button{font-size:11.5px;min-height:34px}
+body .cja-ops summary{font-size:13px}body .cja-note{font-size:12px;line-height:1.55}body .cja-row b{font-size:12.5px}body .cja-row small{font-size:11.5px;line-height:1.45}body .cja-row-actions button{font-size:11.5px;min-height:34px}body .cja-check{font-size:12px;line-height:1.5}
+body .cja-copy b{font-size:13px}body .cja-copy small{font-size:11.5px;line-height:1.45}body .cja-badge{font-size:10.5px}body .cja-step-tools button{font-size:11.5px;min-height:34px}
+body .coa-head h2{font-size:16px}body .coa-head p{font-size:12.5px;line-height:1.5}body .coa-chip{font-size:11px}body .coa-item b{font-size:13px}body .coa-item small{font-size:12px;line-height:1.5}body .coa-sev{font-size:10.5px}body .coa-empty{font-size:12.5px;line-height:1.5}
+body .coa-box>summary{font-size:13px}body .coa-card small{font-size:11px}body .coa-card b{font-size:13px;line-height:1.5}body .coa-month{font-size:11.5px;line-height:1.45}body .coa-status{font-size:10.5px}body .coa-links a{font-size:11.5px;min-height:36px;display:inline-flex;align-items:center}
+@media(max-width:800px){
+  body .perf-back{padding:0}body .perf-modal{width:100%;max-height:100vh;border-radius:0}body .perf-body{max-height:calc(100vh - 72px);padding:12px}body .perf-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:5px}body .perf-tabs button{white-space:nowrap;min-height:44px;font-size:13px}body .perf-formgrid{grid-template-columns:1fr}body .perf-wide{grid-column:auto}body .perf-kpis,body .perf-grid{grid-template-columns:1fr 1fr}
+  body .cap-kpis{grid-template-columns:1fr 1fr}body .cap-toolbar{grid-template-columns:1fr}body .cap-tablewrap{-webkit-overflow-scrolling:touch}body .cap-table{min-width:980px}
+  body .cja-gates{grid-template-columns:1fr}body .cja-ops{grid-template-columns:1fr}body .cja-gate{padding:12px}body .cja-track{padding-bottom:18px}body .cja-step{flex-basis:230px}
+  body .coa-grid{grid-template-columns:1fr}body .coa-wide{grid-column:auto}body .coa-month{grid-template-columns:1fr 1fr;gap:8px}body .coa-month b{grid-column:1/-1}body .coa-item{padding:12px}
+}
+@media(max-width:520px){body .perf-kpis,body .perf-grid{grid-template-columns:1fr}body .perf-values{grid-template-columns:1fr}body .cap-kpis{grid-template-columns:1fr 1fr}}
+'''
+              p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit dynamic UX overrides
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/central-ym-console.css
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'UX: amplia legibilidade de Performance, jornada e onboarding'
+          git push
