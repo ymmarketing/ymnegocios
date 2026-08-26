@@ -6,12 +6,16 @@ on:
       - 'areadocliente/**'
       - 'Identidade/**'
       - 'CRM/CENTRAL/**'
+      - 'CRM/**'
       - 'CENTRAL/**'
       - 'assets/client-portal.*'
       - 'assets/client-journey-admin.js'
       - 'assets/central-ym-*.js'
       - 'assets/central-ym-*.css'
       - 'assets/crm15-runtime.js'
+      - 'assets/crm15-unified-client-view.js'
+      - 'assets/client-performance-*.js'
+      - 'assets/client-reportei-kpi-mapping.js'
       - 'assets/internal-shell.css'
       - 'interno/**'
   workflow_dispatch:
@@ -38,6 +42,11 @@ jobs:
           node --check assets/central-ym-timezone.js
           node --check assets/central-ym-shortcut.js
           node --check assets/crm15-runtime.js
+          node --check assets/crm15-unified-client-view.js
+          node --check assets/client-performance-admin.js
+          node --check assets/client-performance-governance.js
+          node --check assets/client-performance-status.js
+          node --check assets/client-reportei-kpi-mapping.js
       - name: No file upload in Central YM
         run: |
           ! grep -Rni 'type="file"' areadocliente CENTRAL CRM/CENTRAL assets/client-portal.js assets/client-journey-admin.js assets/central-ym-admin.js assets/central-ym-console.js assets/central-ym-calendar-add.js assets/central-ym-timezone.js Identidade assets/central-ym-identity.js
@@ -61,6 +70,12 @@ jobs:
           grep -qi 'Salvar alterações' assets/central-ym-calendar-add.js
           grep -qi 'Excluir evento' assets/central-ym-calendar-add.js
           grep -qi "action:'DELETE_EVENT'" assets/central-ym-calendar-add.js
+          grep -qi 'crm15-unified-client-view.js' assets/crm15-runtime.js
+          grep -qi 'client-performance-governance.js' assets/crm15-runtime.js
+          grep -qi 'client-reportei-kpi-mapping.js' assets/crm15-runtime.js
+          grep -qi 'client-performance-status.js' assets/crm15-runtime.js
+          grep -qi 'Visão completa do cliente' assets/crm15-unified-client-view.js
+          grep -qi "open(drawerClientId, 'fontes')" assets/client-performance-admin.js
           grep -qi 'Gates oficiais' assets/client-journey-admin.js
           grep -qi 'UPSERT_CONTRACT' assets/client-journey-admin.js
           grep -qi 'UPSERT_ACCESS' assets/client-journey-admin.js
