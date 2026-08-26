@@ -31,11 +31,13 @@ s=s.replace("document.head.append(style); return true;","document.head.append(st
 s=s.replace("let attempts = 0;", "window.ClientPerformancePortal={render};\n  let attempts = 0;")
 p.write_text(s,encoding='utf-8')
 
-# 5) Carrega ferramentas extras da Área do Cliente (documentos + contato configurável).
+# 5) Carrega ferramentas extras da Área do Cliente e força cache-bust das versões alteradas.
 p=ROOT/'areadocliente/index.html'
 s=p.read_text(encoding='utf-8')
-needle='<script src="/assets/client-performance-portal.js?v=20260826-2"></script>'
-extra=needle+'\n<script src="/assets/client-portal-client-tools.js?v=20260826-1"></script>'
 if 'client-portal-client-tools.js' not in s:
-    s=s.replace(needle,extra)
+    needle='<script src="/assets/client-performance-portal.js?v=20260826-2"></script>'
+    s=s.replace(needle,needle+'\n<script src="/assets/client-portal-client-tools.js?v=20260826-1"></script>')
+s=s.replace('/assets/client-portal-experience.js?v=20260826-2','/assets/client-portal-experience.js?v=20260826-3')
+s=s.replace('/assets/client-portal.js?v=20260825-3','/assets/client-portal.js?v=20260826-4')
+s=s.replace('/assets/client-performance-portal.js?v=20260826-2','/assets/client-performance-portal.js?v=20260826-3')
 p.write_text(s,encoding='utf-8')
