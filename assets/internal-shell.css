@@ -36,3 +36,23 @@ button,input,select,textarea{font:inherit}.ym-hidden{display:none!important}
 .client-actions .client-motor-btn ~ .client-motor-btn{display:none!important}
 @media(max-width:1100px){.ym-kpis{grid-template-columns:repeat(3,1fr)}.ym-filterbar{grid-template-columns:1fr 1fr}.ym-detail-grid{grid-template-columns:1fr}}
 @media(max-width:760px){:root{--ym-side:258px}.ym-sidebar{transform:translateX(-105%);transition:.2s}.ym-sidebar.open{transform:translateX(0)}.ym-main{margin-left:0}.ym-mobile-toggle{display:inline-grid;place-items:center}.ym-content{padding:20px 11px 55px}.ym-topbar{padding:9px 11px}.ym-kpis{grid-template-columns:1fr 1fr}.ym-filterbar,.ym-formgrid{grid-template-columns:1fr}.ym-wide{grid-column:auto}.ym-header{flex-direction:column;align-items:flex-start}.ym-topbar-meta .ym-chip:not(.stage){display:none}}
+
+/* YM UX READABILITY 20260826 — escala oficial do ambiente interno */
+:root{
+  --ym-font-body:15px;--ym-font-ui:14px;--ym-font-small:13px;--ym-font-meta:12px;
+}
+body{font-size:var(--ym-font-body);line-height:1.55}
+.ym-nav-label{font-size:11px}.ym-nav a{font-size:14px;min-height:42px}.ym-nav .nav-icon{font-size:13px}
+.ym-account strong{font-size:13px}.ym-account span{font-size:12px;line-height:1.45}.ym-account button,.ym-account a{font-size:12px;min-height:38px}
+.ym-topbar-title{font-size:16px}.ym-chip{font-size:11px;padding:7px 9px}.ym-eyebrow{font-size:11px}
+.ym-title{font-size:clamp(28px,3vw,38px);line-height:1.08}.ym-lead{font-size:15px;line-height:1.65;max-width:920px}
+.ym-btn{font-size:13px;min-height:40px;padding:10px 14px}.ym-kpi span{font-size:12px;line-height:1.4}
+.ym-input,.ym-select,.ym-textarea{font-size:14px;min-height:42px;padding:10px 12px}.ym-label{font-size:12px;margin-top:12px}
+.ym-section h2{font-size:19px}.ym-empty{font-size:14px;line-height:1.55}.ym-badge{font-size:11px;padding:6px 8px}
+.ym-block h3{font-size:15px}.ym-copy{font-size:14px;line-height:1.6}.ym-meta{font-size:12px;line-height:1.55}.ym-links a{font-size:12px;min-height:36px}
+.ym-toast{font-size:13px;line-height:1.45}
+@media(max-width:760px){
+  :root{--ym-side:278px}.ym-content{padding:20px 14px 58px}.ym-topbar{min-height:62px;padding:9px 12px}.ym-topbar-title{font-size:15px}
+  .ym-title{font-size:clamp(27px,8vw,33px)}.ym-lead{font-size:15px}.ym-btn{min-height:44px;font-size:14px}.ym-input,.ym-select,.ym-textarea{min-height:44px;font-size:16px}
+  .ym-nav a{font-size:15px;min-height:46px}.ym-nav-label{font-size:12px}.ym-kpis{gap:10px}.ym-kpi{padding:15px}.ym-kpi span{font-size:12px}
+}
