@@ -1,0 +1,198 @@
+/* CENTRAL YM — experiência mobile da Visão Admin do cliente
+   Mantém o desktop intacto e remove conflitos de responsividade no drawer. */
+@media (max-width: 760px) {
+  html, body { max-width: 100%; overflow-x: hidden; }
+
+  /* Drawer ocupa o viewport real do navegador mobile, sem começar cortado. */
+  .ca-drawer-back {
+    display: block !important;
+    padding: 0 !important;
+    overflow: hidden;
+    background: #F5F8FC;
+  }
+  .ca-drawer {
+    width: 100% !important;
+    height: 100dvh;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .ca-drawer > header {
+    flex: 0 0 auto;
+    position: relative;
+    z-index: 20;
+    min-height: 76px;
+    padding: 13px 14px !important;
+    align-items: center;
+  }
+  .ca-drawer > header > div { min-width: 0; padding-right: 6px; }
+  .ca-drawer > header h2 {
+    font-size: 18px !important;
+    line-height: 1.18;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .ca-drawer > header small {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+    margin-top: 3px;
+  }
+  .ca-drawer > header button {
+    width: 42px !important;
+    min-width: 42px;
+    height: 42px !important;
+    flex: 0 0 42px;
+  }
+  .ca-drawer-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none !important;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 11px 11px 28px !important;
+  }
+
+  /* Todas as áreas ficam descobertas sem faixa horizontal cortada. */
+  .ca-client-tabs {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    width: 100%;
+    overflow: visible !important;
+    flex-wrap: initial !important;
+    padding: 0 !important;
+    margin: 0 0 12px !important;
+  }
+  .ca-client-tabs button {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px !important;
+    padding: 7px 4px !important;
+    white-space: normal !important;
+    line-height: 1.15;
+    font-size: 11.5px !important;
+    text-align: center;
+  }
+
+  /* Mantém a leitura-resumo compacta como no desktop: 2 × 2 em vez de 4 blocos verticais. */
+  .ca-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .ca-soft {
+    min-height: 82px;
+    padding: 11px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .ca-soft small {
+    font-size: 10px !important;
+    line-height: 1.25;
+  }
+  .ca-soft b {
+    font-size: 15px !important;
+    line-height: 1.25 !important;
+    margin-top: 7px !important;
+  }
+
+  .ca-grid2 {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .ca-panel {
+    padding: 14px !important;
+    border-radius: 14px;
+  }
+  .ca-panel h2 { font-size: 16px !important; line-height: 1.2; }
+  .ca-empty {
+    padding: 17px 12px !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+  }
+  .ca-row {
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 0 !important;
+  }
+  .ca-row > div { min-width: 0; }
+  .ca-row b { font-size: 12.5px !important; line-height: 1.35; }
+  .ca-row small {
+    font-size: 11.5px !important;
+    line-height: 1.45 !important;
+    overflow-wrap: anywhere;
+  }
+  .ca-note {
+    font-size: 11.5px !important;
+    line-height: 1.5 !important;
+    padding: 10px !important;
+  }
+  .ca-badge {
+    flex: 0 0 auto;
+    font-size: 10px !important;
+    padding: 5px 7px !important;
+  }
+
+  /* Formulários: uma coluna real, campos com toque confortável e sem zoom automático. */
+  .ca-form, .ca-project { padding: 12px !important; }
+  .ca-formgrid { grid-template-columns: minmax(0, 1fr) !important; gap: 9px !important; }
+  .ca-wide { grid-column: auto !important; }
+  .ca-drawer .ym-input,
+  .ca-drawer .ym-select,
+  .ca-drawer .ym-textarea {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    font-size: 16px !important;
+  }
+  .ca-drawer .ym-input,
+  .ca-drawer .ym-select { min-height: 44px; }
+  .ca-drawer .ym-btn { min-height: 42px; }
+
+  /* Cabeçalhos de projetos e listas quebram sem empurrar a página para os lados. */
+  .ca-project .ca-panel-head,
+  .ca-pane .ca-panel-head {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .ca-project .ca-panel-head > div,
+  .ca-pane .ca-panel-head > div { min-width: 0; }
+  .ca-project .ym-meta,
+  .ca-pane .ym-meta { white-space: normal; overflow-wrap: anywhere; }
+  .ca-link { overflow-wrap: anywhere; }
+
+  /* Nenhuma aba escondida pode ampliar o drawer; tabelas ganham rolagem só dentro delas. */
+  .ca-pane,
+  .ca-pane > *,
+  [data-client-journey-root] { min-width: 0; max-width: 100%; }
+  .ca-pane table {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ca-pane img,
+  .ca-pane iframe { max-width: 100%; }
+
+  /* Jornada e componentes dinâmicos acompanham o mesmo padrão mobile. */
+  .cja-summary { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .cja-gate-tools,
+  .cja-row-actions,
+  .cja-step-tools { flex-wrap: wrap !important; }
+  .cja-gate-tools button,
+  .cja-row-actions button,
+  .cja-step-tools button { max-width: 100%; }
+}
+
+@media (max-width: 390px) {
+  .ca-client-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ca-info-grid { grid-template-columns: 1fr 1fr !important; }
+  .ca-drawer > header h2 { font-size: 17px !important; }
+}
