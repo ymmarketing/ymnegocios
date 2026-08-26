@@ -19,6 +19,14 @@ function safeEqual(a: string, b: string) {
   return diff === 0;
 }
 
+function brazilDateISO(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit'
+  }).formatToParts(date);
+  const map = Object.fromEntries(parts.map(part => [part.type, part.value]));
+  return `${map.year}-${map.month}-${map.day}`;
+}
+
 function addDays(dateString: string, days: number) {
   const date = new Date(`${dateString}T12:00:00Z`);
   date.setUTCDate(date.getUTCDate() + days);
@@ -49,7 +57,7 @@ async function activateJourney(access: any, eventName: string, payment: any) {
   }
 
   const now = new Date();
-  const today = now.toISOString().slice(0, 10);
+  const today = brazilDateISO(now);
   const periodEnd = new Date(now.getTime() + 30 * 86400000).toISOString();
   const subscriptionId = payment?.subscription || access.asaas_subscription_id || null;
 
@@ -178,7 +186,7 @@ Deno.serve(async (req) => {
     if (access) {
       if (['PAYMENT_RECEIVED','PAYMENT_CONFIRMED'].includes(eventName)) {
         await activateJourney(access, eventName, payment);
-      } else if (eventName === 'PAYMENT_OVERDUE') {
+      } else if (['PAYMENT_OVERDUE','PAYMENT_CREDIT_CARD_CAPTURE_REFUSED','PAYMENT_REPROVED_BY_RISK_ANALYSIS'].includes(eventName)) {
         await admin.from('mb_subscriptions').update({
           status: access.user_id ? 'past_due' : 'pending',
           last_payment_status: eventName,
