@@ -1,0 +1,23 @@
+name: Publicar contexto consolidado no MOTOR
+on:
+  push:
+    paths:
+      - 'scripts/patch_motor_client_context.py'
+      - '.github/workflows/patch-motor-client-context.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aplicar contexto consolidado
+        run: python scripts/patch_motor_client_context.py
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add MOTOR/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'MOTOR: exibe contexto operacional consolidado no VER'
+          git push
