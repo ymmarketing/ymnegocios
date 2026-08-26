@@ -1,0 +1,60 @@
+name: UX client portal and dynamic readability 2026-08-26
+
+on:
+  push:
+    paths:
+      - '.github/workflows/ux-client-portal-readability-20260826.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply client and dynamic readability
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          def add(path, marker, css):
+              p=Path(path); s=p.read_text(encoding='utf-8')
+              if marker not in s:
+                  p.write_text(s+'\n'+css.strip()+'\n',encoding='utf-8')
+
+          add('assets/client-portal.css','YM CLIENT PORTAL READABILITY 20260826',r'''
+          /* YM CLIENT PORTAL READABILITY 20260826 */
+          .cp-kicker{font-size:11px}.cp-auth-brand p{font-size:15px;line-height:1.7}.cp-auth-chips span{font-size:11px}.cp-auth-form>p{font-size:14px;line-height:1.6}.cp-label{font-size:12px}.cp-input,.cp-select,.cp-textarea{font-size:14px;min-height:42px}.cp-btn{font-size:13px;min-height:42px}.cp-link-btn{font-size:12.5px}.cp-message{font-size:12.5px}.cp-note{font-size:12px;line-height:1.55}
+          .cp-brand small{font-size:11px}.cp-nav button{font-size:14px;min-height:44px}.cp-nav i{font-size:12px}.cp-account b{font-size:13px}.cp-account span{font-size:12px}.cp-account button{font-size:12px;min-height:38px}.cp-topbar b{font-size:16px}.cp-chip{font-size:11px}
+          .cp-head h1{font-size:clamp(28px,3vw,38px)}.cp-head p{font-size:15px;line-height:1.65}.cp-ey{font-size:11px}.cp-kpi span{font-size:12px}.cp-section-title h2{font-size:17px}.cp-section-title span{font-size:12px}.cp-row b{font-size:13px}.cp-row small{font-size:12px;line-height:1.5}.cp-badge{font-size:11px}
+          .cp-project h3{font-size:16px}.cp-project p{font-size:13px;line-height:1.55}.cp-soft small{font-size:11px}.cp-soft b{font-size:13px}.cp-cal-head b{font-size:16px}.cp-cal-head button{width:40px;height:40px}.cp-week div{font-size:11px}.cp-day-num{font-size:12px}.cp-event{font-size:11px;line-height:1.35;white-space:nowrap}.cp-approval h3{font-size:15px}.cp-approval p{font-size:13px}.cp-history div{font-size:12px}.cp-fin-head h3{font-size:15px}.cp-doc h3{font-size:14px}.cp-doc p{font-size:12.5px}.cp-empty{font-size:13px;line-height:1.55}
+          .cp-onboarding-top p{font-size:14px!important;line-height:1.6!important}
+          @media(max-width:760px){
+            .cp-auth{padding:0}.cp-auth-shell{border-radius:0;min-height:100vh;grid-template-columns:1fr}.cp-auth-brand{min-height:auto;padding:26px 22px}.cp-auth-form{padding:28px 22px}.cp-input,.cp-select,.cp-textarea{font-size:16px;min-height:46px}.cp-btn{font-size:14px;min-height:46px}.cp-link-btn{font-size:13px;min-height:44px}
+            .cp-sidebar{width:280px}.cp-nav button{font-size:15px;min-height:48px}.cp-content{padding:20px 14px 56px}.cp-head{align-items:flex-start}.cp-head h1{font-size:clamp(27px,8vw,34px)}.cp-head p{font-size:15px}.cp-kpis{grid-template-columns:1fr 1fr}.cp-two,.cp-projects,.cp-docs,.cp-fin-grid{grid-template-columns:1fr}
+            .cp-calendar-wrap{display:block}.cp-calendar{overflow-x:auto;-webkit-overflow-scrolling:touch}.cp-week,.cp-days{min-width:720px}.cp-day{min-height:110px}.cp-event{font-size:11.5px}.cp-overlay{padding:0}.cp-onboarding{width:100%;max-height:100vh;border-radius:0;overflow:auto}.cp-onboarding-top{padding:24px 20px}.cp-onboarding-top h2{font-size:25px}.cp-onboarding-body{padding:20px}
+          }
+          @media(max-width:430px){.cp-kpis{grid-template-columns:1fr}.cp-topbar{padding-inline:10px}.cp-chip{display:none}}
+          ''')
+
+          add('assets/central-ym-console.css','YM DYNAMIC COMPONENT READABILITY 20260826',r'''
+          /* YM DYNAMIC COMPONENT READABILITY 20260826 */
+          body .cap-kpi span{font-size:12px;line-height:1.45}body .cap-filter label{font-size:12px}body .cap-panel h2{font-size:17px}body .cap-note{font-size:12.5px;line-height:1.55}body .cap-table th{font-size:11.5px}body .cap-table td{font-size:13px;line-height:1.45}body .cap-sub{font-size:11.5px}body .cap-status{font-size:11px}body .cap-int b{font-size:13px}body .cap-int span{font-size:12px}
+          body .perf-modal h2{font-size:19px}body .perf-modal header small{font-size:12px}body .perf-tabs button{font-size:13px;min-height:40px}body .perf-stat span{font-size:12px}body .perf-card h3,body .perf-form h3{font-size:14px}body .perf-card p{font-size:12.5px;line-height:1.55}body .perf-badge{font-size:11px}body .perf-values small{font-size:11px}body .perf-values b{font-size:13px}body .perf-btn{font-size:13px;min-height:40px}body .perf-label{font-size:12px}body .perf-input,body .perf-select,body .perf-textarea{font-size:14px;min-height:42px}body .perf-empty,body .perf-note{font-size:12.5px;line-height:1.55}
+          #pkGovernance small,#pkGovernance [style*="font-size:8px"],#pkGovernance [style*="font-size:8.5px"],#reporteiAdminPanel [style*="font-size:8px"],#repKpiMappingPanel [style*="font-size:8px"]{font-size:12px!important;line-height:1.5!important}
+          body .cja-head h3{font-size:16px}body .cja-head p{font-size:13px}body .cja-summary span{font-size:12px}body .cja-gates-title h4{font-size:14px}body .cja-gates-title small{font-size:12px}body .cja-gate h5{font-size:13px}body .cja-gate-status{font-size:10.5px}body .cja-gate small,body .cja-gate-block{font-size:11.5px;line-height:1.5}body .cja-gate-tools button,body .cja-row-actions button,body .cja-step-tools button{font-size:11.5px;min-height:34px}body .cja-ops summary{font-size:13px}body .cja-note{font-size:12px}body .cja-row b{font-size:12.5px}body .cja-row small{font-size:11.5px}body .cja-check{font-size:12px}body .cja-copy b{font-size:13px}body .cja-copy small{font-size:11.5px}body .cja-badge{font-size:10.5px}
+          body .coa-head h2{font-size:16px}body .coa-head p{font-size:12.5px}body .coa-chip{font-size:11px}body .coa-item b{font-size:13px}body .coa-item small{font-size:12px}body .coa-sev{font-size:10.5px}body .coa-empty{font-size:12.5px}body .coa-box>summary{font-size:13px}body .coa-card small{font-size:11px}body .coa-card b{font-size:13px}body .coa-month{font-size:11.5px}body .coa-status{font-size:10.5px}body .coa-links a{font-size:11.5px;min-height:36px}
+          @media(max-width:800px){body .perf-back{padding:0}body .perf-modal{width:100%;max-height:100vh;border-radius:0}body .perf-body{max-height:calc(100vh - 72px);padding:12px}body .perf-tabs{overflow-x:auto;flex-wrap:nowrap}body .perf-tabs button{white-space:nowrap;min-height:44px}body .perf-formgrid{grid-template-columns:1fr}body .perf-wide{grid-column:auto}body .perf-kpis,body .perf-grid{grid-template-columns:1fr 1fr}body .cap-toolbar,body .cap-interventions{grid-template-columns:1fr}body .cap-table{min-width:980px}body .cja-gates,body .cja-ops{grid-template-columns:1fr}body .coa-grid{grid-template-columns:1fr}body .coa-wide{grid-column:auto}body .coa-month{grid-template-columns:1fr 1fr}body .coa-month b{grid-column:1/-1}}
+          @media(max-width:520px){body .perf-kpis,body .perf-grid{grid-template-columns:1fr}}
+          ''')
+          PY
+      - name: Commit UX readability
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/client-portal.css assets/central-ym-console.css
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'UX: amplia leitura da Área do Cliente e módulos dinâmicos'
+          git push
