@@ -1,5 +1,10 @@
 /* YM Home V4 · hero atualizada em 2026-08-14 · WebP centralizado e otimizado. */
 (function(){
+  var utility=document.createElement('script');
+  utility.src='/assets/js/home-top-utility.js?v=20260826-1';
+  utility.async=true;
+  document.head.appendChild(utility);
+
   var parts=[
     '/assets/media/ym-hero-v4-part1.txt',
     '/assets/media/ym-hero-v4-part2.txt',
