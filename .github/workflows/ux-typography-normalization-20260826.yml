@@ -1,0 +1,129 @@
+name: UX typography normalization 2026-08-26
+
+on:
+  push:
+    paths:
+      - '.github/workflows/ux-typography-normalization-20260826.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply YM readability scale
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def append_css(path, marker, css):
+              p=Path(path); s=p.read_text(encoding='utf-8')
+              if marker not in s:
+                  s += '\n' + css.strip() + '\n'
+                  p.write_text(s,encoding='utf-8')
+
+          def insert_head_style(path, marker, css):
+              p=Path(path); s=p.read_text(encoding='utf-8')
+              if marker in s: return
+              block='\n<style id="'+marker+'">\n'+css.strip()+'\n</style>\n'
+              if '</head>' not in s: raise SystemExit(f'</head> ausente em {path}')
+              s=s.replace('</head>',block+'</head>',1)
+              p.write_text(s,encoding='utf-8')
+
+          append_css('assets/internal-shell.css','YM UX READABILITY 20260826',r'''
+          /* YM UX READABILITY 20260826 — escala oficial do ambiente interno */
+          :root{
+            --ym-font-body:15px;--ym-font-ui:14px;--ym-font-small:13px;--ym-font-meta:12px;
+          }
+          body{font-size:var(--ym-font-body);line-height:1.55}
+          .ym-nav-label{font-size:11px}.ym-nav a{font-size:14px;min-height:42px}.ym-nav .nav-icon{font-size:13px}
+          .ym-account strong{font-size:13px}.ym-account span{font-size:12px;line-height:1.45}.ym-account button,.ym-account a{font-size:12px;min-height:38px}
+          .ym-topbar-title{font-size:16px}.ym-chip{font-size:11px;padding:7px 9px}.ym-eyebrow{font-size:11px}
+          .ym-title{font-size:clamp(28px,3vw,38px);line-height:1.08}.ym-lead{font-size:15px;line-height:1.65;max-width:920px}
+          .ym-btn{font-size:13px;min-height:40px;padding:10px 14px}.ym-kpi span{font-size:12px;line-height:1.4}
+          .ym-input,.ym-select,.ym-textarea{font-size:14px;min-height:42px;padding:10px 12px}.ym-label{font-size:12px;margin-top:12px}
+          .ym-section h2{font-size:19px}.ym-empty{font-size:14px;line-height:1.55}.ym-badge{font-size:11px;padding:6px 8px}
+          .ym-block h3{font-size:15px}.ym-copy{font-size:14px;line-height:1.6}.ym-meta{font-size:12px;line-height:1.55}.ym-links a{font-size:12px;min-height:36px}
+          .ym-toast{font-size:13px;line-height:1.45}
+          @media(max-width:760px){
+            :root{--ym-side:278px}.ym-content{padding:20px 14px 58px}.ym-topbar{min-height:62px;padding:9px 12px}.ym-topbar-title{font-size:15px}
+            .ym-title{font-size:clamp(27px,8vw,33px)}.ym-lead{font-size:15px}.ym-btn{min-height:44px;font-size:14px}.ym-input,.ym-select,.ym-textarea{min-height:44px;font-size:16px}
+            .ym-nav a{font-size:15px;min-height:46px}.ym-nav-label{font-size:12px}.ym-kpis{gap:10px}.ym-kpi{padding:15px}.ym-kpi span{font-size:12px}
+          }
+          ''')
+
+          append_css('assets/central-ym-console.css','YM CENTRAL READABILITY 20260826',r'''
+          /* YM CENTRAL READABILITY 20260826 */
+          .ca-subnav button{font-size:13px;min-height:40px;padding:9px 14px}.ca-panel{padding:18px}.ca-panel h2{font-size:17px}
+          .ca-row{padding:11px 0}.ca-row b{font-size:13px}.ca-row small{font-size:12px;line-height:1.5}
+          .ca-client{padding:15px;gap:12px}.ca-client h3{font-size:14px}.ca-client p{font-size:12px;line-height:1.45}.ca-cell b{font-size:11px}.ca-cell span{font-size:13px;line-height:1.4}.ca-badge{font-size:11px;padding:6px 8px}
+          .ca-cal-head b{font-size:16px}.ca-cal-head button{width:40px;height:40px}.ca-week div{font-size:11px}.ca-day{min-height:118px;padding:7px;overflow:hidden}.ca-day-num{font-size:12px}.ca-event{font-size:11px;line-height:1.32;padding:5px 6px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+          .ca-drawer>header{padding:18px 20px}.ca-drawer>header h2{font-size:19px}.ca-drawer>header small{font-size:12px;line-height:1.45}.ca-drawer>header button{width:40px;height:40px}
+          .ca-client-tabs button{font-size:12px;min-height:40px;padding:9px 12px}.ca-soft{padding:12px}.ca-soft small{font-size:11px}.ca-soft b{font-size:13px;line-height:1.4}
+          .ca-form{padding:14px}.ca-form h3,.ca-project h3{font-size:14px}.ca-link{font-size:12px}.ca-note{font-size:12px;line-height:1.55}.ca-empty{font-size:13px;line-height:1.55}
+          .ca-new header h2{font-size:18px}.ca-new header button{width:40px;height:40px}
+          @media(max-width:760px){
+            .ca-subnav{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ca-subnav button{width:100%;font-size:12.5px;min-height:44px}
+            .ca-client{grid-template-columns:1fr auto;padding:14px}.ca-client h3{font-size:15px}.ca-client p{font-size:12.5px}.ca-calendar-wrap{display:block}.ca-cal{overflow-x:auto;-webkit-overflow-scrolling:touch}.ca-week,.ca-days{min-width:720px}.ca-day{min-height:112px}.ca-event{font-size:11.5px}
+            .ca-drawer-back,.ca-new-back{padding:0}.ca-drawer,.ca-new{width:100%;max-height:100vh;border-radius:0}.ca-drawer-body{max-height:calc(100vh - 78px);padding:12px}.ca-client-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:5px}.ca-client-tabs button{white-space:nowrap;min-height:44px;font-size:13px}.ca-info-grid{grid-template-columns:1fr}.ca-soft small{font-size:11px}.ca-soft b{font-size:14px}
+          }
+          ''')
+
+          insert_head_style('CRM/index.html','ym-crm-readability-20260826',r'''
+          .lead-name b{font-size:14px}.lead-name span,.cell{font-size:12.5px;line-height:1.5}.cell b{font-size:11px;margin-bottom:3px}
+          .visual-profile h3{font-size:19px}.visual-profile .meta{font-size:12.5px;line-height:1.55}.visual-profile .chips span{font-size:11px;padding:6px 8px}.profile-actions button{font-size:12.5px;min-height:40px;padding:8px 11px}
+          .quick h4{font-size:13px}.quick p{font-size:12.5px;line-height:1.55}.editor h4{font-size:14px}.helper{font-size:12px;line-height:1.5}.history-wrap h4{font-size:13px}.history-line{font-size:12.5px;line-height:1.55}
+          .create-box summary{font-size:14px}.queue h4{font-size:13px}.queue-row b{font-size:12.5px}.queue-row span{font-size:12px}.kpi-pct{font-size:11.5px!important}.tabbar button{font-size:13px;min-height:42px}
+          .crm-modal>header h2{font-size:18px}.edit-section h3{font-size:14px}.crm-modal>header button{width:40px;height:40px}
+          @media(max-width:760px){
+            .lead-summary{padding:13px 12px;grid-template-columns:36px 1fr auto}.arrow{width:34px;height:34px}.lead-name b{font-size:15px}.lead-name span{font-size:13px}.lead-body{padding:12px}.visual-profile{padding:16px}.quick,.editor,.history-wrap,.queue{padding:13px}.tabbar{overflow-x:auto}.tabbar button{white-space:nowrap;min-height:44px;font-size:13px}.crm-modal-back{padding:0}.crm-modal{width:100%;max-height:100vh;border-radius:0}.crm-modal-body{max-height:calc(100vh - 68px);padding:13px}
+          }
+          ''')
+
+          insert_head_style('MOTOR/index.html','ym-motor-readability-20260826',r'''
+          .case-index h2{font-size:16px}.case-item{padding:13px 14px}.case-item b{font-size:14px}.case-item span{font-size:12.5px;line-height:1.45}.case-hero h2{font-size:26px}.case-hero p{font-size:14px;line-height:1.55}
+          .motor-section>header h3{font-size:16px}.motor-section>header{padding:15px 16px}.motor-section .body{padding:16px}.guide-intro b{font-size:14px}.guide-intro p{font-size:13px;line-height:1.6}
+          .p8-num{width:34px;height:34px;font-size:12px}.p8-summary h4{font-size:14px}.p8-summary small{font-size:12px}.p8-summary{padding:13px 14px}.p8-body{padding:14px}
+          .guide-box b{font-size:12.5px}.guide-box span{font-size:12.5px;line-height:1.5}.check-title{font-size:13px}.check-help{font-size:12px;line-height:1.5}.check-row{padding:10px}.check-row span{font-size:13px;line-height:1.5}.check-select{font-size:13.5px;min-height:42px}
+          .save-ver-wrap p{font-size:13px;line-height:1.55}.save-ver-wrap .ym-btn{font-size:13px}.entry h4{font-size:14px}.entry p{font-size:13px;line-height:1.55}.gate-box{font-size:14px;line-height:1.6}.order-item{gap:12px}.seq{width:36px;height:36px;font-size:13px}.locked{font-size:13px;line-height:1.55}
+          @media(max-width:700px){
+            .motor-grid{gap:12px}.case-index{border-radius:14px}.case-items{max-height:280px}.case-item{min-height:58px}.case-item b{font-size:15px}.case-item span{font-size:12.5px}.case-hero{padding:18px}.case-hero h2{font-size:23px}.motor-section>header{align-items:flex-start;flex-direction:column}.p8-summary{align-items:flex-start}.p8-guide-grid{grid-template-columns:1fr}.check-row{grid-template-columns:1fr;gap:7px}.check-select{width:100%;min-height:44px;font-size:16px}
+          }
+          ''')
+
+          insert_head_style('FINANCEIRO/index.html','ym-fin-readability-20260826',r'''
+          .fin-status{font-size:11.5px}.fin-tab{font-size:12.5px;min-height:42px;padding:9px 14px}.filter-head strong{font-size:14px}.filter-head span{font-size:12.5px;line-height:1.45}.preset{font-size:11.5px;min-height:38px}.custom-range label{font-size:11.5px}.custom-range input{font-size:14px;min-height:42px}.period-pill{font-size:11px}
+          .hero-eyebrow{font-size:11px}.hero h2{font-size:22px}.hero-label{font-size:14px}.hero-progress-label{font-size:12px}.hero-metric span{font-size:11px}.hero-metric b{font-size:19px}.hero-note{font-size:13px;line-height:1.55}
+          .section h2{font-size:16px}.section header p{font-size:12.5px;line-height:1.5}.section-title{font-size:20px}.section-lead{font-size:13.5px;line-height:1.55}
+          .metric .k{font-size:11px}.metric .d{font-size:12.5px;line-height:1.5}.summary-card span{font-size:12.5px}.trend-month .m{font-size:12px}.bar-line label{font-size:11px}.trend-values{font-size:11.5px}.insight .tag{font-size:11px}.insight strong{font-size:14px}.insight span{font-size:12.5px;line-height:1.5}.scenario h3{font-size:14px}.scenario p{font-size:12.5px;line-height:1.5}.scenario .minirow{font-size:11.5px}
+          .table th{font-size:11.5px;padding:10px}.table td{font-size:13px;padding:10px;line-height:1.45}.badge{font-size:11px;padding:5px 8px}.source-box strong{font-size:13px}.source-box p{font-size:12.5px;line-height:1.55}.sheet>summary{font-size:13px}.source-note{font-size:12.5px;line-height:1.55}
+          .target-grid label{font-size:11.5px}.target-grid input,.target-grid textarea{font-size:14px}.target-history-row{font-size:12px;line-height:1.45}
+          @media(max-width:620px){
+            .fin-tabs{top:61px;gap:8px}.fin-tab{font-size:12.5px;min-height:44px}.hero{padding:20px 17px}.hero h2{font-size:20px}.hero-value{font-size:36px}.hero-metric span{font-size:11px}.hero-metric b{font-size:17px}.section>header{padding:14px}.section h2{font-size:17px}.section header p{font-size:13px}.section-body{padding:14px}.metric{padding:14px}.metric .k{font-size:11px}.metric .d{font-size:13px}.table-wrap{-webkit-overflow-scrolling:touch}.table{min-width:900px}.target-back{padding:0}.target-modal{width:100%;max-height:100vh;border-radius:0}.target-body{max-height:calc(100vh - 64px);padding:14px}.target-grid{grid-template-columns:1fr}.target-wide{grid-column:auto}
+          }
+          ''')
+
+          insert_head_style('quemsomos/index.html','ym-quemsomos-readability-20260826',r'''
+          .navlinks a{font-size:14px}.btn{font-size:14px;min-height:48px}.ey{font-size:12px}.micro{font-size:13px;line-height:1.5}
+          .sec-head p,.story-copy p,.founder-copy p{font-size:16px;line-height:1.75}.why-main p{font-size:15px;line-height:1.75}.mini-card b{font-size:15px}.mini-card span{font-size:14px;line-height:1.6}
+          .time b{font-size:14px}.time span{font-size:13px;line-height:1.55}.founder-copy .signature{font-size:12px}.cred b{font-size:13px}.cred span{font-size:12.5px;line-height:1.55}
+          .vos-card p{font-size:14px;line-height:1.65}.human-note{font-size:14px;line-height:1.65}.universe p{font-size:14px;line-height:1.65}.tag{font-size:12px}.filter{font-size:12px}.case-media span{font-size:12px}.case p{font-size:13px}.case-type,.case-status{font-size:11px}
+          .principle b{font-size:14px}.principle span{font-size:13px;line-height:1.6}.behind-copy p{font-size:15px;line-height:1.75}.closing p{font-size:16px;line-height:1.7}.foot span,.foot-social a{font-size:12px}
+          @media(max-width:980px){.navlinks{gap:10px}.section{padding-top:70px;padding-bottom:70px}}
+          @media(max-width:650px){
+            .hero h1{font-size:clamp(38px,12vw,46px)}.hero p{font-size:16px}.heroin{padding:48px 16px 58px}.section{padding:54px 16px}.sec-head p,.story-copy p,.founder-copy p{font-size:16px}.mini-card span,.why-main p,.vos-card p,.universe p,.behind-copy p{font-size:14px}.time span,.principle span,.cred span{font-size:13px}.hero-actions .btn,.closing-actions .btn,.portfolio-top .btn{min-height:50px;font-size:14px}.foot-social a{min-height:44px;font-size:12px}
+          }
+          ''')
+          PY
+      - name: Commit normalized UX
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/internal-shell.css assets/central-ym-console.css CRM/index.html MOTOR/index.html FINANCEIRO/index.html quemsomos/index.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'UX: aplica escala tipográfica legível e responsiva'
+          git push
