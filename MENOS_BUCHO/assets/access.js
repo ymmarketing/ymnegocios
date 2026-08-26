@@ -19,10 +19,18 @@
 
   let client = null;
   let email = storedEmail;
+  let claiming = false;
 
   if (configured()) {
     client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+    });
+    client.auth.onAuthStateChange((event, currentSession) => {
+      if (currentSession?.user && ['SIGNED_IN', 'INITIAL_SESSION'].includes(event)) {
+        email = currentSession.user.email || email;
+        show('claim');
+        claimAccess();
+      }
     });
     resumeSession();
   } else {
@@ -62,29 +70,30 @@
     sendButton.disabled = true;
     sendButton.textContent = 'Enviando…';
     setMessage('');
+    const redirectUrl = new URL('./acesso.html', location.href).href;
     const { error } = await client.auth.signInWithOtp({
       email,
-      options: { shouldCreateUser: true }
+      options: { shouldCreateUser: true, emailRedirectTo: redirectUrl }
     });
     sendButton.disabled = false;
-    sendButton.textContent = 'Enviar código';
+    sendButton.textContent = 'Enviar acesso';
 
     if (error) {
-      setMessage('Não foi possível enviar o código. Confira o e-mail e tente novamente.', 'error');
+      setMessage('Não foi possível enviar o acesso. Confira o e-mail e tente novamente.', 'error');
       return;
     }
 
     localStorage.setItem('mb_checkout_email', email);
     show('code');
     codeInput.focus();
-    setMessage('Código enviado. Confira também a caixa de spam.', 'success');
+    setMessage('Enviamos seu acesso. Se o e-mail trouxer um código, digite abaixo; se trouxer um link, basta abrir o link.', 'success');
   });
 
   codeForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!client) return;
     const token = codeInput.value.replace(/\D/g, '').slice(0, 6);
-    if (token.length !== 6) return setMessage('Digite os 6 dígitos do código.', 'error');
+    if (token.length !== 6) return setMessage('Digite os 6 dígitos do código ou use o link recebido por e-mail.', 'error');
 
     verifyButton.disabled = true;
     verifyButton.textContent = 'Confirmando…';
@@ -94,7 +103,7 @@
     verifyButton.textContent = 'Confirmar e acessar';
 
     if (error || !data?.session) {
-      setMessage('Código inválido ou expirado. Solicite um novo código se necessário.', 'error');
+      setMessage('Código inválido ou expirado. Solicite um novo acesso se necessário.', 'error');
       return;
     }
 
@@ -113,13 +122,15 @@
   retryButton.addEventListener('click', claimAccess);
 
   async function claimAccess() {
-    if (!client) return;
+    if (!client || claiming) return;
+    claiming = true;
     retryButton.disabled = true;
     claimTitle.textContent = 'Confirmando seu pagamento…';
     claimText.textContent = 'Estamos ligando o pagamento confirmado à sua conta.';
     setMessage('');
 
     const { data, error } = await client.rpc('mb_claim_paid_access');
+    claiming = false;
     retryButton.disabled = false;
     if (error) {
       claimTitle.textContent = 'Não conseguimos validar agora.';
