@@ -34,7 +34,7 @@
  async function fastBootstrap(){
   try{
    if(!window.supabase)return;
-   const sb=window.supabase.createClient(SUPABASE_URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:false,detectSessionInUrl:false}});
+   const sb=window.supabase.createClient(SUPABASE_URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'ym_client_portal_auth_v1'}});
    const {data:{session}}=await sb.auth.getSession();
    if(!session)return;
    const response=await fetch(SUPABASE_URL+'/functions/v1/central-ym-client-bootstrap',{headers:{Authorization:'Bearer '+session.access_token,apikey:PUBLISHABLE_KEY}});

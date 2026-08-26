@@ -29,7 +29,7 @@
 (()=>{
  const SUPABASE_URL='https://srzdikgztpdtwbggwniz.supabase.co';
  const PUBLISHABLE_KEY='sb_publishable_OGZsWJSj2noU3Dd78pk48g__eEKE3xT';
- const sb=window.supabase.createClient(SUPABASE_URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+ const sb=window.supabase.createClient(SUPABASE_URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'ym_client_portal_auth_v1'}});
  const $=id=>document.getElementById(id);let tokenHash='';
  function show(id){document.querySelectorAll('.step').forEach(x=>x.classList.remove('on'));$(id).classList.add('on')}
  function msg(t,type='err'){const el=$('message');el.textContent=t;el.className='msg show '+type}
