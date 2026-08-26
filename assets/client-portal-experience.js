@@ -5,7 +5,16 @@
   ['Prazo operacional: D+2','Você pode salvar e continuar depois'],
   ['Dados do VER começam aqui','Essas informações serão a base do nosso trabalho'],
   ['Concluir onboarding','Concluir informações iniciais'],
-  ['Onboarding concluído. A YM já pode validar os dados e preparar o kickoff.','Informações enviadas. A equipe YM vai revisar o que você compartilhou e preparar os próximos passos.']
+  ['Onboarding concluído. A YM já pode validar os dados e preparar o kickoff.','Informações enviadas. A equipe YM vai revisar o que você compartilhou e preparar os próximos passos.'],
+  ['Histórico mínimo','Histórico dos últimos meses'],
+  ['Qualidade dos dados','Disponibilidade das informações'],
+  ['Ativos digitais e evidências','Canais, materiais e links'],
+  ['Links de materiais ou evidências','Links de materiais ou referências'],
+  ['Jornada comercial atual','Como funciona sua venda hoje'],
+  ['Sazonalidade','Períodos de maior ou menor movimento'],
+  ['Capacidade operacional','Capacidade de atendimento'],
+  ['Ticket médio','Valor médio por venda/cliente'],
+  ['Mídia paga','Investimento em anúncios']
  ]);
  function humanize(root=document){
   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
