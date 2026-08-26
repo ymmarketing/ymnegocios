@@ -32,10 +32,17 @@ function validEmail(value: string) {
   return value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+function brazilDateISO(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit'
+  }).formatToParts(date);
+  const map = Object.fromEntries(parts.map(part => [part.type, part.value]));
+  return `${map.year}-${map.month}-${map.day}`;
+}
+
 function daysUntil(dateString: string) {
-  const today = new Date();
-  const current = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
-  const target = new Date(`${dateString}T00:00:00Z`).getTime();
+  const current = new Date(`${brazilDateISO()}T12:00:00Z`).getTime();
+  const target = new Date(`${dateString}T12:00:00Z`).getTime();
   return Math.floor((target - current) / 86400000);
 }
 
@@ -130,8 +137,7 @@ Deno.serve(async (req) => {
   }
 
   const externalReference = `mb_${userId || 'guest'}_${crypto.randomUUID()}`;
-  const now = new Date();
-  const today = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')}`;
+  const today = brazilDateISO();
 
   const { data: order, error: orderError } = await admin
     .from('mb_subscriptions')
