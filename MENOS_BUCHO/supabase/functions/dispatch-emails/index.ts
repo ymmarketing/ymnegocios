@@ -27,7 +27,7 @@ function escapeHtml(value = '') {
 
 function template(key: string, name: string) {
   const safeName = escapeHtml(name || '');
-  const appUrl = `${APP_BASE_URL}/MENOS_BUCHO/`;
+  const appUrl = `${APP_BASE_URL}/MENOS_BUCHO/jornada.html`;
   const messages: Record<string, { subject: string; lead: string; body: string; cta: string }> = {
     journey_day_1: {
       subject: 'Seu primeiro dia no Menos Bucho',
@@ -62,14 +62,32 @@ function template(key: string, name: string) {
     renewal_day_27: {
       subject: 'Sua jornada termina em poucos dias',
       lead: 'Seu histórico não precisa terminar junto com o ciclo.',
-      body: 'Você poderá iniciar mais 30 dias por R$ 19,90. Quem preferir também poderá ativar renovação automática mensal no checkout.',
+      body: 'Nos últimos dias do ciclo, você pode garantir mais 30 dias por R$ 19,90 ou ativar a renovação automática mensal.',
       cta: 'Ver opção de renovação'
     },
     renewal_day_30: {
       subject: 'Dia 30: escolha seu próximo ciclo',
       lead: 'Você chegou ao fim desta jornada de 30 dias.',
-      body: 'Seu histórico fica preservado. Se quiser continuar, renove por mais 30 dias ou escolha a opção de renovação automática mensal.',
-      cta: 'Renovar por mais 30 dias'
+      body: 'Seu histórico fica preservado. Se quiser continuar, renove por mais 30 dias ou escolha a renovação automática mensal.',
+      cta: 'Ver minha continuidade'
+    },
+    renewal_auto_day_27: {
+      subject: 'Sua renovação automática está ativa',
+      lead: 'Você não precisa recomprar seu acesso manualmente.',
+      body: 'Sua renovação automática está ativa por R$ 19,90 por ciclo mensal. Você pode acompanhar ou cancelar a recorrência diretamente na sua jornada; o período já pago continua disponível mesmo se cancelar.',
+      cta: 'Ver minha assinatura'
+    },
+    renewal_auto_day_30: {
+      subject: 'Fim do ciclo: sua continuidade está automática',
+      lead: 'Seu ciclo atual chegou ao final e a renovação automática está ativa.',
+      body: 'A continuidade depende da confirmação da próxima cobrança pelo Asaas. Você pode acompanhar o status e cancelar novas recorrências diretamente no aplicativo.',
+      cta: 'Acompanhar meu acesso'
+    },
+    renewal_payment_attention: {
+      subject: 'Sua renovação automática precisa de atenção',
+      lead: 'A cobrança de renovação não foi confirmada normalmente.',
+      body: 'Seu período já pago continua válido até a data final. Entre no aplicativo para conferir o status da renovação antes de iniciar uma nova compra.',
+      cta: 'Ver status da renovação'
     }
   };
   const msg = messages[key] || messages.journey_day_1;
@@ -111,8 +129,27 @@ Deno.serve(async (req) => {
       continue;
     }
 
+    let templateKey = String(item.message_key);
+    if (isRenewal) {
+      const { data: autoRenew } = await admin
+        .from('mb_subscriptions')
+        .select('status,auto_renew')
+        .eq('user_id', item.user_id)
+        .eq('auto_renew', true)
+        .in('status', ['active','past_due'])
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (autoRenew?.status === 'past_due') {
+        templateKey = 'renewal_payment_attention';
+      } else if (autoRenew?.status === 'active') {
+        templateKey = item.message_key === 'renewal_day_30' ? 'renewal_auto_day_30' : 'renewal_auto_day_27';
+      }
+    }
+
     const { data: profile } = await admin.from('mb_profiles').select('display_name').eq('user_id', item.user_id).maybeSingle();
-    const msg = template(item.message_key, profile?.display_name || '');
+    const msg = template(templateKey, profile?.display_name || '');
     const idempotencyKey = `mb/${item.id}`;
 
     const response = await fetch('https://api.resend.com/emails', {
