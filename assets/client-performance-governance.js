@@ -6,7 +6,7 @@
   const pretty = (v) => String(v || '').replaceAll('_',' ').replace(/^./,x=>x.toUpperCase());
 
   async function authApi(path, body){
-    const session=await YM.requireSession('/CENTRAL');if(!session)throw new Error('Sessão necessária.');
+    const session=await YM.requireSession(location.pathname+location.search);if(!session)throw new Error('Sessão necessária.');
     const r=await fetch(YM.SUPABASE_URL+'/functions/v1/'+path,{method:'POST',headers:{Authorization:'Bearer '+session.access_token,apikey:YM.PUBLISHABLE_KEY,'Content-Type':'application/json'},body:JSON.stringify(body)});
     const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(j.detail||j.error||'Falha na operação.');e.code=j.error;throw e}return j;
   }

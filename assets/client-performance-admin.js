@@ -162,6 +162,25 @@
       if (card.querySelector('[data-client-performance]')) return; const source = card.querySelector('[data-open-client]'); if (!source) return;
       const button = document.createElement('button'); button.className = 'ym-btn secondary'; button.dataset.clientPerformance = source.dataset.openClient; button.textContent = 'Performance'; button.style.marginLeft = '6px'; button.onclick = () => open(source.dataset.openClient); source.after(button);
     });
+    const drawerTabs = document.querySelector('#caDrawer .ca-client-tabs');
+    const drawerClientId = new URLSearchParams(location.search).get('client');
+    if (drawerTabs && drawerClientId && !drawerTabs.querySelector('[data-performance-shortcut]')) {
+      const performance = document.createElement('button');
+      performance.type = 'button';
+      performance.dataset.performanceShortcut = 'performance';
+      performance.dataset.clientPerformance = drawerClientId;
+      performance.textContent = 'Performance';
+      performance.onclick = () => open(drawerClientId, 'resumo');
+
+      const reportei = document.createElement('button');
+      reportei.type = 'button';
+      reportei.dataset.performanceShortcut = 'reportei';
+      reportei.dataset.clientPerformance = drawerClientId;
+      reportei.textContent = 'Reportei';
+      reportei.onclick = () => open(drawerClientId, 'fontes');
+
+      drawerTabs.append(performance, reportei);
+    }
   }
   injectStyles(); new MutationObserver(() => requestAnimationFrame(enhance)).observe(document.body, { childList:true, subtree:true }); setInterval(enhance, 900); enhance();
   window.ClientPerformanceAdmin = { open, api };
