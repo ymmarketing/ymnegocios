@@ -1,28 +1,55 @@
-/* YM MOBILE SYSTEM 20260826 — carregado por último nas telas internas */
+/* YM INTERNAL UX SYSTEM 20260826 v2 — carregado por último nas telas internas */
+
+/* MOTOR — estados visuais precisam manter contraste em qualquer viewport */
+.vosg-chip{color:#526b7e!important;background:#fff!important;border-color:#dce4ed!important}
+.vosg-chip:hover{color:#0a2540!important;background:#f5f8fb!important}
+.vosg-chip.ok{color:#276746!important;background:#f5fcf8!important;border-color:#b9dec9!important}
+.vosg-chip.active{color:#fff!important;background:#0a2540!important;border-color:#0a2540!important}
+.vosg-chip.ok.active{color:#fff!important;background:#0a2540!important;border-color:#0a2540!important;box-shadow:0 0 0 2px rgba(91,224,162,.28)}
+.vosg-step{color:#fff!important}
+.vosg-step.active{color:#0a2540!important;background:#fff!important}
+.vosg-step.done:not(.active){color:#fff!important}
+
+/* Proteções gerais contra corte horizontal e herança acidental de largura */
+.ym-main,.ym-content{min-width:0}
+.ym-title,.ym-lead,.ym-copy,.ym-meta,.ym-card,.ym-block,.ym-section,.ym-panel{overflow-wrap:anywhere}
+
 @media (max-width: 760px) {
   html,body{width:100%;max-width:100%;overflow-x:hidden}
   body{min-width:0}
   .ym-main,.ym-content,.workspace,.motor-grid,.motor-section,.motor-section .body,.ym-card,.ym-panel,.ym-block,.ym-detail-grid,.ym-formgrid,.ym-filterbar{min-width:0;max-width:100%}
   .ym-content{width:100%;padding-left:14px!important;padding-right:14px!important}
   .ym-topbar{gap:8px;align-items:center}.ym-topbar>div{min-width:0}.ym-topbar-title{white-space:normal;line-height:1.2;overflow-wrap:anywhere}.ym-topbar-meta{min-width:0}.ym-chip{max-width:100%;white-space:normal;text-align:center}
-  .ym-header,.ym-section-head{width:100%;min-width:0}.ym-header>*,.ym-section-head>*{min-width:0;max-width:100%}.ym-actions{width:100%;display:flex}.ym-actions>.ym-btn,.ym-actions>a.ym-btn{flex:1 1 145px;white-space:normal;text-align:center}
+  .ym-header,.ym-section-head{width:100%;min-width:0}.ym-header>*,.ym-section-head>*{min-width:0;max-width:100%}.ym-actions{width:100%;display:flex;flex-wrap:wrap}.ym-actions>.ym-btn,.ym-actions>a.ym-btn{flex:1 1 145px;white-space:normal;text-align:center}
   .ym-title,.ym-lead,.ym-copy,.ym-meta,.ym-block h3,.ym-section h2{max-width:100%;overflow-wrap:anywhere}
   .ym-grid>*{min-width:0}.ym-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}.ym-kpi{min-width:0}.ym-kpi b{overflow-wrap:anywhere}
   .ym-formgrid,.ym-filterbar,.ym-detail-grid{grid-template-columns:minmax(0,1fr)!important}.ym-wide{grid-column:auto!important}
   .ym-input,.ym-select,.ym-textarea{width:100%!important;max-width:100%!important;min-width:0!important;font-size:16px!important}.ym-textarea{line-height:1.5}
-  .ym-btn{white-space:normal;line-height:1.25}.ym-badge{white-space:normal;text-align:center;line-height:1.25}
+  .ym-btn{white-space:normal;line-height:1.25;min-height:44px}.ym-badge{white-space:normal;text-align:center;line-height:1.25}
   .ym-modal-back,.crm-modal-back,.target-back{padding:0!important;align-items:stretch!important}.ym-modal,.crm-modal,.target-modal{width:100%!important;max-width:none!important;max-height:100dvh!important;height:100dvh;border-radius:0!important}.ym-modal-body,.crm-modal-body,.target-body{max-height:none!important;flex:1;overflow:auto;-webkit-overflow-scrolling:touch}.ym-modal header,.crm-modal>header,.target-modal>header{min-height:64px}.ym-modal header button,.crm-modal>header button,.target-modal>header button{min-width:42px;min-height:42px}
   .table-wrap,[class*="table-wrap"]{width:100%;max-width:100%;overflow-x:auto!important;-webkit-overflow-scrolling:touch}.table{max-width:none}.tabbar,.fin-tabs,.preset-row{max-width:100%;overflow-x:auto!important;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}.tabbar button,.fin-tab,.preset{scroll-snap-align:start}
 
-  /* MOTOR */
+  /* MOTOR — viewport mobile real, não desktop comprimido */
   #workspace{width:100%;max-width:100%;overflow-x:hidden!important}
   #workspace *{min-width:0}
-  #workspace .case-hero,#workspace .motor-section,#workspace .p8-card,#workspace .p8-body,#workspace .guide-intro,#workspace .guide-box,#workspace .check-row,#workspace .analysis-fields,#workspace .entry,#workspace .investigation-intro,#workspace .test-box,#workspace .mvc{width:100%;max-width:100%;box-sizing:border-box}
+  #workspace .case-hero,#workspace .motor-section,#workspace .p8-card,#workspace .p8-body,#workspace .guide-intro,#workspace .guide-box,#workspace .check-row,#workspace .analysis-fields,#workspace .entry,#workspace .investigation-intro,#workspace .test-box,#workspace .mvc,#workspace .vosg-wrap,#workspace .vosg-card,#workspace .vosg-callout,#workspace .vosg-invest-step{width:100%;max-width:100%;box-sizing:border-box}
   #workspace .case-hero{padding:18px 16px!important;border-radius:18px}.case-hero h2{overflow-wrap:anywhere;line-height:1.12}.case-hero p{overflow-wrap:anywhere}
   #workspace .motor-section>header{padding:14px!important}.motor-section .body{padding:14px!important}
   #workspace .p8-summary{width:100%;gap:8px;align-items:flex-start}.p8-summary-main{min-width:0!important}.p8-summary h4,.p8-summary small{white-space:normal!important;overflow-wrap:anywhere}
   #workspace .check-row{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:9px!important;padding:12px!important}.check-row span{display:block!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:normal!important;line-height:1.5!important}.check-select{width:100%!important;max-width:100%!important;font-size:16px!important;min-height:46px!important}
   #workspace textarea,#workspace select,#workspace input{max-width:100%!important;min-width:0!important;box-sizing:border-box!important}
+
+  /* MOTOR guiado v3 */
+  #workspace .vosg-hero{padding:17px 15px!important;border-radius:18px!important}.vosg-hero h2{font-size:23px!important;line-height:1.12!important;overflow-wrap:anywhere}.vosg-hero p{font-size:14px!important;line-height:1.55!important;overflow-wrap:anywhere}
+  #workspace .vosg-progress{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.vosg-step{width:100%!important;min-height:50px!important;padding:9px 8px!important;white-space:normal!important;line-height:1.25!important;font-size:11.5px!important;overflow-wrap:anywhere}
+  #workspace .vosg-card{padding:15px!important}.vosg-card h3{font-size:20px!important;line-height:1.2!important}.vosg-card h4{font-size:14px!important}.vosg-copy{font-size:14px!important;line-height:1.6!important}.vosg-muted{font-size:12.5px!important;line-height:1.55!important}.vosg-kicker{font-size:11px!important}.vosg-callout{padding:12px!important}
+  #workspace .vosg-pchips,#workspace .vosg-hchips{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;overflow:visible!important;padding:2px 0 10px!important}
+  #workspace .vosg-chip{width:100%!important;min-width:0!important;min-height:46px!important;padding:9px 8px!important;border-radius:12px!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.3!important;text-align:center!important;font-size:12.5px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+  #workspace .vosg-question{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:9px!important;width:100%!important;padding:12px!important}.vosg-question span{font-size:14px!important;line-height:1.55!important;white-space:normal!important;overflow-wrap:anywhere!important}.vosg-question select{width:100%!important;font-size:16px!important;min-height:46px!important}
+  #workspace .vosg-grid2{grid-template-columns:minmax(0,1fr)!important}.vosg-form label{font-size:12.5px!important}.vosg-form textarea,.vosg-form input,.vosg-form select{font-size:16px!important;max-width:100%!important}
+  #workspace .vosg-nav{flex-direction:column!important;align-items:stretch!important;gap:8px!important}.vosg-nav>div,.vosg-nav .ym-btn{width:100%!important}.vosg-actions{display:grid!important;grid-template-columns:minmax(0,1fr)!important}.vosg-actions .ym-btn{width:100%!important;font-size:14px!important;min-height:44px!important}
+  .vosg-term{font-size:11.5px!important;white-space:normal!important}.vosg-list li{font-size:13.5px!important;line-height:1.55!important}.vosg-choice label{padding:12px!important}.vosg-choice b{font-size:13.5px!important}.vosg-choice span{font-size:12.5px!important}.vosg-status span{font-size:11px!important}.vosg-history summary{font-size:12.5px!important}.vosg-history pre{font-size:12px!important}.vosg-glossary-btn{font-size:12px!important}.vosg-modal{padding:0!important;align-items:stretch!important}.vosg-modal-card{width:100%!important;max-width:none!important;height:100dvh!important;max-height:100dvh!important;border-radius:0!important}.vosg-modal-body{overflow:auto!important}.vosg-modal-head b{font-size:14px!important}.vosg-modal-head p{font-size:12px!important}.vosg-close{min-width:42px!important;min-height:42px!important}.vosg-gloss b{font-size:12.5px!important}.vosg-gloss p{font-size:13px!important}.vosg-order{grid-template-columns:34px minmax(0,1fr)!important}
+
   #workspace :is([class*="tabs"],[class*="p8-nav"],[class*="step-nav"],[class*="stage-nav"],[class*="review-nav"]){display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;width:100%!important;max-width:100%!important;overflow:visible!important;white-space:normal!important}
   #workspace :is([class*="tabs"],[class*="p8-nav"],[class*="step-nav"],[class*="stage-nav"],[class*="review-nav"]) button{width:100%!important;max-width:100%!important;min-width:0!important;min-height:48px!important;padding:9px 8px!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.25!important;text-align:center!important}
   #workspace .prereq{grid-template-columns:minmax(0,1fr)!important}.prereq>div{min-width:0}
@@ -37,5 +64,6 @@
 }
 @media (max-width: 390px){
   .ym-kpis{grid-template-columns:minmax(0,1fr)!important}
+  #workspace .vosg-progress,#workspace .vosg-pchips,#workspace .vosg-hchips{grid-template-columns:minmax(0,1fr)!important}
   #workspace :is([class*="tabs"],[class*="p8-nav"],[class*="step-nav"],[class*="stage-nav"],[class*="review-nav"]){grid-template-columns:minmax(0,1fr)!important}
 }
