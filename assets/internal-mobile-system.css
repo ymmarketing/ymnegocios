@@ -1,0 +1,41 @@
+/* YM MOBILE SYSTEM 20260826 — carregado por último nas telas internas */
+@media (max-width: 760px) {
+  html,body{width:100%;max-width:100%;overflow-x:hidden}
+  body{min-width:0}
+  .ym-main,.ym-content,.workspace,.motor-grid,.motor-section,.motor-section .body,.ym-card,.ym-panel,.ym-block,.ym-detail-grid,.ym-formgrid,.ym-filterbar{min-width:0;max-width:100%}
+  .ym-content{width:100%;padding-left:14px!important;padding-right:14px!important}
+  .ym-topbar{gap:8px;align-items:center}.ym-topbar>div{min-width:0}.ym-topbar-title{white-space:normal;line-height:1.2;overflow-wrap:anywhere}.ym-topbar-meta{min-width:0}.ym-chip{max-width:100%;white-space:normal;text-align:center}
+  .ym-header,.ym-section-head{width:100%;min-width:0}.ym-header>*,.ym-section-head>*{min-width:0;max-width:100%}.ym-actions{width:100%;display:flex}.ym-actions>.ym-btn,.ym-actions>a.ym-btn{flex:1 1 145px;white-space:normal;text-align:center}
+  .ym-title,.ym-lead,.ym-copy,.ym-meta,.ym-block h3,.ym-section h2{max-width:100%;overflow-wrap:anywhere}
+  .ym-grid>*{min-width:0}.ym-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}.ym-kpi{min-width:0}.ym-kpi b{overflow-wrap:anywhere}
+  .ym-formgrid,.ym-filterbar,.ym-detail-grid{grid-template-columns:minmax(0,1fr)!important}.ym-wide{grid-column:auto!important}
+  .ym-input,.ym-select,.ym-textarea{width:100%!important;max-width:100%!important;min-width:0!important;font-size:16px!important}.ym-textarea{line-height:1.5}
+  .ym-btn{white-space:normal;line-height:1.25}.ym-badge{white-space:normal;text-align:center;line-height:1.25}
+  .ym-modal-back,.crm-modal-back,.target-back{padding:0!important;align-items:stretch!important}.ym-modal,.crm-modal,.target-modal{width:100%!important;max-width:none!important;max-height:100dvh!important;height:100dvh;border-radius:0!important}.ym-modal-body,.crm-modal-body,.target-body{max-height:none!important;flex:1;overflow:auto;-webkit-overflow-scrolling:touch}.ym-modal header,.crm-modal>header,.target-modal>header{min-height:64px}.ym-modal header button,.crm-modal>header button,.target-modal>header button{min-width:42px;min-height:42px}
+  .table-wrap,[class*="table-wrap"]{width:100%;max-width:100%;overflow-x:auto!important;-webkit-overflow-scrolling:touch}.table{max-width:none}.tabbar,.fin-tabs,.preset-row{max-width:100%;overflow-x:auto!important;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}.tabbar button,.fin-tab,.preset{scroll-snap-align:start}
+
+  /* MOTOR */
+  #workspace{width:100%;max-width:100%;overflow-x:hidden!important}
+  #workspace *{min-width:0}
+  #workspace .case-hero,#workspace .motor-section,#workspace .p8-card,#workspace .p8-body,#workspace .guide-intro,#workspace .guide-box,#workspace .check-row,#workspace .analysis-fields,#workspace .entry,#workspace .investigation-intro,#workspace .test-box,#workspace .mvc{width:100%;max-width:100%;box-sizing:border-box}
+  #workspace .case-hero{padding:18px 16px!important;border-radius:18px}.case-hero h2{overflow-wrap:anywhere;line-height:1.12}.case-hero p{overflow-wrap:anywhere}
+  #workspace .motor-section>header{padding:14px!important}.motor-section .body{padding:14px!important}
+  #workspace .p8-summary{width:100%;gap:8px;align-items:flex-start}.p8-summary-main{min-width:0!important}.p8-summary h4,.p8-summary small{white-space:normal!important;overflow-wrap:anywhere}
+  #workspace .check-row{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:9px!important;padding:12px!important}.check-row span{display:block!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:normal!important;line-height:1.5!important}.check-select{width:100%!important;max-width:100%!important;font-size:16px!important;min-height:46px!important}
+  #workspace textarea,#workspace select,#workspace input{max-width:100%!important;min-width:0!important;box-sizing:border-box!important}
+  #workspace :is([class*="tabs"],[class*="p8-nav"],[class*="step-nav"],[class*="stage-nav"],[class*="review-nav"]){display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;width:100%!important;max-width:100%!important;overflow:visible!important;white-space:normal!important}
+  #workspace :is([class*="tabs"],[class*="p8-nav"],[class*="step-nav"],[class*="stage-nav"],[class*="review-nav"]) button{width:100%!important;max-width:100%!important;min-width:0!important;min-height:48px!important;padding:9px 8px!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.25!important;text-align:center!important}
+  #workspace .prereq{grid-template-columns:minmax(0,1fr)!important}.prereq>div{min-width:0}
+  #workspace .mvc-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}.mvc-grid{grid-template-columns:minmax(0,1fr)!important}.mvc-card.wide{grid-column:auto!important;overflow-x:auto!important}.mvc-table{min-width:620px}.mvc-source{grid-template-columns:minmax(0,1fr) auto!important}.mvc-copy,.mvc-source small,.mvc-blocker,.mvc-note{overflow-wrap:anywhere}
+  .case-index{max-width:100%;overflow:hidden}.case-items{max-width:100%}.case-item{max-width:100%}.case-item b,.case-item span{white-space:normal!important;overflow-wrap:anywhere}
+
+  /* CRM */
+  .crm-toolbar{grid-template-columns:minmax(0,1fr)!important}.lead-summary{max-width:100%;grid-template-columns:36px minmax(0,1fr) auto!important}.lead-name{min-width:0}.lead-name b,.lead-name span{white-space:normal!important;overflow-wrap:anywhere}.lead-body,.lead-context,.visual-profile,.lead-quick,.detail-tabs,.source-queue{min-width:0;max-width:100%}.lead-context,.lead-quick,.detail-tabs,.source-queue{grid-template-columns:minmax(0,1fr)!important}
+
+  /* Financeiro / Dashboard / Conteúdos / Identidade */
+  .metric-grid,.insight-grid,.scenario-grid,.period-summary,.target-grid{grid-template-columns:minmax(0,1fr)!important}.hero-metrics{grid-template-columns:minmax(0,1fr)!important}.trend-month{min-width:0}.custom-range{grid-template-columns:minmax(0,1fr)!important}.section>header{min-width:0}.section>header>*{min-width:0}.section h2,.section header p,.hero h2,.hero-note{overflow-wrap:anywhere}
+}
+@media (max-width: 390px){
+  .ym-kpis{grid-template-columns:minmax(0,1fr)!important}
+  #workspace :is([class*="tabs"],[class*="p8-nav"],[class*="step-nav"],[class*="stage-nav"],[class*="review-nav"]){grid-template-columns:minmax(0,1fr)!important}
+}
