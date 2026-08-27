@@ -1,0 +1,33 @@
+name: Bust MOTOR ORDENAR AI cache
+
+on:
+  push:
+    paths:
+      - 'scripts/bust_motor_order_ai_cache_20260827.py'
+      - '.github/workflows/bust-motor-order-ai-cache-20260827.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Bust MOTOR asset cache
+        run: python scripts/bust_motor_order_ai_cache_20260827.py
+      - name: Commit changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add MOTOR/index.html
+          git commit -m "MOTOR: atualiza cache da IA do ORDENAR"
+          git push
