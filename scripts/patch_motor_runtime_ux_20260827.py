@@ -10,6 +10,11 @@ if 'motor-runtime-ux-20260827.js' not in text:
     text=text.replace(old,new)
 text=text.replace('/assets/motor-flow-v2.js?v=20260827-3','/assets/motor-flow-v2.js?v=20260827-4')
 text=text.replace('/assets/motor-runtime-ux-20260827.js?v=20260827-1','/assets/motor-runtime-ux-20260827.js?v=20260827-2')
+if 'motor-order-assist-stable.js' not in text:
+    marker='<script src="/assets/motor-runtime-ux-20260827.js?v=20260827-2"></script>'
+    if marker not in text:
+        raise SystemExit('runtime marker not found')
+    text=text.replace(marker,marker+'<script src="/assets/motor-order-assist-stable.js?v=20260827-1"></script>')
 index.write_text(text,encoding='utf-8')
 
 runtime=Path('assets/motor-runtime-ux-20260827.js')
@@ -19,4 +24,4 @@ replacement="function run(){document.querySelectorAll('[data-order-ai]').forEach
 if needle in r:
     r=r.replace(needle,replacement)
 runtime.write_text(r,encoding='utf-8')
-print('patched MOTOR runtime UX')
+print('patched MOTOR runtime UX + stable ORDENAR assistant')
