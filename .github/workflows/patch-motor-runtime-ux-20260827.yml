@@ -18,7 +18,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add MOTOR/index.html assets/motor-runtime-ux-20260827.js
+          git add MOTOR/index.html assets/motor-runtime-ux-20260827.js assets/motor-order-assist-stable.js
           git diff --cached --quiet && exit 0
           git commit -m "MOTOR: consolida gate recolhível e IA do ORDENAR"
           git push
