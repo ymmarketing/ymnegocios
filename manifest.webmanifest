@@ -1,0 +1,20 @@
+{
+  "id": "/interno/",
+  "name": "Central YM — Acesso Interno",
+  "short_name": "Central YM",
+  "description": "Acesso interno ao ecossistema operacional da YM.",
+  "lang": "pt-BR",
+  "start_url": "/interno/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "/assets/img/ym-app-icon.svg?v=20260829",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
