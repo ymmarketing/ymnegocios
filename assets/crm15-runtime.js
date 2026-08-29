@@ -143,6 +143,7 @@
     .then(() => loadScript('/assets/client-reportei-kpi-mapping.js?v=20260826-2', 'ymClientReporteiMapping'))
     .then(() => loadScript('/assets/client-performance-status.js?v=20260826-2', 'ymClientPerformanceStatus'))
     .then(() => loadScript('/assets/central-ym-shortcut.js?v=20260820-2', 'ymCentralAdminShortcut'))
+    .then(() => loadScript('/assets/crm-lead-calendar.js?v=20260829-1', 'ymLeadCalendar'))
     .then(startNativeClientDetails)
     .catch((error) => console.error('CRM interaction layer', error));
 })();
