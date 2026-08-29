@@ -1,5 +1,4 @@
 (()=>{
-  const MARK='YM_LEAD';
   const E=v=>window.YM?.esc?YM.esc(v):String(v??'').replace(/[&<>"']/g,'');
   const qs=(sel,root=document)=>root.querySelector(sel);
   const pad=n=>String(n).padStart(2,'0');
@@ -8,12 +7,15 @@
     return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
   }
   function suggestedStart(){
-    const d=new Date(Date.now()+60*60*1000);
-    d.setMinutes(d.getMinutes()<30?30:0,0,0);
-    if(d.getMinutes()===0&&new Date(Date.now()+60*60*1000).getMinutes()>=30)d.setHours(d.getHours()+1);
+    const base=new Date(Date.now()+60*60*1000),d=new Date(base);
+    if(base.getMinutes()<30)d.setMinutes(30,0,0);else{d.setHours(d.getHours()+1);d.setMinutes(0,0,0)}
     return localInput(d);
   }
-  function marker(id,label){return `[[${MARK}|${id}|${encodeURIComponent(label||'Lead')}]]`;}
+  function asIso(localValue){
+    if(!localValue)return null;
+    const d=new Date(localValue);
+    return Number.isNaN(d.getTime())?null:d.toISOString();
+  }
   function leadState(id){
     try{return (crm?.opportunities||[]).find(x=>x.id===id)||null}catch{return null}
   }
@@ -24,7 +26,7 @@
   async function calendarApi(body){
     const s=await YM.requireSession('/CRM');
     if(!s)throw new Error('Sessão necessária');
-    const r=await fetch(YM.SUPABASE_URL+'/functions/v1/central-ym-calendar-admin',{
+    const r=await fetch(YM.SUPABASE_URL+'/functions/v1/crm-lead-calendar-admin',{
       method:'POST',
       headers:{Authorization:'Bearer '+s.access_token,apikey:YM.PUBLISHABLE_KEY,'Content-Type':'application/json'},
       body:JSON.stringify(body)
@@ -55,10 +57,12 @@
     m.querySelector('#ylcSave').onclick=async()=>{
       const title=m.querySelector('#ylcTitle').value.trim(),starts=m.querySelector('#ylcStart').value,ends=m.querySelector('#ylcEnd').value,url=m.querySelector('#ylcUrl').value.trim(),notes=m.querySelector('#ylcNotes').value.trim();
       if(!title)return YM.toast('Informe o título da reunião.',true);if(!starts)return YM.toast('Informe a data e o horário.',true);if(url&&!/^https?:\/\//i.test(url))return YM.toast('O link precisa começar com http:// ou https://.',true);
+      const startsIso=asIso(starts),endsIso=asIso(ends);if(!startsIso)return YM.toast('Data e horário inválidos.',true);if(ends&&(!endsIso||new Date(endsIso)<new Date(startsIso)))return YM.toast('O horário final precisa ser posterior ao início.',true);
       const b=m.querySelector('#ylcSave');b.disabled=true;b.textContent='Agendando…';
       try{
-        await calendarApi({action:'UPSERT_EVENT',client_id:null,title,event_type:'REUNIAO',starts_at:starts,ends_at:ends||null,external_url:url||null,description:`${marker(id,label)}${notes?'\n'+notes:''}`,visible_to_client:false});
+        await calendarApi({action:'UPSERT_LEAD_MEETING',opportunity_id:id,title,starts_at:startsIso,ends_at:endsIso,external_url:url||null,description:notes||null});
         close();YM.toast(`Reunião com ${label} agendada na Central YM.`);
+        if(typeof window.load==='function'){try{await window.load()}catch{}}
       }catch(e){YM.toast(e.message,true);b.disabled=false;b.textContent='Salvar na Central YM'}
     };
   }
