@@ -30,18 +30,20 @@ jobs:
               Path('FINANCEIRO/index.html'),
               Path('Identidade/index.html'),
           ]
-          guard = '<script src="/assets/internal-typography-guard.js?v=20260901-2"></script>'
+          guard = '<script src="/assets/internal-typography-guard.js?v=20260901-3"></script>'
 
           for p in targets:
               s = p.read_text(encoding='utf-8')
-              # força CSS global mais recente, independentemente do cache anterior
+              # força as camadas globais mais recentes, independentemente do cache anterior
               s = re.sub(r'/assets/internal-mobile-system\.css(?:\?v=[^"\']*)?',
-                         '/assets/internal-mobile-system.css?v=20260901-typography2', s)
-              # força shell mais recente quando presente
+                         '/assets/internal-mobile-system.css?v=20260901-typography3', s)
               s = re.sub(r'/assets/internal-shell\.js(?:\?v=[^"\']*)?',
-                         '/assets/internal-shell.js?v=20260901-typography2', s)
+                         '/assets/internal-shell.js?v=20260901-typography3', s)
               s = re.sub(r'/assets/internal-shell-central\.js(?:\?v=[^"\']*)?',
-                         '/assets/internal-shell-central.js?v=20260901-typography2', s)
+                         '/assets/internal-shell-central.js?v=20260901-typography3', s)
+              # atualiza também páginas que já tinham uma versão anterior do guard
+              s = re.sub(r'/assets/internal-typography-guard\.js(?:\?v=[^"\']*)?',
+                         '/assets/internal-typography-guard.js?v=20260901-3', s)
               if 'internal-typography-guard.js' not in s:
                   if '</body>' not in s:
                       raise SystemExit(f'</body> ausente em {p}')
@@ -89,5 +91,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add CENTRAL/index.html CRM/index.html Conteudos/index.html MOTOR/index.html DASHBOARD/index.html FINANCEIRO/index.html Identidade/index.html
-          git commit -m 'fix: enforce typography guard across internal YM'
+          git commit -m 'fix: enforce typography guard v3 across internal YM'
           git push
