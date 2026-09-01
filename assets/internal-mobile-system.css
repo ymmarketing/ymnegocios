@@ -67,3 +67,37 @@
   #workspace .vosg-progress,#workspace .vosg-pchips,#workspace .vosg-hchips{grid-template-columns:minmax(0,1fr)!important}
   #workspace :is([class*="tabs"],[class*="p8-nav"],[class*="step-nav"],[class*="stage-nav"],[class*="review-nav"]){grid-template-columns:minmax(0,1fr)!important}
 }
+
+/* YM INTERNAL TYPOGRAPHY GUARD 20260901 — escala oficial: corpo 15, UI 14, apoio 13, meta 12 */
+.ym-main{font-size:15px;line-height:1.55}
+.ym-main [style*="font-size:7px"],.ym-main [style*="font-size:7.5px"],.ym-main [style*="font-size:8px"],.ym-main [style*="font-size:8.5px"],.ym-main [style*="font-size:9px"],.ym-main [style*="font-size:9.5px"],.ym-main [style*="font-size:10px"],.ym-main [style*="font-size:10.5px"],.ym-main [style*="font-size:11px"],.ym-main [style*="font-size:11.5px"]{font-size:12px!important;line-height:1.45!important}
+
+/* Conteúdos */
+.ct-intro p{font-size:15px!important;line-height:1.65!important}.ct-rule b{font-size:15px!important}.ct-rule p{font-size:13px!important;line-height:1.55!important}
+.ct-icp .eyebrow{font-size:12px!important}.ct-icp h3{font-size:15px!important}.ct-icp p{font-size:13px!important;line-height:1.55!important}.ct-pill{font-size:12px!important;padding:6px 8px!important}
+.ct-tab{font-size:13px!important;min-height:40px!important;padding:9px 12px!important}.ct-kpi span{font-size:12px!important}.ct-week div{font-size:12px!important}.ct-date{font-size:12px!important}.ct-day{min-height:128px!important}.ct-event{font-size:12px!important;line-height:1.35!important;padding:6px 7px!important}.ct-event small{font-size:12px!important;line-height:1.35!important}
+.ct-card h3{font-size:15px!important;line-height:1.35!important}.ct-card p{font-size:13px!important;line-height:1.55!important}.ct-label{font-size:12px!important}.ct-tag,.ct-proof-status{font-size:12px!important}.ct-modal>header h2{font-size:18px!important}.ct-section{font-size:14px!important}.ct-help{font-size:12px!important;line-height:1.5!important}.ct-panel h3{font-size:15px!important}.ct-panel p,.ct-panel li{font-size:13px!important;line-height:1.55!important}.ct-learning b{font-size:13px!important}.ct-empty{font-size:13px!important;line-height:1.55!important}
+
+/* Central administrativa */
+.ca-subnav button{font-size:13px!important}.ca-row b{font-size:13px!important}.ca-row small{font-size:12px!important}.ca-client h3{font-size:14px!important}.ca-client p{font-size:13px!important}.ca-cell b{font-size:12px!important}.ca-cell span{font-size:13px!important}.ca-badge{font-size:12px!important}.ca-week div{font-size:12px!important}.ca-day-num{font-size:12px!important}.ca-event{font-size:12px!important}.ca-drawer>header small{font-size:12px!important}.ca-client-tabs button{font-size:13px!important}.ca-soft small{font-size:12px!important}.ca-soft b{font-size:13px!important}.ca-form h3,.ca-project h3{font-size:14px!important}.ca-link,.ca-note{font-size:13px!important}.ca-empty{font-size:13px!important}
+
+/* CRM */
+.lead-name b{font-size:14px!important}.lead-name span,.cell{font-size:13px!important}.cell b{font-size:12px!important}.visual-profile .meta{font-size:13px!important}.visual-profile .chips span{font-size:12px!important}.profile-actions button{font-size:13px!important}.quick h4{font-size:14px!important}.quick p{font-size:13px!important}.editor h4{font-size:14px!important}.helper{font-size:12px!important}.history-wrap h4{font-size:14px!important}.history-line{font-size:13px!important}.create-box summary{font-size:14px!important}.queue h4{font-size:14px!important}.queue-row b{font-size:13px!important}.queue-row span{font-size:12px!important}.kpi-pct{font-size:12px!important}.tabbar button{font-size:13px!important}
+
+/* Dashboard */
+.dash-filter{font-size:14px!important;min-height:42px!important}.dash-kpi span{font-size:12px!important}.dash-kpi small{font-size:12px!important}.dash-kpi[data-detail]:after{font-size:12px!important}.dash-section-head p{font-size:13px!important}.funnel-label{font-size:13px!important}.funnel-value{font-size:12px!important}.mini-table th{font-size:12px!important}.mini-table td{font-size:13px!important}.empty{font-size:13px!important}.gate b{font-size:14px!important}.gate span{font-size:13px!important}.p8-row:first-child{font-size:12px!important}.p8-row:not(:first-child){font-size:13px!important}.pill{font-size:12px!important}.recent-case b{font-size:13px!important}.recent-case span{font-size:12px!important}.loading,.error{font-size:13px!important}.updated{font-size:12px!important}.dash-modal header h3{font-size:18px!important}.detail-row b{font-size:13px!important}.detail-row span{font-size:12px!important}
+
+/* Financeiro */
+.fin-status{font-size:12px!important}.fin-tab{font-size:13px!important}.filter-head strong{font-size:14px!important}.filter-head span{font-size:13px!important}.preset{font-size:12px!important}.custom-range label{font-size:12px!important}.custom-range input{font-size:14px!important}.period-pill{font-size:12px!important}.hero-eyebrow{font-size:12px!important}.hero-label{font-size:14px!important}.hero-progress-label{font-size:12px!important}.hero-metric span{font-size:12px!important}.hero-note{font-size:13px!important}.section h2{font-size:16px!important}.section header p{font-size:13px!important}.section-lead{font-size:13px!important}.metric .k{font-size:12px!important}.metric .d{font-size:13px!important}.summary-card span{font-size:13px!important}.trend-month .m{font-size:13px!important}.bar-line label{font-size:12px!important}.trend-values{font-size:12px!important}.insight .tag{font-size:12px!important}.insight span{font-size:13px!important}.scenario h3{font-size:14px!important}.scenario p{font-size:13px!important}.scenario .minirow{font-size:12px!important}.table th{font-size:12px!important}.table td{font-size:13px!important}.badge{font-size:12px!important}.source-box strong{font-size:14px!important}.source-box p{font-size:13px!important}.sheet>summary{font-size:14px!important}.source-note{font-size:13px!important}.target-grid label{font-size:12px!important}.target-grid input,.target-grid textarea{font-size:14px!important}.target-history-row{font-size:12px!important}
+
+/* Identidade */
+.id-intro p{font-size:15px!important}.id-rule-card h3{font-size:15px!important}.id-rule-card p{font-size:13px!important}.id-cat{font-size:12px!important}.id-card h3{font-size:15px!important}.id-card p{font-size:13px!important}.id-meta span{font-size:12px!important}.id-meta b{font-size:12px!important}.id-modal>header h2{font-size:18px!important}.id-rule{font-size:13px!important}
+
+/* MOTOR — remove os últimos microtextos abaixo do piso oficial */
+.vosg-step{font-size:12px!important}.vosg-kicker,.vosg-status span{font-size:12px!important}.vosg-term{font-size:12px!important}.p8-summary small,.check-help{font-size:12px!important}
+
+@media(max-width:760px){
+  .ct-tab,.ca-subnav button,.tabbar button,.fin-tab{font-size:14px!important;min-height:44px!important}
+  .ct-card p,.ct-panel p,.ct-panel li,.ca-client p,.quick p,.history-line,.section header p,.metric .d,.summary-card span,.insight span,.scenario p,.id-card p,.id-rule-card p{font-size:14px!important}
+  .ct-day{min-height:132px!important}.ct-week div,.ct-date,.ct-event,.ct-event small{font-size:12px!important}
+}
