@@ -15,6 +15,18 @@
   async function load(){if(loading)return;loading=true;const root=ensure();try{last=await api();render(last)}catch(e){if(root)root.innerHTML=`<div class="coa-empty">${E(e.message)}</div>`}finally{loading=false}}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(load,250));
   document.addEventListener('click',e=>{if(e.target?.id==='refreshAdmin')setTimeout(load,500)});
-  const obs=new MutationObserver(()=>{ensure();if(last)render(last)});obs.observe(document.documentElement,{childList:true,subtree:true});
+
+  // Observa apenas a eventual reconstrução do dashboard. Não renderiza novamente
+  // quando o próprio conteúdo dos alertas muda, evitando um loop infinito de DOM.
+  const obs=new MutationObserver(()=>{
+    const view=document.getElementById('caView_dashboard');
+    if(!view)return;
+    if(!document.getElementById('caOperationalAlerts')){
+      const root=ensure();
+      if(root&&last)render(last);
+    }
+  });
+  obs.observe(document.body,{childList:true,subtree:true});
+
   setInterval(load,60000);
 })();
