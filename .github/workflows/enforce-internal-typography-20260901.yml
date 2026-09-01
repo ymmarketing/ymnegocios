@@ -1,0 +1,93 @@
+name: Enforce internal typography 2026-09-01
+
+on:
+  push:
+    paths:
+      - '.github/workflows/enforce-internal-typography-20260901.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  enforce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Inject global typography guard in every internal module
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          targets = [
+              Path('CENTRAL/index.html'),
+              Path('CRM/index.html'),
+              Path('Conteudos/index.html'),
+              Path('MOTOR/index.html'),
+              Path('DASHBOARD/index.html'),
+              Path('FINANCEIRO/index.html'),
+              Path('Identidade/index.html'),
+          ]
+          guard = '<script src="/assets/internal-typography-guard.js?v=20260901-2"></script>'
+
+          for p in targets:
+              s = p.read_text(encoding='utf-8')
+              # força CSS global mais recente, independentemente do cache anterior
+              s = re.sub(r'/assets/internal-mobile-system\.css(?:\?v=[^"\']*)?',
+                         '/assets/internal-mobile-system.css?v=20260901-typography2', s)
+              # força shell mais recente quando presente
+              s = re.sub(r'/assets/internal-shell\.js(?:\?v=[^"\']*)?',
+                         '/assets/internal-shell.js?v=20260901-typography2', s)
+              s = re.sub(r'/assets/internal-shell-central\.js(?:\?v=[^"\']*)?',
+                         '/assets/internal-shell-central.js?v=20260901-typography2', s)
+              if 'internal-typography-guard.js' not in s:
+                  if '</body>' not in s:
+                      raise SystemExit(f'</body> ausente em {p}')
+                  s = s.replace('</body>', guard + '</body>', 1)
+              p.write_text(s, encoding='utf-8')
+
+          # auditoria estática das fontes declaradas nas telas/ativos operacionais.
+          audit_files = targets + [
+              Path('assets/internal-shell.css'), Path('assets/internal-mobile-system.css'),
+              Path('assets/central-ym-console.css'), Path('assets/central-ym-content-page.css'),
+              Path('assets/central-ym-client-content-admin.js'), Path('assets/central-ym-visual-guide.js'),
+              Path('assets/central-ym-content.js'), Path('assets/central-ym-console.js'),
+              Path('assets/client-journey-admin.js'), Path('assets/client-onboarding-admin-view.js'),
+              Path('assets/central-performance-portfolio.js'), Path('assets/central-operational-alerts.js'),
+              Path('assets/central-lead-calendar.js'), Path('assets/central-d0-enforcement-ui.js'),
+              Path('assets/crm15-runtime.js'), Path('assets/crm15-runtime-core.js'),
+              Path('assets/crm15-clients.js'), Path('assets/crm15-clients-ui.js'),
+              Path('assets/crm15-client-kpi.js'), Path('assets/crm15-lead-sheet-v3.js'),
+              Path('assets/dashboard-performance.js'), Path('assets/financeiro-products-filter.js'),
+              Path('assets/motor-runtime-ux-20260827.js'), Path('assets/motor-flow-v2.js'),
+              Path('assets/motor-client-context.js'), Path('assets/motor-ai-layer.js'),
+              Path('assets/motor-ver-data-gate.js'), Path('assets/motor-order-assist-stable.js'),
+              Path('assets/central-ym-identity.js'),
+          ]
+          pat = re.compile(r'font(?:-size)?\s*:\s*(\d+(?:\.\d+)?)px', re.I)
+          offenders=[]
+          for p in audit_files:
+              if not p.exists(): continue
+              txt=p.read_text(encoding='utf-8',errors='ignore')
+              for m in pat.finditer(txt):
+                  size=float(m.group(1))
+                  if size < 12:
+                      line=txt.count('\n',0,m.start())+1
+                      offenders.append((str(p),line,size))
+          print(f'Auditoria estática: {len(offenders)} declarações legadas abaixo de 12px encontradas.')
+          for row in offenders[:120]: print('LEGADO_MICRO', *row)
+          print('Todas ficam cobertas pelo guard de tamanho COMPUTADO + MutationObserver.')
+          PY
+      - name: Commit typography deployment
+        run: |
+          if git diff --quiet; then
+            echo 'No changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add CENTRAL/index.html CRM/index.html Conteudos/index.html MOTOR/index.html DASHBOARD/index.html FINANCEIRO/index.html Identidade/index.html
+          git commit -m 'fix: enforce typography guard across internal YM'
+          git push
