@@ -8,25 +8,11 @@
     document.head.append(s);
   }
   async function api(){const session=await YM.requireSession('/CENTRAL');if(!session)throw new Error('Sessão necessária.');const r=await fetch(YM.SUPABASE_URL+'/functions/v1/central-operational-alerts',{method:'POST',headers:{Authorization:'Bearer '+session.access_token,apikey:YM.PUBLISHABLE_KEY,'Content-Type':'application/json'},body:'{}'});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.detail||j.error||'Não foi possível carregar alertas.');return j;}
-  function ensure(){injectStyles();const view=document.getElementById('caView_dashboard'),kpis=document.getElementById('caKpis');if(!view||!kpis)return null;let root=document.getElementById('caOperationalAlerts');if(root){const grid=view.querySelector(':scope > .ca-grid2');if(grid&&root.previousElementSibling!==grid)grid.after(root);return root}root=document.createElement('section');root.id='caOperationalAlerts';root.className='coa-wrap';root.innerHTML='<div class="coa-empty">Carregando pendências operacionais…</div>';const grid=view.querySelector(':scope > .ca-grid2');if(grid)grid.after(root);else kpis.after(root);return root;}
+  function ensure(){injectStyles();const view=document.getElementById('caView_dashboard'),kpis=document.getElementById('caKpis');if(!view||!kpis)return null;let root=document.getElementById('caOperationalAlerts');if(root)return root;root=document.createElement('section');root.id='caOperationalAlerts';root.className='coa-wrap';root.innerHTML='<div class="coa-empty">Carregando pendências operacionais…</div>';const grid=view.querySelector(':scope > .ca-grid2');if(grid)grid.after(root);else kpis.after(root);return root;}
   function render(data){const root=ensure();if(!root)return;const s=data?.summary||{},alerts=data?.alerts||[];root.innerHTML=`<div class="coa-head"><div><h2>Pendências operacionais da jornada</h2><p>Gates, prazos, acessos e fontes de dados que exigem atenção agora.</p></div><div class="coa-summary"><span class="coa-chip critical">${s.critical||0} crítico(s)</span><span class="coa-chip high">${s.overdue||0} atrasado(s)</span><span class="coa-chip">${s.due_soon||0} prazo(s) próximo(s)</span><span class="coa-chip">${s.blocked||0} bloqueado(s)</span></div></div>${alerts.length?`<div class="coa-list">${alerts.slice(0,12).map(a=>`<div class="coa-item ${a.severity==='CRITICO'?'critical':a.severity==='ALTO'?'high':'medium'}"><div><span class="coa-sev">${E(labels[a.severity]||a.severity)}</span><b>${E(a.client_name)} · ${E(a.title)}</b><small>${E(a.detail||'')}${a.due_at?` · Prazo: ${new Date(a.due_at).toLocaleDateString('pt-BR')}`:''}</small></div><button class="ym-btn secondary" data-coa-client="${E(a.client_id)}">Abrir cliente</button></div>`).join('')}</div>`:'<div class="coa-empty">Nenhuma pendência crítica de jornada neste momento.</div>'}`;
     root.querySelectorAll('[data-coa-client]').forEach(b=>b.onclick=()=>document.querySelector(`[data-open-client="${CSS.escape(b.dataset.coaClient)}"]`)?.click()||location.assign('/CENTRAL?client='+encodeURIComponent(b.dataset.coaClient)));
   }
   async function load(){if(loading)return;loading=true;const root=ensure();try{last=await api();render(last)}catch(e){if(root)root.innerHTML=`<div class="coa-empty">${E(e.message)}</div>`}finally{loading=false}}
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(load,250));
-  document.addEventListener('click',e=>{if(e.target?.id==='refreshAdmin')setTimeout(load,500)});
-
-  // Observa apenas a eventual reconstrução do dashboard. Não renderiza novamente
-  // quando o próprio conteúdo dos alertas muda, evitando um loop infinito de DOM.
-  const obs=new MutationObserver(()=>{
-    const view=document.getElementById('caView_dashboard');
-    if(!view)return;
-    if(!document.getElementById('caOperationalAlerts')){
-      const root=ensure();
-      if(root&&last)render(last);
-    }
-  });
-  obs.observe(document.body,{childList:true,subtree:true});
-
-  setInterval(load,60000);
+  function boot(){setTimeout(load,350);document.addEventListener('click',e=>{if(e.target?.id==='refreshAdmin')setTimeout(load,500)});}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
