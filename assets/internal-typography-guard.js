@@ -1,12 +1,14 @@
-/* YM INTERNAL TYPOGRAPHY GUARD 20260901
+/* YM INTERNAL TYPOGRAPHY GUARD 20260901 v3
    Regra oficial do ambiente: corpo 15px, UI 14px, apoio 13px, meta 12px.
-   Esta camada mede o tamanho COMPUTADO, portanto cobre CSS legado, estilos inline
-   e componentes criados dinamicamente depois do carregamento da página. */
+   Mede o tamanho COMPUTADO e corrige CSS legado, estilos inline, modais e
+   componentes inseridos dinamicamente depois do carregamento da página. */
 (()=>{
   if(window.__YM_INTERNAL_TYPOGRAPHY_GUARD__) return;
   window.__YM_INTERNAL_TYPOGRAPHY_GUARD__=true;
 
-  const ROOT_SELECTOR='.ym-main, .ym-sidebar, .ym-modal-back, .crm-modal-back, .dash-modal-back, .target-back, .ca-drawer-back, .ca-new-back, .ct-modal-back';
+  /* O arquivo só é carregado nas telas internas, então body é o escopo correto.
+     Isso inclui sidebar, conteúdo, drawers, modais e componentes criados fora de .ym-main. */
+  const ROOT_SELECTOR='body';
   const SKIP='script,style,svg,path,canvas,template,noscript,iframe,option';
   const META_RE=/(^|[-_])(meta|eyebrow|badge|tag|status|kicker|helper|help|sub|caption|hint|note|date|label|pill|chip)([-_]|$)/i;
   const CONTROL_RE=/^(BUTTON|INPUT|SELECT|TEXTAREA|SUMMARY)$/;
@@ -23,7 +25,7 @@
     if(HEADING_MIN[tag]) return HEADING_MIN[tag];
     if(tag==='SMALL' || META_RE.test(cls)) return 12;
     if(tag==='TH') return 12;
-    if(CONTROL_RE.test(tag)) return tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA' ? (innerWidth<=760?16:14) : 14;
+    if(CONTROL_RE.test(tag)) return (tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA') ? (innerWidth<=760?16:14) : 14;
     if(TEXT_RE.test(tag)) return 13;
     if(tag==='SPAN') return 12;
     if(tag==='DIV' && hasDirectText(el)) return META_RE.test(cls)?12:13;
@@ -31,14 +33,15 @@
   }
 
   function enforceElement(el){
-    if(!(el instanceof Element) || el.matches(SKIP)) return;
-    if(!el.closest(ROOT_SELECTOR)) return;
+    if(!(el instanceof Element) || el.matches(SKIP) || !el.closest(ROOT_SELECTOR)) return;
     const min=minimumFor(el);
     if(!min) return;
-    const current=parseFloat(getComputedStyle(el).fontSize)||0;
+    const cs=getComputedStyle(el);
+    const current=parseFloat(cs.fontSize)||0;
     if(current+0.01<min){
       el.style.setProperty('font-size',`${min}px`,'important');
-      if(min>=13 && parseFloat(getComputedStyle(el).lineHeight)<min*1.25){
+      const lh=parseFloat(cs.lineHeight);
+      if(min>=13 && Number.isFinite(lh) && lh<min*1.25){
         el.style.setProperty('line-height','1.45','important');
       }
       el.dataset.ymTypeGuard=String(min);
@@ -67,10 +70,10 @@
   const style=document.createElement('style');
   style.id='ymTypographyPseudoGuard';
   style.textContent=`
-    ${ROOT_SELECTOR} *::before,${ROOT_SELECTOR} *::after{font-size:inherit}
+    body *::before,body *::after{font-size:inherit}
     @media(max-width:760px){
-      ${ROOT_SELECTOR} button,${ROOT_SELECTOR} summary{min-height:44px}
-      ${ROOT_SELECTOR} input,${ROOT_SELECTOR} select,${ROOT_SELECTOR} textarea{font-size:16px!important}
+      body button,body summary{min-height:44px}
+      body input,body select,body textarea{font-size:16px!important}
     }
   `;
   document.head.appendChild(style);
@@ -81,12 +84,20 @@
   const observer=new MutationObserver(mutations=>{
     for(const m of mutations){
       if(m.type==='attributes') schedule(m.target);
-      m.addedNodes.forEach(n=>{if(n.nodeType===Node.ELEMENT_NODE)schedule(n)});
+      if(m.type==='characterData' && m.target.parentElement) schedule(m.target.parentElement);
+      if(m.type==='childList'){
+        schedule(m.target);
+        m.addedNodes.forEach(n=>{
+          if(n.nodeType===Node.ELEMENT_NODE) schedule(n);
+          else if(n.nodeType===Node.TEXT_NODE && n.parentElement) schedule(n.parentElement);
+        });
+      }
     }
   });
-  observer.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']});
+  observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['class','style']});
 
   addEventListener('resize',()=>schedule(document),{passive:true});
-  setTimeout(()=>scan(document),300);
-  setTimeout(()=>scan(document),1200);
+  setTimeout(()=>scan(document),250);
+  setTimeout(()=>scan(document),900);
+  setTimeout(()=>scan(document),1800);
 })();
