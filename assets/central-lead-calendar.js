@@ -35,8 +35,8 @@
   function applyChips(){
     document.querySelectorAll('.ca-day .ca-event').forEach(chip=>{
       const key=chip.closest('.ca-day')?.dataset?.day||'',txt=chip.textContent||'';
-      const ev=leadEvents.find(x=>dayKey(x.starts_at)===key&&(txt.includes(x.title)||chip.dataset.leadId===ev?.id));if(!ev)return;
-      const label=`Lead · ${ev.label} · ${ev.title}`;chip.dataset.leadEvent='1';chip.dataset.leadId=ev.id||'';if(chip.textContent!==label)chip.textContent=label;if(chip.getAttribute('title')!==label)chip.setAttribute('title',label);
+      const ev=leadEvents.find(x=>dayKey(x.starts_at)===key&&(txt.includes(x.title)||chip.dataset.leadId===String(x.id||'')));if(!ev)return;
+      const label=`Lead · ${ev.label} · ${ev.title}`;chip.dataset.leadEvent='1';chip.dataset.leadId=String(ev.id||'');if(chip.textContent!==label)chip.textContent=label;if(chip.getAttribute('title')!==label)chip.setAttribute('title',label);
     });
   }
   function cleanLeadModal(){
