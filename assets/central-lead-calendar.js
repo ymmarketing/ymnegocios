@@ -28,15 +28,15 @@
   function applyRows(root,kind){
     root?.querySelectorAll?.('.ca-row').forEach(row=>{
       const ev=leadEvents.find(x=>matchRow(row,x));if(!ev)return;row.dataset.leadEvent='1';
-      const b=row.querySelector('b');if(b){if(kind==='upcoming')b.textContent=`Lead · ${ev.label} · ${ev.title}`;else b.textContent=`Lead · ${ev.label}`}
+      const b=row.querySelector('b');if(b){const label=kind==='upcoming'?`Lead · ${ev.label} · ${ev.title}`:`Lead · ${ev.label}`;if(b.textContent!==label)b.textContent=label}
       leadButton(row,ev);
     });
   }
   function applyChips(){
     document.querySelectorAll('.ca-day .ca-event').forEach(chip=>{
       const key=chip.closest('.ca-day')?.dataset?.day||'',txt=chip.textContent||'';
-      const ev=leadEvents.find(x=>dayKey(x.starts_at)===key&&txt.includes(x.title));if(!ev)return;
-      chip.dataset.leadEvent='1';chip.textContent=`Lead · ${ev.label} · ${ev.title}`;chip.setAttribute('title',`Lead · ${ev.label} · ${ev.title}`);
+      const ev=leadEvents.find(x=>dayKey(x.starts_at)===key&&(txt.includes(x.title)||chip.dataset.leadId===ev?.id));if(!ev)return;
+      const label=`Lead · ${ev.label} · ${ev.title}`;chip.dataset.leadEvent='1';chip.dataset.leadId=ev.id||'';if(chip.textContent!==label)chip.textContent=label;if(chip.getAttribute('title')!==label)chip.setAttribute('title',label);
     });
   }
   function cleanLeadModal(){
@@ -44,9 +44,17 @@
     modal.dataset.leadCleaned='1';modal.dataset.leadMarker=`[[YM_LEAD|${lead.opportunity_id}|${encodeURIComponent(lead.label)}]]`;ta.value=lead.clean;
     const note=modal.querySelector('.ca-note');if(note)note.innerHTML=`Este compromisso está vinculado ao <b>lead ${E(lead.label)}</b>. Ele aparece na agenda administrativa da YM e não exige cadastro como cliente.`;
     const has=modal.querySelector('#ceHasClient'),box=modal.querySelector('#ceClientBox'),internal=modal.querySelector('#ceInternalNote');if(has){has.checked=false;has.disabled=true}if(box)box.style.display='none';if(internal){internal.style.display='block';internal.textContent=`Vínculo atual: Lead · ${lead.label}`}
-    const save=modal.querySelector('#ceSave');if(save)save.addEventListener('click',()=>{if(!ta.value.startsWith('[[YM_LEAD|'))ta.value=modal.dataset.leadMarker+(ta.value.trim()?'\n'+ta.value.trim():'')},{capture:true});
+    const save=modal.querySelector('#ceSave');if(save)save.addEventListener('click',()=>{if(!ta.value.startsWith('[[YM_LEAD|'))ta.value=modal.dataset.leadMarker+(ta.value.trim()?'\n'+ta.value.trim():'')},{capture:true,once:true});
   }
   function apply(){applyRows(document.getElementById('caUpcoming'),'upcoming');applyRows(document.getElementById('caDayEvents'),'day');applyChips();cleanLeadModal()}
-  function boot(){load();new MutationObserver(()=>requestAnimationFrame(apply)).observe(document.body,{childList:true,subtree:true});document.addEventListener('click',e=>{if(e.target?.id==='refreshAdmin')setTimeout(load,500);setTimeout(cleanLeadModal,0)});setInterval(apply,1000)}
+  function scheduleApply(){[0,250,700,1400,2800].forEach(ms=>setTimeout(apply,ms))}
+  function boot(){
+    load();scheduleApply();
+    document.addEventListener('click',e=>{
+      if(e.target?.id==='refreshAdmin')setTimeout(load,500);
+      if(e.target?.matches?.('[data-ca-view],[data-go],#caCalPrev,#caCalNext,.ca-event,#caAddEvent'))scheduleApply();
+      setTimeout(cleanLeadModal,0);
+    });
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
