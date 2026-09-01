@@ -38,7 +38,16 @@
     }catch(e){console.warn('D0 UI',e)}finally{checkingDrawer=false;}
   }
 
-  function patch(){patchFilter();patchNewClientModal();patchDrawer();}
-  const observer=new MutationObserver(()=>patch());observer.observe(document.documentElement,{childList:true,subtree:true});
-  document.addEventListener('DOMContentLoaded',patch);setTimeout(patch,300);setTimeout(patch,1200);
+  function delayed(fn){setTimeout(fn,50);setTimeout(fn,250);setTimeout(fn,700)}
+  function boot(){
+    patchFilter();delayed(patchDrawer);
+    document.addEventListener('click',e=>{
+      const t=e.target;
+      if(t?.closest?.('#newClient,#newClientTop'))delayed(patchNewClientModal);
+      if(t?.closest?.('[data-open-client]'))delayed(patchDrawer);
+      if(t?.id==='refreshAdmin'){setTimeout(patchFilter,300);setTimeout(patchDrawer,650)}
+    },true);
+    window.addEventListener('popstate',()=>delayed(patchDrawer));
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
