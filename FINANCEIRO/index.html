@@ -34,11 +34,11 @@
   .fin-tabs{top:61px;gap:8px}.fin-tab{font-size:12.5px;min-height:44px}.hero{padding:20px 17px}.hero h2{font-size:20px}.hero-value{font-size:36px}.hero-metric span{font-size:11px}.hero-metric b{font-size:17px}.section>header{padding:14px}.section h2{font-size:17px}.section header p{font-size:13px}.section-body{padding:14px}.metric{padding:14px}.metric .k{font-size:11px}.metric .d{font-size:13px}.table-wrap{-webkit-overflow-scrolling:touch}.table{min-width:900px}.target-back{padding:0}.target-modal{width:100%;max-height:100vh;border-radius:0}.target-body{max-height:calc(100vh - 64px);padding:14px}.target-grid{grid-template-columns:1fr}.target-wide{grid-column:auto}
 }
 </style>
-<link rel="stylesheet" href="/assets/internal-mobile-system.css?v=20260901-typography2"></head><body>
+<link rel="stylesheet" href="/assets/internal-mobile-system.css?v=20260901-typography3"></head><body>
 <div class="ym-main"><header class="ym-topbar"><div style="display:flex;align-items:center;gap:10px"><button id="ymMenu" class="ym-mobile-toggle">☰</button><div class="ym-topbar-title">FINANCEIRO</div></div><div class="ym-topbar-meta"><span class="ym-chip stage">PRODUÇÃO ASSISTIDA</span><span class="ym-chip">ETAPA 3</span></div></header>
 <main class="ym-content"><div class="ym-header"><div><div class="ym-eyebrow">YM · ETAPA 3 · FINANCEIRO INTERNO</div><h1 class="ym-title">Financeiro da YM</h1><p class="ym-lead">A home mostra a manchete. As análises de produto, capacidade, planejamento e valuation ficam em visões próprias.</p></div><div class="ym-actions"><button id="editTarget" class="ym-btn">Alterar meta financeira</button><button id="refresh" class="ym-btn secondary">Atualizar</button></div></div>
 <div id="app"><div class="ym-empty">Carregando Financeiro…</div></div></main></div>
-<script src="/assets/internal-shell.js?v=20260901-typography2"></script><script>
+<script src="/assets/internal-shell.js?v=20260901-typography3"></script><script>
 const $=id=>document.getElementById(id),S=v=>YM.esc(v),N=v=>Number(v||0),BRL=v=>N(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),PCT=v=>(N(v)*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%',PCT100=v=>N(v).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%',MONTH=v=>new Date(String(v)+'T12:00:00').toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}),MONTHLONG=v=>new Date(String(v)+'T12:00:00').toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
 let data=null;
 const currentMonth=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`};
@@ -75,4 +75,4 @@ function render(){if(!data)return;$('editTarget').hidden=data.user?.role!=='ADMI
 function bind(){document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{state.tab=b.dataset.tab;render()});document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{const p=b.dataset.preset;if(p==='custom'){state.preset='custom';render()}else applyPreset(p)});const f=$('fromMonth'),t=$('toMonth');if(f)f.onchange=()=>{state.preset='custom';state.from=fromInput(f.value);if(state.from>state.to)state.to=state.from;render()};if(t)t.onchange=()=>{state.preset='custom';state.to=fromInput(t.value);if(state.to<state.from)state.from=state.to;render()}}
 async function load(){try{data=await api();render()}catch(e){$('app').innerHTML=`<div class="ym-empty">${S(e.message)}</div>`;YM.toast(e.message,true)}}
 $('editTarget').onclick=openTargetModal;$('refresh').onclick=load;load();
-</script><script src="/assets/internal-typography-guard.js?v=20260901-2"></script></body></html>
+</script><script src="/assets/internal-typography-guard.js?v=20260901-3"></script></body></html>
