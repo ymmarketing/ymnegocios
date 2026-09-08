@@ -1,0 +1,92 @@
+name: Install GA4 on YM public site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/ym-analytics.js'
+      - '.github/workflows/install-ga4-public-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Add analytics loader only to public pages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          public_pages = [
+              Path('index.html'),
+              Path('quemsomos/index.html'),
+              Path('impacto/index.html'),
+              Path('impacto/politica/index.html'),
+              Path('Ordem_certa.html'),
+              Path('raio-x.html'),
+          ]
+
+          marker = '/assets/ym-analytics.js?v=20260908'
+          tag = '<script src="/assets/ym-analytics.js?v=20260908" defer></script>'
+
+          changed = []
+          for page in public_pages:
+              if not page.exists():
+                  continue
+              text = page.read_text(encoding='utf-8')
+              if marker in text:
+                  continue
+              if '</head>' not in text:
+                  raise SystemExit(f'Missing </head> in {page}')
+              text = text.replace('</head>', f'{tag}\n</head>', 1)
+              page.write_text(text, encoding='utf-8')
+              changed.append(str(page))
+
+          print('Changed:', ', '.join(changed) if changed else 'none')
+          PY
+
+      - name: Validate scope and measurement ID
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          mid = 'G-DCFLLT5D1K'
+          js = Path('assets/ym-analytics.js').read_text(encoding='utf-8')
+          assert mid in js
+
+          public_pages = [
+              'index.html', 'quemsomos/index.html', 'impacto/index.html',
+              'impacto/politica/index.html', 'Ordem_certa.html', 'raio-x.html'
+          ]
+          for p in public_pages:
+              path = Path(p)
+              if path.exists():
+                  assert '/assets/ym-analytics.js?v=20260908' in path.read_text(encoding='utf-8'), p
+
+          forbidden_roots = ['CENTRAL', 'CRM', 'DASHBOARD', 'FINANCEIRO', 'MOTOR', 'VOS', 'Conteudos', 'Identidade', 'areadocliente', 'interno']
+          for root in forbidden_roots:
+              base = Path(root)
+              if not base.exists():
+                  continue
+              for html in base.rglob('*.html'):
+                  assert '/assets/ym-analytics.js?v=20260908' not in html.read_text(encoding='utf-8'), html
+          PY
+
+      - name: Commit generated page changes
+        run: |
+          if git diff --quiet; then
+            echo 'No page changes needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html quemsomos/index.html impacto/index.html impacto/politica/index.html Ordem_certa.html raio-x.html
+          git commit -m 'feat: enable GA4 on YM public pages'
+          git push
