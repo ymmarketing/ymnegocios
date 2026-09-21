@@ -119,6 +119,23 @@
 
   function hideContingency() { var box = document.querySelector('#view-payment .payx-code'); if (box) box.classList.remove('ym-contingency-visible'); }
   function revealContingency() { var box = document.querySelector('#view-payment .payx-code'); if (box) box.classList.add('ym-contingency-visible'); }
+  function executionModeRequested() {
+    try { return new URLSearchParams(root.location.search).get('execucao') === '1'; }
+    catch (e) { return false; }
+  }
+  function applyExecutionMode() {
+    if (!executionModeRequested()) return false;
+    var actions = document.querySelector('#view-payment .payx-actions');
+    var fields = document.getElementById('payx-customer-fields');
+    var key = document.querySelector('#view-payment .payx-code-k');
+    var copy = document.querySelector('#view-payment .payx-code p');
+    if (actions) actions.style.display = 'none';
+    if (fields) fields.style.display = 'none';
+    if (key) key.textContent = 'Código de execução autorizado';
+    if (copy) copy.textContent = 'Digite o código fornecido pela YM para executar o Raio-X sem passar pelo pagamento.';
+    revealContingency();
+    return true;
+  }
 
   function updatePaymentCopy() {
     var view = document.getElementById('view-payment');
@@ -308,11 +325,11 @@
       }
     } catch (e) {}
     if (isFreshCheckout()) {
-      stopPolling(); clearStoredSession(); paymentStatus='pending'; originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); clearFreshCheckoutParam(); markFlowReady(); return;
+      stopPolling(); clearStoredSession(); paymentStatus='pending'; originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); applyExecutionMode(); clearFreshCheckoutParam(); markFlowReady(); return;
     }
     var ref=getRef();
     if (!ref) { markFlowReady(); root.location.replace('/'); return; }
-    originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); markFlowReady(); checkPayment(); startPolling();
+    originalGo('payment'); updatePaymentCopy(); ensurePaymentCustomerFields(); hideContingency(); syncPaymentControls(); applyExecutionMode(); markFlowReady(); if (!executionModeRequested()) { checkPayment(); startPolling(); }
     try { if (new URLSearchParams(root.location.search).get('ref')) root.history.replaceState(null,'',root.location.pathname+root.location.hash); } catch(e) {}
   }
 

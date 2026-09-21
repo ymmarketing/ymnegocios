@@ -1,7 +1,7 @@
 (()=>{
  const SUPABASE_URL='https://srzdikgztpdtwbggwniz.supabase.co';
  const PUBLISHABLE_KEY='sb_publishable_OGZsWJSj2noU3Dd78pk48g__eEKE3xT';
- const sb=window.supabase.createClient(SUPABASE_URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ym_client_portal_auth_v1'}});
+ const sb=window.__ymClientPortalSupabase||(window.__ymClientPortalSupabase=window.supabase.createClient(SUPABASE_URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ym_client_portal_auth_v1'}}));
  const $=id=>document.getElementById(id),E=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const money=v=>v==null||v===''?'—':Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
  const date=v=>{if(!v)return '—';try{return new Date(v).toLocaleDateString('pt-BR')}catch{return '—'}};
