@@ -136,7 +136,7 @@
     if (actions) actions.style.display = 'none';
     if (fields) fields.style.display = 'none';
     if (headerKey) headerKey.textContent = 'Execução autorizada pela YM';
-    if (price) price.innerHTML = 'Acesso operacional <small>· sem cobrança</small>';
+    if (price) price.innerHTML = 'Liberado <small>· sem cobrança</small>';
     if (title) title.textContent = 'Informe o código de execução';
     if (intro) intro.textContent = 'Este acesso libera o questionário diretamente, sem abrir o checkout do Asaas.';
     if (key) key.textContent = 'Código de execução autorizado';
