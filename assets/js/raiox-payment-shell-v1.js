@@ -129,8 +129,16 @@
     var fields = document.getElementById('payx-customer-fields');
     var key = document.querySelector('#view-payment .payx-code-k');
     var copy = document.querySelector('#view-payment .payx-code p');
+    var headerKey = document.querySelector('#view-payment .payx-k');
+    var price = document.querySelector('#view-payment .payx-price');
+    var title = document.querySelector('#view-payment .payx-body h2');
+    var intro = document.querySelector('#view-payment .payx-body > p');
     if (actions) actions.style.display = 'none';
     if (fields) fields.style.display = 'none';
+    if (headerKey) headerKey.textContent = 'Execução autorizada pela YM';
+    if (price) price.innerHTML = 'Acesso operacional <small>· sem cobrança</small>';
+    if (title) title.textContent = 'Informe o código de execução';
+    if (intro) intro.textContent = 'Este acesso libera o questionário diretamente, sem abrir o checkout do Asaas.';
     if (key) key.textContent = 'Código de execução autorizado';
     if (copy) copy.textContent = 'Digite o código fornecido pela YM para executar o Raio-X sem passar pelo pagamento.';
     revealContingency();
