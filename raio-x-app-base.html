@@ -38,7 +38,7 @@
 <section id="report" class="report"><div class="reportactions"><button class="btn secondary" onclick="window.print()">Imprimir / salvar PDF</button></div><div id="reportBody" class="reportwrap"></div></section>
 </main>
 <script>
-const params=new URLSearchParams(location.search);const requestedApi=params.get('api')||'';const API=/^https:\/\/ym-raiox-backend(?:-[a-z0-9-]+)?\.vercel\.app$/i.test(requestedApi)?requestedApi:'https://ym-raiox-backend.vercel.app';
+const params=new URLSearchParams(location.search);const requestedApi=params.get('api')||'';const previewHost=/^ym-raiox-backend-[a-z0-9-]+\.vercel\.app$/i.test(location.hostname);const API=/^https:\/\/ym-raiox-backend(?:-[a-z0-9-]+)?\.vercel\.app$/i.test(requestedApi)?requestedApi:(previewHost?location.origin:'https://ym-raiox-backend.vercel.app');
 const REF=params.get('ref')||'';const VALIDATION=params.get('validacao')==='1';
 const Q=[
 {id:'Q01',s:0,t:'area',q:'Conte pra gente, de forma simples: o que seu negócio faz hoje?',h:'Pode explicar como explicaria para alguém que acabou de conhecer seu trabalho.'},
