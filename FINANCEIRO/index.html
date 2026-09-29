@@ -38,7 +38,7 @@
 <div class="ym-main"><header class="ym-topbar"><div style="display:flex;align-items:center;gap:10px"><button id="ymMenu" class="ym-mobile-toggle">☰</button><div class="ym-topbar-title">FINANCEIRO</div></div><div class="ym-topbar-meta"><span class="ym-chip stage">PRODUÇÃO ASSISTIDA</span><span class="ym-chip">ETAPA 3</span></div></header>
 <main class="ym-content"><div class="ym-header"><div><div class="ym-eyebrow">YM · ETAPA 3 · FINANCEIRO INTERNO</div><h1 class="ym-title">Financeiro da YM</h1><p class="ym-lead">A home mostra a manchete. As análises de produto, capacidade, planejamento e valuation ficam em visões próprias.</p></div><div class="ym-actions"><button id="editTarget" class="ym-btn">Alterar meta financeira</button><button id="refresh" class="ym-btn secondary">Atualizar</button></div></div>
 <div id="app"><div class="ym-empty">Carregando Financeiro…</div></div></main></div>
-<script src="/assets/internal-shell.js?v=20260901-typography3"></script><script>
+<script src="/assets/internal-shell.js?v=20260929-crmux1"></script><script>
 const $=id=>document.getElementById(id),S=v=>YM.esc(v),N=v=>Number(v||0),BRL=v=>N(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),PCT=v=>(N(v)*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%',PCT100=v=>N(v).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%',MONTH=v=>new Date(String(v)+'T12:00:00').toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}),MONTHLONG=v=>new Date(String(v)+'T12:00:00').toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
 let data=null;
 const currentMonth=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`};
