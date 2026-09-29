@@ -5,6 +5,13 @@
   const error = document.getElementById('error');
   const result = document.getElementById('result');
   const button = document.getElementById('submit');
+  const track = (name, params = {}) => window.YMAnalytics?.track(name, { source_page: location.pathname, ...params });
+  let started = false;
+  form.addEventListener('focusin', () => {
+    if (started) return;
+    started = true;
+    track('avaliacao_inicio');
+  });
   const keys = ['revenue','products','units','sales','journey','systems','volume','operations'];
   const channelInputs = [...form.querySelectorAll('[name="channels_selected"]')];
   const unknownChannel = channelInputs.find(input => input.value === 'nao_sei');
@@ -34,10 +41,12 @@
       answers, source, consent: document.getElementById('consent').checked,
     };
     button.disabled = true; button.textContent = 'Enviando…'; error.textContent = '';
+    track('avaliacao_envio');
     try {
       const response = await fetch(endpoint, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error('Não foi possível concluir a avaliação agora. Confira os dados e tente novamente.');
+      track('avaliacao_concluida', { rota_inicial: data.route });
       const strategic = data.route === 'ESTRATEGICO';
       const title = strategic ? 'Raio-X Estratégico YM' : 'Raio-X Digital YM';
       const message = strategic ? 'Sua operação apresenta mais camadas para investigar. A recomendação inicial é uma conversa de enquadramento para avaliar o Raio-X Estratégico.' : 'Sua operação pode começar por uma leitura digital estruturada. O Raio-X Digital custa R$ 97.';
@@ -51,6 +60,6 @@
       const link = document.createElement('a'); link.className = 'button'; link.href = target; link.textContent = strategic ? 'Conversar com a YM →' : 'Conhecer o Raio-X Digital →';
       result.append(p, heading, score, description, note, link);
       form.hidden = true; result.hidden = false; result.scrollIntoView({behavior:'smooth'});
-    } catch (err) { error.textContent = err.message; button.disabled = false; button.textContent = 'Avaliação gratuita'; }
+    } catch (err) { track('avaliacao_erro'); error.textContent = err.message; button.disabled = false; button.textContent = 'Avaliação gratuita'; }
   });
 })();
