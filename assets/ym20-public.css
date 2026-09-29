@@ -14,3 +14,5 @@
 .channel:has(input:checked){background:#edf0ff;border-color:var(--blue)}
 .channel input{margin:3px 0 0;accent-color:var(--blue)}
 @media(max-width:760px){.product-list,.channel-grid{grid-template-columns:1fr}.hero-card{padding:24px}}
+
+@media(max-width:760px){.nav{gap:10px}.nav img{width:120px}.nav .button.small{padding:10px 12px;font-size:12px;white-space:nowrap}}
