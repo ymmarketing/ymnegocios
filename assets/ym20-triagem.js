@@ -37,11 +37,11 @@
     try {
       const response = await fetch(endpoint, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
       const data = await response.json();
-      if (!response.ok || !data.ok) throw new Error('Não foi possível registrar a triagem agora. Confira os dados e tente novamente.');
+      if (!response.ok || !data.ok) throw new Error('Não foi possível concluir a avaliação agora. Confira os dados e tente novamente.');
       const strategic = data.route === 'ESTRATEGICO';
       const title = strategic ? 'Raio-X Estratégico YM' : 'Raio-X Digital YM';
       const message = strategic ? 'Sua operação apresenta mais camadas para investigar. A recomendação inicial é uma conversa de enquadramento para avaliar o Raio-X Estratégico.' : 'Sua operação pode começar por uma leitura digital estruturada. O Raio-X Digital custa R$ 97.';
-      const target = strategic ? 'https://wa.me/5531975073862?text=' + encodeURIComponent('Olá, Yasmin! Fiz a triagem YM e gostaria de conversar sobre o Raio-X Estratégico. Código: ' + data.id) : '/raio-x.html?checkout=1';
+      const target = strategic ? 'https://wa.me/5531975073862?text=' + encodeURIComponent('Olá, Yasmin! Fiz a avaliação inicial YM e gostaria de conversar sobre o Raio-X Estratégico. Código: ' + data.id) : '/raio-x.html?checkout=1';
       result.replaceChildren();
       const p = document.createElement('p'); p.className = 'eyebrow'; p.textContent = 'Sua rota inicial';
       const heading = document.createElement('h2'); heading.textContent = title;
@@ -51,6 +51,6 @@
       const link = document.createElement('a'); link.className = 'button'; link.href = target; link.textContent = strategic ? 'Conversar com a YM →' : 'Conhecer o Raio-X Digital →';
       result.append(p, heading, score, description, note, link);
       form.hidden = true; result.hidden = false; result.scrollIntoView({behavior:'smooth'});
-    } catch (err) { error.textContent = err.message; button.disabled = false; button.textContent = 'Ver minha rota indicada →'; }
+    } catch (err) { error.textContent = err.message; button.disabled = false; button.textContent = 'Descobrir meu próximo passo →'; }
   });
 })();
