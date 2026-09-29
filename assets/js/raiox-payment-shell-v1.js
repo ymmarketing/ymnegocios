@@ -90,7 +90,7 @@
     nav.classList.add('ym-flow-nav');
     brand.innerHTML = '<a href="/" aria-label="Voltar ao site da YM"><img class="ym-flow-logo" src="/assets/img/logo-ym-horizontal.webp" alt="YM Marketing & Negócios"></a>';
     var chip = nav.querySelector('.nav-chip');
-    if (chip) chip.textContent = 'Raio-X Estratégico';
+    if (chip) chip.textContent = 'Raio-X Digital YM';
   }
 
   function patchIndexContactLinks() {
@@ -354,5 +354,5 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', resumeFromPayment); else resumeFromPayment();
 
   var wa = document.getElementById('payx-whatsapp');
-  if (wa) wa.href = WHATSAPP_YM + '?text=' + encodeURIComponent('Olá! Preciso de ajuda com o acesso ao Raio-X Estratégico.');
+  if (wa) wa.href = WHATSAPP_YM + '?text=' + encodeURIComponent('Olá! Preciso de ajuda com o acesso ao Raio-X Digital YM.');
 })(window);
