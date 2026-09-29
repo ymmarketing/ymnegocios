@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Estimativa de custos e oportunidades | YM Marketing & Negócios</title>
+<meta name="description" content="Organize dados da sua empresa para estimar investimento sem atribuição, oportunidades comerciais, tempo manual e retrabalho.">
+<link rel="canonical" href="https://ymnegocios.com.br/cdd/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/ym20-public.css?v=20260929-score1">
+<link rel="stylesheet" href="/assets/ym20-cdd.css?v=20260929-cdd1">
+<script src="/assets/ym20-cdd.js?v=20260929-cdd1" defer></script>
+<script src="/assets/ym-analytics.js?v=20260929-funil1" defer></script>
+</head>
+<body>
+<header class="nav wrap"><a href="/" aria-label="YM Marketing & Negócios"><img src="/assets/img/logo-ym-horizontal.webp" alt="YM Marketing & Negócios"></a><nav aria-label="Navegação"><a href="/">Início</a><a href="/conteudos/">Conteúdos</a><a class="button small" href="/triagem/">Avaliação gratuita</a></nav></header>
+<main>
+<section class="cdd-hero"><div class="wrap"><p class="eyebrow">Custo da desorganização digital</p><h1>Quanto pode estar em jogo na sua jornada?</h1><p>Use seus próprios números para enxergar quatro tipos diferentes de custo ou oportunidade. Esta é uma estimativa inicial para orientar perguntas, não um diagnóstico da causa.</p><a class="text-link" href="#calcular">Preencher a estimativa</a></div></section>
+<div class="wrap cdd-layout" id="calcular">
+<div class="cdd-intro"><h2>Preencha apenas o que você conhece.</h2><p>Os campos são opcionais. Uma categoria sem dados suficientes ficará sem cálculo. Use valores mensais; a calculadora funciona no seu navegador e não envia suas respostas à YM.</p></div>
+<form id="cdd-form">
+<fieldset class="fieldset"><legend>1. Oportunidades comerciais</legend><p class="cdd-section-help">Simule a receita adicional se a conversão chegar a uma referência escolhida por você. Prefira seu melhor período comparável; uma meta hipotética é apenas cenário.</p><div class="cdd-fields">
+<label>Novos contatos por mês<input class="input" name="leads" type="number" inputmode="numeric" min="0" max="1000000" step="1" placeholder="Ex.: 80"></label>
+<label>Conversão atual em clientes (%)<input class="input" name="conversion" type="number" inputmode="decimal" min="0" max="100" step="any" placeholder="Ex.: 10"></label>
+<label>Conversão de referência (%)<input class="input" name="reference" type="number" inputmode="decimal" min="0" max="100" step="any" placeholder="Ex.: 12,5"></label>
+<label>Ticket médio por venda (R$)<input class="input" name="ticket" type="number" inputmode="decimal" min="0" max="100000000" step="any" placeholder="Ex.: 2000"></label>
+<label class="cdd-wide">De onde vem a referência?<select class="input" name="reference_source"><option value="">Selecione</option><option value="history">Melhor período comparável da empresa</option><option value="goal">Meta interna definida</option><option value="scenario">Hipótese para simulação</option></select></label>
+</div></fieldset>
+<fieldset class="fieldset"><legend>2. Investimento em marketing sem atribuição clara</legend><p class="cdd-section-help">Este valor é investimento sob revisão, não prejuízo. Inclua conteúdo, mídia, ferramentas e prestadores no gasto direto; não repita esse tempo em operação.</p><div class="cdd-fields">
+<label>Gasto direto mensal (R$)<input class="input" name="marketing_spend" type="number" inputmode="decimal" min="0" max="100000000" step="any" placeholder="Ex.: 1500"></label>
+<label>Horas mensais de produção e gestão<input class="input" name="marketing_hours" type="number" inputmode="decimal" min="0" max="100000" step="any" placeholder="Ex.: 20"></label>
+<label>Custo aproximado por hora (R$)<input class="input" name="marketing_hour_cost" type="number" inputmode="decimal" min="0" max="100000" step="any" placeholder="Ex.: 50"></label>
+<label>Você sabe relacionar esse investimento a resultados?<select class="input" name="attribution"><option value="">Selecione</option><option value="yes">Sim, acompanho resultados</option><option value="partial">Em parte</option><option value="no">Ainda não</option></select></label>
+</div></fieldset>
+<fieldset class="fieldset"><legend>3. Tempo em tarefas manuais</legend><p class="cdd-section-help">Some apenas horas gastas em rotinas repetitivas, como copiar dados, confirmar horários ou atualizar planilhas. Isso mede o custo do tempo empregado, não a economia garantida.</p><div class="cdd-fields">
+<label>Horas manuais por mês<input class="input" name="manual_hours" type="number" inputmode="decimal" min="0" max="100000" step="any" placeholder="Ex.: 30"></label>
+<label>Custo aproximado por hora (R$)<input class="input" name="manual_hour_cost" type="number" inputmode="decimal" min="0" max="100000" step="any" placeholder="Ex.: 35"></label>
+</div></fieldset>
+<fieldset class="fieldset"><legend>4. Retrabalho e fricção</legend><p class="cdd-section-help">Use tarefas refeitas, erros ou reconferências. Não inclua aqui horas já lançadas como tarefa manual acima.</p><div class="cdd-fields">
+<label>Ocorrências por mês<input class="input" name="rework_count" type="number" inputmode="numeric" min="0" max="1000000" step="1" placeholder="Ex.: 12"></label>
+<label>Minutos por ocorrência<input class="input" name="rework_minutes" type="number" inputmode="decimal" min="0" max="100000" step="any" placeholder="Ex.: 25"></label>
+<label>Custo aproximado por hora (R$)<input class="input" name="rework_hour_cost" type="number" inputmode="decimal" min="0" max="100000" step="any" placeholder="Ex.: 35"></label>
+<label>Gasto direto extra por mês (R$)<input class="input" name="rework_direct" type="number" inputmode="decimal" min="0" max="100000000" step="any" placeholder="Opcional"></label>
+</div></fieldset>
+<div class="cdd-actions"><button class="button" type="submit">Ver minha estimativa</button><p>Não pedimos dados de contato nesta etapa.</p></div>
+</form>
+<section class="cdd-result" id="cdd-result" hidden tabindex="-1" aria-labelledby="cdd-result-title"><p class="eyebrow">Sua leitura inicial</p><h2 id="cdd-result-title">O que os números mostram</h2><div id="cdd-cards" class="cdd-cards"></div><div class="cdd-method"><h3>Como interpretar</h3><p>Esses números não significam que todo esse valor será recuperado. Eles mostram onde existem indícios de desperdício, perda de eficiência ou oportunidade não capturada. Receita potencial, investimento e custos têm naturezas diferentes e não são somados em um total.</p><p>O próximo passo é descobrir o que causa cada sinal, confirmar os dados e escolher a prioridade. A avaliação gratuita indica qual profundidade de Raio-X faz sentido para a sua empresa.</p><a class="button" href="/triagem/">Avaliação gratuita</a></div></section>
+</div>
+</main>
+<footer class="wrap footer"><img src="/assets/img/logo-ym-horizontal.webp" alt="YM"><div><a href="/conteudos/">Conteúdos</a><a href="/quemsomos/">Quem somos</a><a href="/triagem/">Avaliação gratuita</a></div><small>YM Marketing & Negócios © 2026 · Marketing certo, na ordem certa.</small></footer>
+</body>
+</html>
