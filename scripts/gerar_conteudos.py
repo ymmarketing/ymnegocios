@@ -79,9 +79,9 @@ def head(title, description, canonical, schema=None):
 NAV = ('<header class="nav wrap"><a href="/" aria-label="YM Marketing & Negócios">'
        '<img src="/assets/img/logo-ym-horizontal.webp" alt="YM Marketing & Negócios"></a>'
        '<nav aria-label="Navegação"><a href="/">Início</a><a href="/conteudos/" aria-current="page">Conteúdos</a>'
-       '<a class="button small" href="/triagem/">Fazer minha triagem</a></nav></header>')
+       '<a class="button small" href="/triagem/">Descobrir meu próximo passo</a></nav></header>')
 FOOTER = ('<footer class="wrap footer"><img src="/assets/img/logo-ym-horizontal.webp" alt="YM">'
-          '<div><a href="/">Início</a><a href="/conteudos/">Conteúdos</a><a href="/triagem/">Triagem gratuita</a></div>'
+          '<div><a href="/">Início</a><a href="/conteudos/">Conteúdos</a><a href="/triagem/">Avaliação inicial gratuita</a></div>'
           '<small>YM Marketing & Negócios © 2026 · Marketing certo, na ordem certa.</small></footer></body></html>')
 
 
@@ -106,7 +106,7 @@ def build():
            '<section class="wrap content-list" aria-label="Artigos publicados"><div class="content-grid">' +
            "".join(card(article) for article in articles) +
            '</div></section><section class="closing"><div class="wrap"><h2>Quer descobrir por onde começar na sua empresa?</h2>'
-           '<a class="button" href="/triagem/">Fazer minha triagem gratuita</a></div></section></main>' + FOOTER)
+           '<a class="button" href="/triagem/">Descobrir meu próximo passo</a></div></section></main>' + FOOTER)
     (ROOT / "conteudos" / "index.html").write_text(hub, encoding="utf-8")
     for article in articles:
         url = f'{DOMAIN}/conteudos/{article["slug"]}/'
@@ -120,8 +120,8 @@ def build():
                 article["published"] + '">' + date.fromisoformat(article["published"]).strftime("%d/%m/%Y") +
                 '</time> · YM Marketing & Negócios</p></div></header><div class="wrap article-body">' + article["body"] +
                 '</div><div class="wrap article-cta"><h2>Qual etapa da sua jornada precisa de atenção?</h2>'
-                '<p>A triagem gratuita indica um ponto de partida para investigar sua operação.</p>'
-                '<a class="button" href="/triagem/">Fazer minha triagem gratuita</a></div></article>'
+                '<p>A avaliação inicial gratuita indica um ponto de partida para investigar sua operação.</p>'
+                '<a class="button" href="/triagem/">Descobrir meu próximo passo</a></div></article>'
                 '<nav class="wrap content-back" aria-label="Voltar aos conteúdos"><a href="/conteudos/">Ver todos os conteúdos</a></nav></main>' + FOOTER)
         output = ROOT / "conteudos" / article["slug"]
         output.mkdir(exist_ok=True)

@@ -24,4 +24,4 @@ Compare problema investigado, escopo, prazo, participação exigida da sua equip
 
 ## Onde a YM entra
 
-A YM Marketing & Negócios atende empresas em todo o Brasil com consultoria e sistemas digitais. Começamos por uma triagem gratuita para indicar a profundidade de diagnóstico adequada. O Raio-X Digital custa R$ 97; o Raio-X Estratégico depende de uma conversa de enquadramento antes de definir escopo e valor.
+A YM Marketing & Negócios atende empresas em todo o Brasil com consultoria e sistemas digitais. Começamos por uma avaliação inicial gratuita para indicar a profundidade de diagnóstico adequada. O Raio-X Digital custa R$ 97; o Raio-X Estratégico depende de uma conversa de enquadramento antes de definir escopo e valor.
