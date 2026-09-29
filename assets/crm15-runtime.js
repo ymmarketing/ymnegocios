@@ -128,7 +128,7 @@
     apply();
   }
 
-  loadScript('/assets/crm15-runtime-core.js?v=20260813-1', 'ymRuntimeCore')
+  loadScript('/assets/crm15-runtime-core.js?v=20260929-crmux2', 'ymRuntimeCore')
     .then(() => loadScript('/assets/crm15-kpi-click.js?v=20260819-1', 'ymPipelineKpi'))
     .then(() => loadScript('/assets/crm15-lead-sheet-v3.js?v=20260819-1', 'ymLeadSheetV3'))
     .then(() => loadScript('/assets/crm15-no-recommendation.js?v=20260819-1', 'ymNoRecommendation'))
