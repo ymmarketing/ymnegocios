@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Raio-X Estratégico — YM</title>
+<title>Raio-X Digital — YM</title>
 <style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#F7F9FC}#app{width:100%;height:100%;border:0;display:block}</style>
 </head>
 <body>
 <div id="gate" style="position:fixed;inset:0;display:grid;place-items:center;background:#F7F9FC;font:14px Inter,Arial,sans-serif;color:#0A2540"><div style="background:#fff;border:1px solid #E4EAF2;border-radius:18px;padding:24px 28px;box-shadow:0 14px 40px rgba(10,37,64,.08);text-align:center"><b>Confirmando seu acesso…</b><div style="margin-top:7px;color:#6E7D92;font-size:12px">Isso leva apenas alguns segundos.</div></div></div>
-<iframe id="app" title="Raio-X Estratégico YM" style="visibility:hidden"></iframe>
+<iframe id="app" title="Raio-X Digital YM" style="visibility:hidden"></iframe>
 <script>
 (()=>{
 const frame=document.getElementById('app'),gate=document.getElementById('gate');
@@ -32,9 +32,9 @@ function enhance(win){
  const d=win.document;if(!d||!d.head)return;
  if(!d.getElementById('ym-final-patch')){const s=d.createElement('style');s.id='ym-final-patch';s.textContent=CSS;d.head.appendChild(s)}
  const hero=d.querySelector('.reporthero');if(!hero||hero.dataset.finalized)return;hero.dataset.finalized='1';syncCrm();
- try{d.title='Raio-X Estratégico | YM Marketing & Negócios';const tag=d.querySelector('.tag');if(tag)tag.textContent='Raio-X Estratégico'}catch(e){}
+ try{d.title='Raio-X Digital | YM Marketing & Negócios';const tag=d.querySelector('.tag');if(tag)tag.textContent='Raio-X Digital'}catch(e){}
  const lead=hero.querySelector('.leadgrid>div:first-child');
- function applyCompany(company){company=String(company||'').trim();if(!lead||!company||lead.querySelector('.companyKicker'))return;const old=lead.querySelector('.eyebrow');if(old)old.remove();const k=d.createElement('div');k.className='companyKicker';k.textContent='Raio-X Estratégico de '+company.toUpperCase();const r=d.createElement('div');r.className='readyLine';r.textContent='Sua análise está pronta';lead.prepend(r);lead.prepend(k)}
+ function applyCompany(company){company=String(company||'').trim();if(!lead||!company||lead.querySelector('.companyKicker'))return;const old=lead.querySelector('.eyebrow');if(old)old.remove();const k=d.createElement('div');k.className='companyKicker';k.textContent='Raio-X Digital de '+company.toUpperCase();const r=d.createElement('div');r.className='readyLine';r.textContent='Sua análise está pronta';lead.prepend(r);lead.prepend(k)}
  let company='';try{company=String(win.eval('state.business_name')||'').trim()}catch(e){}try{if(!company){const q=new URLSearchParams(location.search),ref=q.get('ref');for(const key of ['ym_rx_v2_'+ref,'ym_rx_v22_'+ref]){const raw=win.localStorage.getItem(key);if(raw){company=(JSON.parse(raw).business_name||'').trim();if(company)break}}}}catch(e){}applyCompany(company);
  if(!company){try{const q=new URLSearchParams(location.search),ref=q.get('ref');if(ref)fetch('https://ym-raiox-backend.vercel.app/api/raiox/rascunho-v2?ref='+encodeURIComponent(ref),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(x=>applyCompany(x?.draft?.business_name||x?.report?.business_name||'')).catch(()=>{})}catch(e){}}
  const overall=hero.querySelector('.overall');if(overall&&!overall.dataset.ring){const strong=overall.querySelector('strong');const val=parseFloat((strong?.textContent||'0').replace(',','.'))||0;const band=overall.querySelector('.band')?.textContent||'';overall.dataset.ring='1';overall.style.setProperty('--tone',scoreColor(val));overall.style.setProperty('--pct',Math.max(0,Math.min(100,val*10)));overall.innerHTML='<div class="overallTitle">Score geral da jornada</div><div class="ring"><div class="ringInner"><strong>'+val.toFixed(1).replace('.',',')+'</strong><span class="den">/10</span></div></div><div class="overallBand">'+band+'</div>'}
@@ -55,8 +55,9 @@ async function syncCrm(){
    const rr=await fetch('https://ym-raiox-backend.vercel.app/api/raiox/rascunho-v2?ref='+encodeURIComponent(ref),{cache:'no-store'});
    if(!rr.ok)return;
    const data=await rr.json();
-   if(!data?.report||!data?.draft)return;
-   const draft=data.draft,report=data.report;
+   if(!data?.report)return;
+   let local={};try{local=JSON.parse(frame.contentWindow.localStorage.getItem('ym_rx_v22_'+ref)||'{}')}catch(e){}
+   const draft={...local,...(data.draft||{})},report=data.report;
    const answers={};
    for(let i=1;i<=18;i++){
      const id='Q'+String(i).padStart(2,'0');
@@ -67,10 +68,10 @@ async function syncCrm(){
    const overall=Number(report?.score_panel?.overall_score);
    if(!Number.isFinite(overall))return;
    const packet={
-     source_product:'RAIO_X_ESTRATEGICO',source_system:'ym_raiox_oficial',source_session_id:ref,
+     source_product:'RAIO_X_DIGITAL',source_system:'ym_raiox_oficial',source_session_id:ref,
      client_ref:draft.business_name||null,
      packet_version:'VOS_INTAKE_2.0',questionnaire_version:'RX_CANONICO_2.0',scoring_version:'RX_SCORE_2.2',report_version:'RX_REPORT_2.2',
-     business_name:String(draft.business_name||'').trim(),answers,
+     business_name:String(draft.business_name||'').trim(),payer:{name:String(draft.contact_name||'').trim(),email:String(draft.contact_email||'').trim(),phone:String(draft.contact_whatsapp||'').replace(/\D/g,'')},answers,
      complements:draft.complements||{},links:draft.links||[],
      score:{overall,status:'FINAL',coverage_pct:100},
      report,route_signal:null,human_validation_required:true,completed_at:new Date().toISOString()
