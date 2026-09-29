@@ -51,6 +51,6 @@
       const link = document.createElement('a'); link.className = 'button'; link.href = target; link.textContent = strategic ? 'Conversar com a YM →' : 'Conhecer o Raio-X Digital →';
       result.append(p, heading, score, description, note, link);
       form.hidden = true; result.hidden = false; result.scrollIntoView({behavior:'smooth'});
-    } catch (err) { error.textContent = err.message; button.disabled = false; button.textContent = 'Descobrir meu próximo passo →'; }
+    } catch (err) { error.textContent = err.message; button.disabled = false; button.textContent = 'Avaliação gratuita'; }
   });
 })();
