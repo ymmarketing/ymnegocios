@@ -56,19 +56,60 @@
       track('avaliacao_concluida', { rota_inicial: data.route });
       const strategic = data.route === 'ESTRATEGICO';
       const title = strategic ? 'Raio-X Estratégico YM' : 'Raio-X Digital YM';
-      const message = strategic ? 'Sua operação apresenta mais camadas para investigar. A recomendação inicial é uma conversa de enquadramento para avaliar o Raio-X Estratégico.' : 'Sua operação pode começar por uma leitura digital estruturada. O Raio-X Digital custa R$ 97.';
       const target = strategic ? 'https://wa.me/5531975073862?text=' + encodeURIComponent('Olá, Yasmin! Fiz a avaliação inicial YM e gostaria de conversar sobre o Raio-X Estratégico. Código: ' + data.id) : '/raio-x.html?checkout=1';
+      const make = (tag, className, content) => {
+        const element = document.createElement(tag);
+        if (className) element.className = className;
+        element.textContent = content;
+        return element;
+      };
+      const selectedText = key => form.querySelector(`[name="${key}"]`).selectedOptions[0].textContent;
+      const channelText = channels.includes('nao_sei') ? 'Ainda não identificados' : `${channels.length} ${channels.length === 1 ? 'canal marcado' : 'canais marcados'}`;
+      const signals = [
+        ['Canais que já trouxeram clientes', channelText],
+        ['Jornada até a venda', selectedText('journey')],
+        ['Sistemas no processo', selectedText('systems')],
+      ];
       result.replaceChildren();
-      const p = document.createElement('p'); p.className = 'eyebrow'; p.textContent = 'Sua rota inicial';
-      const returning = document.createElement('p'); returning.className = 'returning-note'; returning.textContent = 'Já nos conhecemos! Registramos esta nova avaliação da sua empresa.';
-      const heading = document.createElement('h2'); heading.textContent = title;
-      const score = document.createElement('strong'); score.textContent = `${data.score}/100`;
-      const description = document.createElement('p'); description.textContent = message;
-      const note = document.createElement('p'); note.className = 'help'; note.textContent = 'Este score mede a complexidade declarada, não a qualidade da empresa nem o valor de uma eventual perda. A YM pode revisar a rota.';
-      const link = document.createElement('a'); link.className = 'button'; link.href = target; link.textContent = strategic ? 'Conversar com a YM →' : 'Conhecer o Raio-X Digital →';
-      result.append(p);
-      if (data.known_contact === true) result.append(returning);
-      result.append(heading, score, description, note, link);
+      result.append(make('p', 'eyebrow', 'Resultado da avaliação gratuita'));
+      if (data.known_contact === true) result.append(make('p', 'returning-note', 'Já nos conhecemos! Registramos esta nova avaliação da sua empresa.'));
+      result.append(make('h2', '', 'O que seu resultado significa'));
+      const scoreBlock = make('div', 'result-score', '');
+      scoreBlock.append(make('strong', '', `${data.score}/100`), make('span', '', 'Score de complexidade declarada'));
+      const meter = make('div', 'result-meter', '');
+      meter.setAttribute('role', 'meter');
+      meter.setAttribute('aria-label', 'Complexidade declarada na avaliação inicial');
+      meter.setAttribute('aria-valuemin', '0');
+      meter.setAttribute('aria-valuemax', '100');
+      meter.setAttribute('aria-valuenow', String(data.score));
+      const fill = make('span', '', '');
+      fill.style.width = `${Math.min(100, Math.max(0, Number(data.score) || 0))}%`;
+      meter.append(fill);
+      result.append(scoreBlock, meter);
+      result.append(make('p', 'result-explanation', 'De 0 a 100, o número resume o porte, as frentes e as etapas que você informou. Quanto mais camadas e integrações declaradas, maior a complexidade. Não é uma nota de desempenho, um cálculo de perdas nem um diagnóstico da causa de um problema.'));
+      const evidence = make('div', 'result-evidence', '');
+      evidence.append(make('h3', '', 'Algumas respostas consideradas'));
+      const list = make('ul', 'result-signals', '');
+      for (const [label, value] of signals) {
+        const item = make('li', '', '');
+        item.append(make('span', '', label), make('b', '', value));
+        list.append(item);
+      }
+      evidence.append(list, make('p', 'help', 'O cálculo também considera faturamento aproximado, ofertas, unidades, modelo de venda, volume de contatos e operação.'));
+      result.append(evidence);
+      const next = make('div', 'result-next', '');
+      next.append(make('p', 'eyebrow', 'Seu próximo passo'), make('h3', '', `Por que indicamos o ${title}?`));
+      if (strategic) {
+        next.append(make('p', '', 'Suas respostas indicam mais frentes para entender em conjunto. A avaliação gratuita mostra a dimensão da estrutura, mas ainda não conferiu dados nem avaliou as relações entre as áreas. Uma conversa com a YM permite definir a profundidade e o escopo do diagnóstico consultivo.'));
+        next.append(make('p', 'result-pitch', 'No Raio-X Estratégico, a análise pode aprofundar a jornada, mapear oportunidades e construir um plano de ação adequado ao seu contexto. O investimento é apresentado depois da conversa sobre o escopo.'));
+      } else {
+        next.append(make('p', '', 'Sua estrutura declarada permite começar por uma leitura digital estruturada. A avaliação gratuita organizou as respostas, mas ainda não verificou o que está funcionando, onde há pontos de atenção e o que merece investigação.'));
+        next.append(make('p', 'result-pitch', 'Por R$ 97, em pagamento único, o Raio-X Digital aprofunda as perguntas e entrega um relatório com o que já funciona, oportunidades, pontos de atenção e prioridades iniciais. Antes de investir mais tempo ou dinheiro, veja onde vale olhar primeiro. Sem obrigação de contratar outro serviço.'));
+      }
+      const link = make('a', 'button', strategic ? 'Conversar sobre meu Raio-X Estratégico →' : 'Fazer meu Raio-X Digital por R$ 97 →');
+      link.href = target;
+      next.append(link, make('p', 'help', 'Esta é uma indicação inicial. A YM pode rever a rota depois de conhecer melhor a operação.'));
+      result.append(next);
       form.hidden = true; result.hidden = false; result.scrollIntoView({behavior:'smooth'});
     } catch (err) { track('avaliacao_erro'); error.textContent = err.message; button.disabled = false; button.textContent = 'Avaliação gratuita'; }
   });
