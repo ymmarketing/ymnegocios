@@ -16,7 +16,7 @@
     element.textContent = content;
     return element;
   };
-  const empty = reason => ({value:'Dados insuficientes', detail:reason});
+  const empty = reason => ({value:'Sem estimativa', detail:reason, isEmpty:true});
   const calculate = () => {
     const leads = get('leads'), current = get('conversion'), reference = get('reference'), ticket = get('ticket');
     const source = form.elements.namedItem('reference_source').value;
@@ -67,6 +67,7 @@
     for (const [title, estimate] of calculate()) {
       const card = node('article','');
       card.className = 'cdd-card';
+      if (estimate.isEmpty) card.classList.add('is-empty');
       card.append(node('h3',title),node('strong',estimate.value),node('p',estimate.detail));
       cards.append(card);
     }
