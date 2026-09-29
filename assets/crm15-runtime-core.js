@@ -28,8 +28,8 @@
   function enhanceClientMotorButtons(){injectUnifiedCss();document.querySelectorAll('.client-card').forEach(card=>{if(card.dataset.motorEnhanced)return;const info=clientIdentity(card),actions=card.querySelector('.client-actions');if(!info||!actions)return;card.dataset.motorEnhanced='1';const b=document.createElement('button');b.type='button';b.className='ym-btn client-motor-btn';b.textContent='Abrir / enviar ao MOTOR';b.onclick=()=>sendClientToMotor(info,b);actions.append(b)})}
 
   loadClientsRuntime();
-  let tries=0;const timer=setInterval(()=>{tries++;try{if(typeof window.render==='function'){window.render();enhanceUnified();enhanceServiceDeletes();enhanceClientMotorButtons();if(document.getElementById('resultMeta')?.textContent)clearInterval(timer)}}catch{}if(tries>30)clearInterval(timer)},150);
-  const obs=new MutationObserver(()=>{enhanceUnified();enhanceServiceDeletes();enhanceClientMotorButtons()});obs.observe(document.documentElement,{childList:true,subtree:true});
+  let tries=0;const timer=setInterval(()=>{tries++;try{if(typeof window.render==='function'){window.render();enhanceUnified();enhanceServiceDeletes();if(document.getElementById('resultMeta')?.textContent)clearInterval(timer)}}catch{}if(tries>30)clearInterval(timer)},150);
+  const obs=new MutationObserver(()=>{enhanceUnified();enhanceServiceDeletes()});obs.observe(document.documentElement,{childList:true,subtree:true});
   window.CRMSaveAll={saveAll,enhanceUnified,enhanceServiceDeletes,enhanceClientMotorButtons};
 })();
 // deploy retry 2026-08-13
