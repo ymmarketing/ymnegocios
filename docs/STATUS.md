@@ -14,7 +14,7 @@ Atualizado em 29/09/2026. A documentação mestre continua sendo a referência d
 | CRM e Central | Arquivo concluído; UX em homologação | Os 253 registros da safra anterior foram arquivados de forma reversível: pipeline ativo zerado, sem apagar clientes, serviços, pagamentos, acessos ou vínculos. Cadastro e card foram simplificados; o Motor saiu das entradas visíveis, mas aplicação e dados permanecem para uso independente. Ver `docs/CRM_VNEXT_PROSPECCAO_2026-09-29.md`. |
 | Prospecção e aquisição ativa | Nova frente na esteira | Fluxo de busca por ICP nacional, qualificação, primeira abordagem, follow-up, nutrição, e-mail de prospecção e marketing com rastreio no CRM. Critérios e validações no documento de CRM vNext. |
 | Área do cliente | Prioridade preservada | Planejar acesso autenticado aos próprios dados, números e financeiro, partindo da ficha canônica e de regras de acesso por cliente. Não expor dados de outro cliente. |
-| Precificação, KPI e propostas | Guia de reunião iniciado | `docs/GUIA_KPIS_CDD_REUNIAO_2026-09-29.md` e PDF explicam calculadora, CAC, LTV, ROI, lacunas e cenários. Precificação contratual e baseline seguem na esteira. |
+| Precificação, KPI e propostas | Guia e glossário prontos | O guia de reunião explica a calculadora; `docs/GLOSSARIO_KPIS_MARKETING_2026-09-29.md` cobre 100 indicadores com fórmulas, fonte e cuidado de leitura. Os KPIs externos não alteram o score oficial nem são coletados automaticamente. Precificação contratual e baseline seguem na esteira. |
 
 ## Próxima implementação
 

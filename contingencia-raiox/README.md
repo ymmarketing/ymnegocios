@@ -2,6 +2,8 @@
 
 Esta é uma coleta interna para usar quando o fluxo normal do site não estiver disponível ou quando a conversa acontecer ao vivo. A [planilha nativa](https://docs.google.com/spreadsheets/d/1lN_sXfSsLSH4XUkwC-lRv23BWYN22TaBacFL54ExyYc/edit) já contém uma **Calculadora** utilizável sem script. As abas Avaliações, Respostas e Números são preenchidas pelo Apps Script.
 
+Para estudar os indicadores, consulte o [guia da calculadora](../docs/GUIA_KPIS_CDD_REUNIAO_2026-09-29.md) e o [glossário amplo de KPIs de marketing](../docs/GLOSSARIO_KPIS_MARKETING_2026-09-29.md). O glossário não acrescenta perguntas à coleta nem muda a fórmula do Score Digital.
+
 ## Ativação uma única vez no computador
 
 1. Abra a planilha acima com a conta proprietária.
