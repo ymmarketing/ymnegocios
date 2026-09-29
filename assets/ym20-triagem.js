@@ -5,7 +5,14 @@
   const error = document.getElementById('error');
   const result = document.getElementById('result');
   const button = document.getElementById('submit');
-  const keys = ['revenue','products','units','sales','channels','journey','systems','volume','operations'];
+  const keys = ['revenue','products','units','sales','journey','systems','volume','operations'];
+  const channelInputs = [...form.querySelectorAll('[name="channels_selected"]')];
+  const unknownChannel = channelInputs.find(input => input.value === 'nao_sei');
+  channelInputs.forEach(input => input.addEventListener('change', () => {
+    if (input.checked && input === unknownChannel) channelInputs.filter(other => other !== input).forEach(other => { other.checked = false; });
+    else if (input.checked) unknownChannel.checked = false;
+    channelInputs[0].setCustomValidity('');
+  }));
   const utm = Object.fromEntries(new URLSearchParams(location.search));
   const source = {};
   for (const key of ['utm_source','utm_medium','utm_campaign','utm_content','utm_term']) {
@@ -14,9 +21,12 @@
   source.landing_path = location.pathname;
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
+    const channels = channelInputs.filter(input => input.checked).map(input => input.value);
+    channelInputs[0].setCustomValidity(channels.length ? '' : 'Selecione ao menos uma opção de canal.');
     if (!form.reportValidity()) return;
     const fields = new FormData(form);
     const answers = Object.fromEntries(keys.map(key => [key, fields.get(key) === 'unknown' ? 2 : Number(fields.get(key))]));
+    answers.channels_selected = channels;
     if (fields.get('revenue') === 'unknown') source.revenue_unknown = true;
     const body = {
       name: fields.get('name'), business_name: fields.get('business_name'),
