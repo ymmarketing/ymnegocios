@@ -1,0 +1,26 @@
+.content-hero{background:linear-gradient(135deg,#0b1533,#192b60);color:#fff;padding:70px 0;text-align:center}
+.content-hero .wrap{max-width:850px}
+.content-hero .eyebrow{color:#ffb078}
+.content-hero h1{font-size:clamp(34px,4.6vw,58px)}
+.content-hero p:not(.eyebrow){max-width:700px;margin-inline:auto;color:#d7def1;font-size:18px}
+.content-list{padding:72px 0 90px}
+.content-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.content-card{border:1px solid var(--line);border-radius:18px;padding:28px;background:#fff;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.content-card span{color:var(--blue);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.content-card h2,.content-card h3{font-size:23px;margin:0}
+.content-card h2 a,.content-card h3 a{text-decoration:none}
+.content-card h2 a:hover,.content-card h2 a:focus-visible,.content-card h3 a:hover,.content-card h3 a:focus-visible{text-decoration:underline}
+.content-card p{color:var(--muted);margin:0 0 6px}
+.content-card .text-link{margin-top:auto;color:var(--blue)}
+.content-more{text-align:center;margin:30px 0 0}
+.content-meta{font-size:14px!important}
+.article-body{max-width:800px;padding:58px 0 20px}
+.article-body p{max-width:730px;margin:0 auto 26px;text-align:center;font-size:17px;line-height:1.85}
+.article-body h2{text-align:center;margin:55px auto 24px;max-width:700px;font-size:clamp(26px,3vw,34px)}
+.article-body ul{max-width:700px;margin:0 auto 30px;padding-left:26px;font-size:17px;line-height:1.75}
+.article-body li{padding-left:4px;margin:0 0 10px}
+.article-cta{text-align:center;max-width:760px;padding:35px 25px 55px;margin:35px auto 20px;border-radius:20px;background:var(--soft)}
+.article-cta p{color:var(--muted)}
+.content-back{padding:18px 0 70px;text-align:center}
+.content-back a{color:var(--blue);font-weight:700}
+@media(max-width:850px){.content-grid{grid-template-columns:1fr}.content-list{padding:50px 0 70px}.content-hero{padding:55px 0}.article-body{padding:42px 0 5px}.article-body p,.article-body ul{font-size:16px}}
