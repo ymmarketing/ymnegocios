@@ -293,7 +293,7 @@
     try {
       var r = await fetch(API_BASE + '/api/acesso/manual', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({codigo:code}) });
       var d = await r.json().catch(function(){return{};});
-      if (r.ok && d.ok && d.ref && d.status === 'approved') { saveRef(d.ref); paymentStatus='approved'; stopPolling(); hideContingency(); originalGo('quiz'); root.renderQuiz(); return; }
+      if (r.ok && d.ok && d.ref && d.status === 'approved') { saveRef(d.ref); paymentStatus='approved'; stopPolling(); hideContingency(); root.location.replace('/raio-x-app.html?ref=' + encodeURIComponent(d.ref)); return; }
       if (r.status === 429) showPaymentMessage('<b>Muitas tentativas.</b><br>Aguarde um minuto e tente novamente.', true);
       else if (d && d.jaUsado) showPaymentMessage('<b>Este código já foi utilizado.</b><br>Fale com a YM para verificar seu acesso.', true);
       else showPaymentMessage('<b>Código não reconhecido.</b><br>Confira a digitação ou fale com a YM.', true);
