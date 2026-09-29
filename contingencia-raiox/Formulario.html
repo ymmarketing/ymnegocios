@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    :root{font:14px/1.5 Arial,sans-serif;color:#0B1533}
+    *{box-sizing:border-box}body{margin:0;background:#F6F8FC}
+    header{padding:20px;background:linear-gradient(135deg,#0B1533,#484DCF);color:#fff}
+    header b{display:block;font-size:18px}header small{color:#DDE4FF}
+    main{padding:14px 14px 28px}p{margin:7px 0 14px;color:#506079}
+    details{border:1px solid #DDE4EF;background:#fff;border-radius:12px;margin:9px 0}
+    summary{cursor:pointer;padding:15px;font-weight:700}
+    .body{padding:0 14px 15px}.field{margin:14px 0}
+    label{display:block;font-weight:700;font-size:12px;line-height:1.35;margin-bottom:6px}
+    input,textarea,select{display:block;width:100%;border:1px solid #BFCBDD;border-radius:10px;padding:11px 12px;font:14px Arial;background:#fff;color:#0B1533}
+    textarea{min-height:72px;resize:vertical}input:focus,textarea:focus,select:focus{outline:3px solid #B7BCFF;border-color:#484DCF}
+    .opts{display:grid;gap:7px}.opt{display:flex;align-items:flex-start;gap:8px;font-size:13px;font-weight:400;border:1px solid #E1E7EF;border-radius:9px;padding:9px;margin:0}
+    .opt input{width:auto;margin:2px 0}.hint{font-size:11px;color:#64748B;font-weight:400;margin:3px 0 7px}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}.cols .field{margin:7px 0}
+    .note{padding:10px;background:#FFF7EB;border-radius:10px;font-size:12px;color:#805126}
+    .actions{position:sticky;bottom:0;padding:12px 14px;background:#fff;border-top:1px solid #DDE4EF}
+    button{border:0;border-radius:11px;padding:13px 15px;width:100%;background:#FF7A00;color:#0B1533;font-size:14px;font-weight:800;cursor:pointer;min-height:46px}
+    button:disabled{opacity:.55}.error{color:#A42323;font-weight:700;white-space:pre-wrap}
+    #saved{background:#F0FAF5;padding:12px;border-radius:12px;color:#0B5744}
+    #saved button{margin-top:10px;background:#484DCF;color:#fff}
+  </style>
+</head>
+<body>
+<header><b>Raio-X YM · contingência</b><small>Coleta interna com números explicáveis. Sem cobrança e sem score automático.</small></header>
+<main>
+  <p>Preencha o que sabe durante a conversa. Deixe vazios os dados ainda não medidos. O registro parcial também será salvo.</p>
+  <details open><summary>1. Cliente e reunião</summary><div class="body">
+    <div class="field"><label>Nome do negócio *</label><input id="empresa" autocomplete="organization"></div>
+    <div class="field"><label>Responsável *</label><input id="nome" autocomplete="name"></div>
+    <div class="field"><label>WhatsApp com DDD *</label><input id="whatsapp" inputmode="tel" autocomplete="tel"></div>
+    <div class="field"><label>E-mail, se houver</label><input id="email" type="email" autocomplete="email"></div>
+    <div class="field"><label>Observação da conversa</label><textarea id="observacoes" placeholder="Dúvidas, fontes e premissas a conferir"></textarea></div>
+  </div></details>
+  <div id="questions"></div>
+  <details><summary>8. Números da conversa · opcionais</summary><div class="body">
+    <p class="note">Use um mês comum. O faturamento é o total vendido, antes dos custos. O cenário é uma hipótese escolhida em conjunto.</p>
+    <div id="numbers"></div>
+  </div></details>
+  <div id="saved" hidden></div>
+</main>
+<div class="actions"><div id="error" class="error" role="alert"></div><button id="submit" type="button">Salvar avaliação e ver resumo</button></div>
+<script>
+  const perguntas=<?!= JSON.stringify(perguntas) ?>;
+  const seções=['Seu negócio','Como as pessoas chegam','Como a venda acontece','O que já existe','Operação e capacidade','Histórico e objetivo'];
+  const campos=[
+    ['revenue','Quanto faturou em um mês comum? (R$)','Ex.: 40000'],
+    ['leads','Quantos novos contatos chegaram nesse mês?','Uma pessoa uma vez'],
+    ['customers','Quantos desses contatos compraram?','Mesmo grupo de contatos'],
+    ['ticket','Valor médio de uma venda (R$)','Ex.: 2000'],
+    ['extra','Quantas vendas extras quer simular?','Meta hipotética'],
+    ['marketing','Quanto já paga em marketing por mês? (R$)','Não é perda comprovada'],
+    ['acquisition','Quanto desse gasto foi para adquirir clientes? (R$)','Só para CAC; mesmo período'],
+    ['margin','Margem bruta aproximada (%)','Receita menos custos diretos'],
+    ['monthlyCustomer','Receita média por cliente por mês (R$)','Para LTV'],
+    ['months','Quantos meses um cliente permanece?','Para LTV'],
+    ['newInvestment','Novo investimento do cenário (R$)','Para ROI hipotético'],
+    ['manualCount','Vezes por semana: uma tarefa repetida','Ex.: copiar dados 10 vezes'],
+    ['manualMinutes','Minutos por ocorrência dessa tarefa','Cronometre 3 vezes'],
+    ['manualHour','Custo de uma hora de quem faz (R$)','Remuneração mensal ÷ horas'],
+    ['reworkCount','Vezes por semana: um retrabalho diferente','Sem contar a mesma tarefa'],
+    ['reworkMinutes','Minutos por retrabalho','Ex.: corrigir um cadastro'],
+    ['reworkHour','Custo de uma hora de quem corrige (R$)','Pode ser outra pessoa'],
+    ['reworkDirect','Gasto direto extra com retrabalho (R$/mês)','Sem repetir as horas acima'],
+    ['reduction','Redução de custo para simular (%)','Ex.: 20']
+  ];
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  document.getElementById('questions').innerHTML=seções.map((nome,i)=>{
+    const qs=perguntas.filter(q=>q.s===i);
+    return '<details><summary>'+(i+2)+'. '+esc(nome)+'</summary><div class="body">'+qs.map(q=>{
+      const opts=(q.t==='radio'||q.t==='multi')?'<div class="opts">'+q.o.map(o=>'<label class="opt"><input type="'+(q.t==='multi'?'checkbox':'radio')+'" name="'+q.id+'" value="'+esc(o)+'"><span>'+esc(o)+'</span></label>').join('')+'</div>':'<textarea id="'+q.id+'" placeholder="Conte com suas palavras; deixe vazio se ainda não souber"></textarea>';
+      const main=q.main?'<div class="field"><label>Qual canal gera mais clientes hoje?</label><input id="canalPrincipal" placeholder="Ex.: indicação"></div>':'';
+      return '<div class="field"><label>'+esc(q.id+' · '+q.q)+'</label>'+(q.h?'<div class="hint">'+esc(q.h)+'</div>':'')+opts+main+'<label class="hint" for="c_'+q.id+'">Contexto adicional, se houver</label><input id="c_'+q.id+'" placeholder="Evidência, exemplo, dúvida"></div>';
+    }).join('')+'</div></details>';
+  }).join('');
+  document.getElementById('numbers').innerHTML='<div class="cols">'+campos.map(([id,label,hint])=>'<div class="field"><label for="'+id+'">'+esc(label)+'</label><input id="'+id+'" type="number" min="0" step="any" inputmode="decimal" placeholder="'+esc(hint)+'"></div>').join('')+'</div><div class="field"><label>Atribuição do gasto de marketing</label><select id="attribution"><option value="">Ainda não sei</option><option>Sim, acompanho contatos e vendas</option><option>Acompanho só parte</option><option>Ainda não acompanho</option></select></div>';
+  function enviar(){
+    const get=id=>document.getElementById(id).value.trim();
+    const respostas={},complementos={};
+    perguntas.forEach(q=>{
+      respostas[q.id]=q.t==='multi'?[...document.querySelectorAll('input[name="'+q.id+'"]:checked')].map(x=>x.value):q.t==='radio'?(document.querySelector('input[name="'+q.id+'"]:checked')?.value||''):get(q.id);
+      complementos[q.id]=get('c_'+q.id);
+    });
+    const numeros={attribution:get('attribution')};campos.forEach(([id])=>numeros[id]=get(id));
+    const data={empresa:get('empresa'),nome:get('nome'),whatsapp:get('whatsapp'),email:get('email'),observacoes:get('observacoes'),canalPrincipal:get('canalPrincipal'),respostas,complementos,numeros};
+    if(!data.empresa||!data.nome||data.whatsapp.replace(/\D/g,'').length<10){document.getElementById('error').textContent='Informe empresa, responsável e WhatsApp com DDD.';return}
+    const btn=document.getElementById('submit');btn.disabled=true;btn.textContent='Salvando…';document.getElementById('error').textContent='';
+    google.script.run.withSuccessHandler(r=>{
+      btn.disabled=false;btn.textContent='Salvar outra avaliação';
+      const box=document.getElementById('saved');box.hidden=false;
+      box.innerHTML='<b>Salvo: '+esc(r.id)+'</b><div>'+r.preenchidas+'/18 perguntas · '+esc(r.status)+'</div><button id="summaryButton" type="button">Abrir resumo para imprimir</button>';
+      document.getElementById('summaryButton').onclick=()=>{
+        const w=window.open('','_blank');
+        if(w){w.document.open();w.document.write(r.html);w.document.close()}
+        else document.body.innerHTML=r.html;
+      };
+      box.scrollIntoView({behavior:'smooth'});
+      btn.onclick=()=>location.reload();
+    }).withFailureHandler(e=>{btn.disabled=false;btn.textContent='Salvar avaliação e ver resumo';document.getElementById('error').textContent=e.message||'Erro ao salvar.'}).registrar(data);
+  }
+  document.getElementById('submit').onclick=enviar;
+</script>
+</body>
+</html>
