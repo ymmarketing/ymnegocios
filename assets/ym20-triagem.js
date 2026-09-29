@@ -45,7 +45,14 @@
     try {
       const response = await fetch(endpoint, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
       const data = await response.json();
-      if (!response.ok || !data.ok) throw new Error('Não foi possível concluir a avaliação agora. Confira os dados e tente novamente.');
+      if (!response.ok || !data.ok) {
+        const messages = {
+          invalid_form: 'Não conseguimos validar os dados enviados. Revise os campos e tente novamente.',
+          too_many_requests: 'Recebemos muitas avaliações novas agora. Tente novamente mais tarde.',
+          storage_unavailable: 'O serviço está indisponível no momento. Sua avaliação não foi concluída; tente novamente em instantes.',
+        };
+        throw new Error(messages[data.error] || 'Não foi possível concluir a avaliação agora. Tente novamente em instantes.');
+      }
       track('avaliacao_concluida', { rota_inicial: data.route });
       const strategic = data.route === 'ESTRATEGICO';
       const title = strategic ? 'Raio-X Estratégico YM' : 'Raio-X Digital YM';
@@ -53,12 +60,15 @@
       const target = strategic ? 'https://wa.me/5531975073862?text=' + encodeURIComponent('Olá, Yasmin! Fiz a avaliação inicial YM e gostaria de conversar sobre o Raio-X Estratégico. Código: ' + data.id) : '/raio-x.html?checkout=1';
       result.replaceChildren();
       const p = document.createElement('p'); p.className = 'eyebrow'; p.textContent = 'Sua rota inicial';
+      const returning = document.createElement('p'); returning.className = 'returning-note'; returning.textContent = 'Já nos conhecemos! Registramos esta nova avaliação da sua empresa.';
       const heading = document.createElement('h2'); heading.textContent = title;
       const score = document.createElement('strong'); score.textContent = `${data.score}/100`;
       const description = document.createElement('p'); description.textContent = message;
       const note = document.createElement('p'); note.className = 'help'; note.textContent = 'Este score mede a complexidade declarada, não a qualidade da empresa nem o valor de uma eventual perda. A YM pode revisar a rota.';
       const link = document.createElement('a'); link.className = 'button'; link.href = target; link.textContent = strategic ? 'Conversar com a YM →' : 'Conhecer o Raio-X Digital →';
-      result.append(p, heading, score, description, note, link);
+      result.append(p);
+      if (data.known_contact === true) result.append(returning);
+      result.append(heading, score, description, note, link);
       form.hidden = true; result.hidden = false; result.scrollIntoView({behavior:'smooth'});
     } catch (err) { track('avaliacao_erro'); error.textContent = err.message; button.disabled = false; button.textContent = 'Avaliação gratuita'; }
   });

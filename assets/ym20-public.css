@@ -60,3 +60,6 @@ body:has(.hero-card) :is(.cards,.journey,.product-list,.content-grid) article{tr
   body:has(.hero-card) .section.soft{padding-top:58px;padding-bottom:62px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button,.channel,body:has(.hero-card) :is(.cards,.journey,.product-list,.content-grid) article{transition:none!important;transform:none!important}}
+
+.result{text-align:center}
+.returning-note{width:fit-content;max-width:100%;margin:8px auto 22px;padding:11px 16px;border:1px solid #bfc8ed;border-radius:12px;background:#e9edff;color:var(--navy);font-weight:700}
