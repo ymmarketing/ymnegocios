@@ -53,12 +53,29 @@
     return /startNewRaiox/i.test(onclick) || /(?:checkout=1|novo=1)/i.test(href || '');
   }
 
+  function isEvaluationCta(href) {
+    try {
+      var url = new URL(href, window.location.href);
+      return url.origin === window.location.origin && /^\/triagem\/?$/.test(url.pathname);
+    } catch (_) {
+      return false;
+    }
+  }
+
   document.addEventListener('click', function (event) {
     var el = event.target && event.target.closest ? event.target.closest('a,button') : null;
     if (!el) return;
 
     var href = el.getAttribute('href') || '';
     var label = textOf(el);
+
+    if (isEvaluationCta(href)) {
+      window.gtag('event', 'avaliacao_cta_click', {
+        source_page: window.location.pathname || '/',
+        cta_zone: el.closest('header') ? 'header' : el.closest('.hero') ? 'hero' : el.closest('footer') ? 'footer' : 'main',
+        cta_text: label
+      });
+    }
 
     if (isWhatsAppHref(href)) {
       window.gtag('event', 'whatsapp_click', {
@@ -78,7 +95,7 @@
       window.gtag('event', 'begin_checkout', {
         currency: 'BRL',
         value: 97,
-        items: [{ item_name: 'Raio-X Estrategico', item_category: 'Diagnostico', price: 97, quantity: 1 }]
+        items: [{ item_name: 'Raio-X Digital YM', item_category: 'Diagnostico', price: 97, quantity: 1 }]
       });
     }
   }, true);
