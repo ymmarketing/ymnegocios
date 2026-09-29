@@ -16,3 +16,47 @@
 @media(max-width:760px){.product-list,.channel-grid{grid-template-columns:1fr}.hero-card{padding:24px}}
 
 @media(max-width:760px){.nav{gap:10px}.nav img{width:120px}.nav .button.small{padding:10px 12px;font-size:12px;white-space:nowrap}}
+
+/* YM 2.0 — refinamento visual sem alterar a estrutura ou a mensagem. */
+.button{color:var(--navy)!important;box-shadow:0 12px 28px rgba(255,122,0,.22);transition:background-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.button:hover{color:var(--navy)!important;box-shadow:0 15px 32px rgba(255,122,0,.27);transform:translateY(-2px)}
+:where(a,button,input,select):focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.hero :where(a,button):focus-visible,.closing :where(a,button):focus-visible{outline-color:#b7c1ff}
+.input{border-color:#748099}
+.input:focus-visible{border-color:var(--blue);box-shadow:0 0 0 4px rgba(72,77,207,.14)}
+.channel{border-color:#c4ccda;transition:border-color .18s ease,background-color .18s ease,box-shadow .18s ease}
+.channel:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(72,77,207,.23)}
+.channel input,.check input{accent-color:var(--blue);min-width:18px;min-height:18px}
+.fieldset{box-shadow:0 12px 32px rgba(11,21,51,.035)}
+
+/* A home ganha profundidade com as cores oficiais, sem depender da foto pendente. */
+body:has(.hero-card) .hero{position:relative;isolation:isolate;background:radial-gradient(circle at 80% 5%,rgba(72,77,207,.24),transparent 38%),radial-gradient(circle at 10% 42%,rgba(255,122,0,.06),transparent 33%),linear-gradient(145deg,#0b1533 8%,#142654 62%,#0b1533 100%)}
+body:has(.hero-card) .hero::after{content:"";position:absolute;inset:auto 0 -1px;height:92px;pointer-events:none;background:linear-gradient(to bottom,rgba(11,21,51,0),#fff)}
+body:has(.hero-card) .hero .wrap{position:relative;z-index:1}
+body:has(.hero-card) .hero-card{position:relative;overflow:hidden;border-color:#53669c;background:radial-gradient(circle at 85% 0%,rgba(143,157,255,.18),transparent 46%),linear-gradient(145deg,#1a2e60,#101d40);box-shadow:0 28px 72px rgba(2,8,28,.38),inset 0 1px rgba(255,255,255,.13)}
+body:has(.hero-card) .hero-card::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,rgba(255,176,120,.65),rgba(143,157,255,.7),transparent)}
+body:has(.hero-card) .hero + .section.wrap{padding-top:76px;padding-bottom:70px}
+body:has(.hero-card) .section.soft{background:linear-gradient(180deg,#f3f5fc 0%,#f7f8fd 74%,#fff 100%)}
+body:has(.hero-card) .section.wrap:has(.product-list){padding-top:68px;padding-bottom:62px}
+body:has(.hero-card) .section.wrap:has(.content-grid){padding-top:62px;padding-bottom:78px}
+body:has(.hero-card) .cards article{border-top:3px solid var(--blue);background:linear-gradient(155deg,#fff 62%,#f8f9ff);box-shadow:0 16px 38px rgba(11,21,51,.07)}
+body:has(.hero-card) .cards article:nth-child(2){border-top-color:var(--orange)}
+body:has(.hero-card) .journey article{border-color:#d9e0f0;background:linear-gradient(160deg,#fff 58%,#f4f6fe);box-shadow:0 14px 34px rgba(11,21,51,.055)}
+body:has(.hero-card) .product-list article{border-color:#d9e0f0;border-left:4px solid var(--blue);background:linear-gradient(155deg,#fff 68%,#f8f9ff);box-shadow:0 18px 40px rgba(11,21,51,.065)}
+body:has(.hero-card) .product-list article:nth-child(2){border-left-color:var(--orange)}
+body:has(.hero-card) .content-grid .content-card{border-color:#dfe5f1;background:linear-gradient(160deg,#fff 72%,#f8f9fd);box-shadow:0 16px 36px rgba(11,21,51,.05)}
+body:has(.hero-card) :is(.cards,.journey,.product-list,.content-grid) article{transition:transform .18s ease,box-shadow .18s ease}
+@media(hover:hover){body:has(.hero-card) :is(.cards,.journey,.product-list,.content-grid) article:hover{transform:translateY(-3px);box-shadow:0 21px 46px rgba(11,21,51,.11)}}
+
+@media(max-width:760px){
+  .nav .button.small{min-height:44px}
+  body:has(.hero-card) .hero{padding-top:48px;padding-bottom:76px}
+  body:has(.hero-card) .hero h1{font-size:clamp(34px,9.3vw,50px);line-height:1.09;text-wrap:balance}
+  body:has(.hero-card) .hero .lead{font-size:16px;line-height:1.62}
+  body:has(.hero-card) .hero-card{padding:22px}
+  body:has(.hero-card) .hero::after{height:74px}
+  body:has(.hero-card) .hero + .section.wrap{padding-top:54px;padding-bottom:56px}
+  body:has(.hero-card) .section.wrap:has(.product-list),body:has(.hero-card) .section.wrap:has(.content-grid){padding-top:54px;padding-bottom:60px}
+  body:has(.hero-card) .section.soft{padding-top:58px;padding-bottom:62px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button,.channel,body:has(.hero-card) :is(.cards,.journey,.product-list,.content-grid) article{transition:none!important;transform:none!important}}
