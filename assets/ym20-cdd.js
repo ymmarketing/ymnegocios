@@ -24,6 +24,7 @@
     card.append(element('h3', title), element('strong', value), element('p', detail));
     if (next) card.append(element('p', next, 'cdd-next'));
     target.append(card);
+    return card;
   };
   const monthly = (count, minutes) => count * minutes * 4 / 60;
   const calculate = () => {
@@ -46,6 +47,28 @@
       || (manualCount !== null && manualMinutes === null) || (manualCount === null && manualMinutes !== null)
       || (reworkCount !== null && reworkMinutes === null) || (reworkCount === null && reworkMinutes !== null);
 
+    if (known(revenue, extra, ticket)) {
+      const gain = extra * ticket;
+      const growth = revenue > 0 ? ` Isso equivale a +${pct(gain / revenue * 100)} sobre o faturamento atual.` : '';
+      const card = addCard(summary, 'Faturamento por mês: hoje → cenário',
+        `${money.format(revenue)} → ${money.format(revenue + gain)}`,
+        `Ganho potencial de ${money.format(gain)} por mês em vendas extras.${growth}`,
+        `${number.format(extra)} vendas extras × ${money.format(ticket)} por venda. Receita bruta simulada, não lucro ou venda garantida.`);
+      card.className += ' cdd-revenue';
+    } else if (revenue !== null) {
+      addCard(summary, 'Faturamento atual', money.format(revenue),
+        'Esse é o ponto de partida. Ainda não há um valor “depois” para vendas.',
+        'Informe quantas vendas extras quer simular e quanto vale uma venda em média.', true);
+    } else if (known(extra, ticket)) {
+      addCard(summary, 'Vendas extras simuladas', money.format(extra * ticket),
+        'Esse é o ganho potencial mensal em receita bruta, mas falta o faturamento atual para mostrar antes → depois.',
+        'Consulte o total de vendas de um mês comum no seu registro financeiro.', true);
+    } else {
+      addCard(summary, 'Faturamento: antes → cenário', 'Primeiro dado a medir',
+        'Sem faturamento atual, valor médio por venda e meta de vendas extras, ainda não é possível fazer a comparação.',
+        'Comece pelo total de vendas de um mês comum e pelo valor médio de uma venda.', true);
+    }
+
     if (known(leads, customers) && leads > 0) {
       addCard(cards, 'De contatos a clientes', pct(customers / leads * 100),
         `${number.format(customers)} clientes ÷ ${number.format(leads)} pessoas que entraram em contato. É a conversão do grupo informado, não uma nota de desempenho.`,
@@ -54,19 +77,6 @@
       addCard(cards, 'De contatos a clientes', 'Primeiro dado a medir',
         'Ainda não dá para calcular quantos contatos viram clientes.',
         'Anote cada novo contato e marque quais dessas pessoas compraram. Se a venda demora, acompanhe o grupo até a decisão.', true);
-    }
-    if (known(extra, ticket)) {
-      const potential = extra * ticket;
-      const comparison = revenue !== null
-        ? `Faturamento de ${money.format(revenue)} hoje → ${money.format(revenue + potential)} no cenário (${revenue > 0 ? '+' + pct(potential / revenue * 100) : 'sem percentual com faturamento zero'}).`
-        : 'Informe o faturamento mensal para comparar com o valor atual e ver a variação percentual.';
-      addCard(cards, 'Vendas extras que você escolheu simular', money.format(potential),
-        `${number.format(extra)} vendas extras × ${money.format(ticket)} por venda = receita bruta potencial por mês. ${comparison}`,
-        'É uma hipótese, não uma previsão de vendas ou de lucro.');
-    } else {
-      addCard(cards, 'Cenário de vendas', 'Sem projeção de vendas',
-        'Você ainda não informou uma quantidade de vendas extras e o valor médio por venda.',
-        'Se não sabe o valor médio, divida as vendas do mês pela quantidade de vendas. Uma meta só faz sentido quando você conhece o ponto de partida.', true);
     }
     if (spend !== null) {
       const reading = attribution === 'yes' ? 'Você informou que acompanha a relação com contatos e vendas.'
@@ -100,9 +110,6 @@
       const qualifier = incomplete ? 'Total parcial dos custos informados' : 'Custos operacionais calculados';
       const ratio = revenue !== null && revenue > 0 ? ` Isso representa ${pct(operating / revenue * 100)} do faturamento mensal de ${money.format(revenue)}.`
         : ' Informe um faturamento maior que zero para ver quanto isso representa em percentual.';
-      addCard(summary, qualifier, money.format(operating),
-        'Soma somente do custo da tarefa repetida, do retrabalho e do gasto extra direto que puderam ser calculados.' + ratio,
-        incomplete ? 'Há tempo informado sem custo por hora ou frequência incompleta. O total não representa toda a operação.' : 'O investimento em marketing e a receita de vendas extras ficam fora deste total.');
       if (reduction !== null) {
         const after = operating * (1 - reduction / 100);
         const points = revenue > 0 ? (operating - after) / revenue * 100 : null;
@@ -117,14 +124,14 @@
           'Informe na etapa 5 a redução que deseja simular para ver o valor de hoje, o cenário e a diferença em pontos percentuais.',
           'É uma hipótese sua, não um percentual estimado pela YM.', true);
       }
+      addCard(summary, qualifier, money.format(operating),
+        'Soma somente do custo da tarefa repetida, do retrabalho e do gasto extra direto que puderam ser calculados.' + ratio,
+        incomplete ? 'Há tempo informado sem custo por hora ou frequência incompleta. O total não representa toda a operação.' : 'O investimento em marketing e a receita de vendas extras ficam fora deste total.');
     } else {
       addCard(summary, 'Ponto de partida', 'Ainda não há um total em reais',
         'Tempo sem custo por hora não vira valor em dinheiro. O gasto em marketing e as vendas extras não são somados como perda.',
         'Comece anotando frequência, minutos e custo por hora de uma tarefa. Se souber apenas o tempo, a leitura das horas já ajuda.', true);
     }
-    if (revenue === null) addCard(summary, 'Comparação com o faturamento', 'Falta uma referência',
-      'Sem o faturamento mensal, não podemos dizer que parcela da receita esses custos representam nem mostrar uma mudança em pontos percentuais.',
-      'Consulte o total de vendas de um mês comum no seu registro financeiro.', true);
   };
   form.addEventListener('submit', event => {
     event.preventDefault();
