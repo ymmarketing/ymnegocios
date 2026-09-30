@@ -10,7 +10,7 @@ Atualizado em 30/09/2026. A documentação mestre continua sendo a referência d
 | CDD interno | Implementado, aguardando homologação com dados de cliente | Registro versionado por oportunidade, fonte, premissas, validação humana, cálculo no servidor e tela autenticada pelo card do CRM. Não cria cliente operacional. O Digital continua qualitativo; a análise financeira é conduzida na conversa Estratégica. |
 | Raio-X Digital | Correção de nomenclatura em validação | Página e checkout de R$ 97 permanecem. O aplicativo pago, relatório e integração com o CRM foram alinhados ao nome Digital, com contato/WhatsApp na coleta. A função aceita packets antigos como Estratégico; falta homologação ponta a ponta com acesso pago ou código autorizado. |
 | Raio-X de contingência | Publicado no backend | Link independente `https://ym-raiox-backend.vercel.app/contingencia/`, 18 perguntas e mesmo motor/relatório do Digital, acesso por código individual após confirmação manual do Asaas. Lista privada e instruções na pasta CONTINGÊNCIA do Drive. A planilha permanece como registro auxiliar e a calculadora de KPIs é outro instrumento. |
-| Raio-X Estratégico | Pendente | Agendamento, conversa de enquadramento, coleta, imersão, CDD aprofundado e devolutiva. Preço definido após reunião, sem divulgação pública. |
+| Raio-X Estratégico | Jornada interna implementada, aguardando homologação | Oportunidade → enquadramento/imersão/análise/devolutiva, anotações append-only com fonte e próxima ação; devolutiva exige CDD validado da mesma oportunidade. Agendamento externo, relatório consultivo final e proposta ainda pendentes. Preço sem divulgação pública. |
 | CRM e Central | Arquivo concluído; UX em homologação | Os 253 registros da safra anterior foram arquivados de forma reversível: pipeline ativo zerado, sem apagar clientes, serviços, pagamentos, acessos ou vínculos. Cadastro e card foram simplificados; o Motor saiu das entradas visíveis, mas aplicação e dados permanecem para uso independente. Ver `docs/CRM_VNEXT_PROSPECCAO_2026-09-29.md`. |
 | Prospecção e aquisição ativa | Cadastro guiado implementado, aguardando homologação | Pesquisa manual nacional com fonte, data, fato observado, hipótese e próxima ação; checagem transacional de possível duplicidade em contatos ativos e arquivados. Não repovoa a safra antiga automaticamente nem envia e-mail. ICP final, abordagem, follow-up e campanhas seguem na esteira. |
 | Área do cliente | Prioridade preservada | Planejar acesso autenticado aos próprios dados, números e financeiro, partindo da ficha canônica e de regras de acesso por cliente. Não expor dados de outro cliente. |
@@ -18,7 +18,7 @@ Atualizado em 30/09/2026. A documentação mestre continua sendo a referência d
 
 ## Próxima implementação
 
-1. Expandir o fluxo consultivo do Raio-X Estratégico: agendamento, fontes/evidências, imersão e devolutiva a partir do CDD interno, sem preço público.
+1. Completar o Raio-X Estratégico: relatório consultivo final, agendamento externo e proposta após reunião; homologar a jornada interna com CDD validado.
 2. Revisar ICP e homologar a coleta manual de prospecção; desenhar abordagem, follow-up e regras de preferência antes da integração de e-mail.
 3. Evoluir conversão, ficha canônica e área do cliente para acesso aos próprios números e financeiro.
 4. Na homologação final com Yasmin, testar CRM/Central no celular, CDD interno e Digital ponta a ponta: checkout → confirmação → 18 perguntas → relatório/PDF → registro no CRM; executar também o caminho de código individual sem cobrança real.
