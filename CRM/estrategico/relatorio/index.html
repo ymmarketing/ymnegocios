@@ -1,0 +1,49 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Prévia da devolutiva · YM</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><link rel="stylesheet" href="/assets/internal-shell.css">
+<style>
+body{background:#F5F7FB;color:#203247;font:16px/1.6 Inter,Arial,sans-serif}main{max-width:920px;margin:auto;padding:28px 16px 70px}h1,h2,h3{color:#0A2540;line-height:1.25}.eyebrow{color:#4148BE;letter-spacing:.1em;font-size:12px;font-weight:800}.card{background:#fff;border:1px solid #DEE6EF;border-radius:16px;padding:22px;margin:16px 0}.lead{color:#53677B}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.metric{background:#F1F5FB;border-radius:12px;padding:15px}.metric b{display:block;color:#0A2540;font-size:22px}.metric small{color:#576B80}.note{background:#FFF6E9;padding:15px;border-radius:12px;color:#63421C}.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;border:0;border-radius:10px;padding:10px 16px;background:#FF8200;color:#17233B;font-weight:800;text-decoration:none;cursor:pointer}.btn.secondary{background:#EAF0F7;color:#173554}a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #9EBBFF;outline-offset:2px}.muted{color:#63758A}.error{color:#9B2929}.hidden{display:none!important}p{overflow-wrap:anywhere}@media(max-width:650px){.grid{grid-template-columns:1fr}.card{padding:18px}}@media print{body{background:#fff}main{max-width:none;padding:0}.actions,.review,#status{display:none!important}.card{break-inside:avoid;box-shadow:none;border:1px solid #CBD5E1}a{text-decoration:none;color:inherit}h1{font-size:27px}}
+</style></head><body><main>
+<div class="actions"><a class="btn secondary" id="back" href="/CRM/">← Voltar</a></div>
+<p id="status" role="status" aria-live="polite">Carregando dados validados…</p>
+<div id="report" class="hidden">
+<div class="eyebrow">YM MARKETING & NEGÓCIOS · PRÉVIA INTERNA</div><h1>Devolutiva do Raio-X Estratégico</h1><p class="lead" id="identity"></p>
+<section class="card"><h2>1. Enquadramento da conversa</h2><p id="scope"></p><p class="muted" id="scopeSource"></p></section>
+<section class="card"><h2>2. Números conferidos</h2><p id="reference" class="muted"></p><div class="grid" id="metrics"></div><p class="note">O cenário é uma hipótese para decisão. Receita adicional é bruta; economia operacional reduz custos e não aumenta faturamento. Investimento em marketing sem atribuição não é perda comprovada.</p></section>
+<section class="card"><h2>3. Leitura humana e próximo passo</h2><p id="interpretation"></p><p id="next"></p></section>
+<section class="card"><h2>Fontes e lacunas</h2><p id="sources"></p><p id="gaps"></p></section>
+<div class="review card"><label><input id="reviewed" type="checkbox"> Conferi os números, fontes e hipóteses desta prévia antes de compartilhar.</label><p class="muted">A impressão é manual. Este rascunho não é enviado automaticamente ao cliente.</p><button id="print" type="button" class="btn" disabled>Imprimir ou salvar PDF</button></div>
+</div>
+</main><script src="/assets/internal-shell.js"></script><script>
+const $=s=>document.querySelector(s),id=new URLSearchParams(location.search).get('opportunity_id');
+const money=n=>n===null||n===undefined?'Não medido':new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(n);
+const pct=n=>n===null||n===undefined?'Não medido':new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2}).format(n)+'%';
+const set=(s,v)=>$(s).textContent=v;
+async function api(path,action){const session=await YM.requireSession('/CRM');if(!session)throw Error('Sessão necessária');const r=await fetch(YM.SUPABASE_URL+'/functions/v1/'+path,{method:'POST',headers:{Authorization:'Bearer '+session.access_token,apikey:YM.PUBLISHABLE_KEY,'Content-Type':'application/json'},body:JSON.stringify({action,opportunity_id:id})});const j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.detail||j.error||'Não foi possível carregar.');return j}
+async function load(){
+const [journey,cdd]=await Promise.all([api('ym-strategic-journey','LIST'),api('ym-cdd-internal','LIST')]);
+const handoff=(journey.events||[]).find(e=>e.phase==='DEVOLUTIVA'&&e.assessment_id);
+if(!handoff)throw Error('Ainda não há devolutiva registrada com CDD validado.');
+const assessment=(cdd.assessments||[]).find(a=>a.id===handoff.assessment_id&&a.status==='VALIDATED');
+if(!assessment)throw Error('O CDD da devolutiva não está validado para esta oportunidade.');
+const frame=(journey.events||[]).find(e=>e.phase==='ENQUADRAMENTO'),r=assessment.results||{};
+set('#identity',(journey.opportunity.contact?.business_name||journey.opportunity.contact?.name||'Empresa')+' · CDD versão '+assessment.version);
+set('#scope',frame?.conversation_note||'Enquadramento não registrado.');set('#scopeSource',frame?'Fonte: '+frame.source_note:'');
+set('#reference','Mês de referência: '+String(assessment.reference_month||'').slice(0,7)+' · validado em '+new Date(assessment.validated_at).toLocaleDateString('pt-BR'));
+const rows=[
+ ['Faturamento real',money(r.revenue_before),'Mês de referência; antes dos custos.'],
+ ['Cenário de faturamento',money(r.revenue_after_scenario),'Hipótese de vendas adicionais, não resultado prometido.'],
+ ['Acréscimo bruto simulado',money(r.extra_revenue_scenario),'Diferença de faturamento no cenário.'],
+ ['Custo operacional medido',money(r.known_operational_cost),'Apenas tarefas com custo informado.'],
+ ['Redução hipotética de custo',money(r.potential_cost_reduction),'Economia separada do faturamento.'],
+ ['Investimento atual em marketing',money(r.marketing_spend_separate),'Não tratado como prejuízo.'],
+ ['Conversão medida',pct(r.conversion_rate),'Clientes ÷ contatos, quando ambos foram informados.']
+];
+$('#metrics').replaceChildren(...rows.map(([title,value,description])=>{const d=document.createElement('div');d.className='metric';const t=document.createElement('small');t.textContent=title;const b=document.createElement('b');b.textContent=value;const p=document.createElement('small');p.textContent=description;d.append(t,b,p);return d}));
+set('#interpretation',handoff.conversation_note);set('#next','Próxima ação: '+handoff.next_action);
+set('#sources','Conversa: '+handoff.source_note+' · CDD: '+(assessment.source_note||'Não informado.'));
+set('#gaps','Ainda a confirmar: '+(r.gaps?.length?r.gaps.join(', '):'nenhuma lacuna registrada no cálculo')+'. '+(assessment.assumptions_note||''));
+$('#back').href='/CRM/estrategico/?opportunity_id='+encodeURIComponent(id);$('#report').classList.remove('hidden');set('#status','Prévia carregada para revisão interna.');
+}
+$('#reviewed').onchange=()=>{$('#print').disabled=!$('#reviewed').checked};$('#print').onclick=()=>window.print();
+if(!id)set('#status','Abra a prévia pelo Raio-X Estratégico de uma oportunidade.');else load().catch(e=>{$('#status').textContent=e.message;$('#status').className='error'});
+</script></body></html>
