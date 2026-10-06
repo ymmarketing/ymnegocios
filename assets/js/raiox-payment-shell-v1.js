@@ -151,7 +151,7 @@
     var title = view.querySelector('.payx-body h2');
     var text = view.querySelector('.payx-body > p');
     if (title) title.textContent = 'Finalize seu pagamento';
-    if (text) text.textContent = 'Informe o CPF ou CNPJ do pagador e siga para o checkout seguro. Depois da confirmação, seu Raio-X será liberado automaticamente.';
+    if (text) text.textContent = 'Confira seus dados e siga para o checkout seguro. Depois da confirmação, seu Raio-X será liberado automaticamente.';
   }
 
   function ensurePaymentCustomerFields() {
@@ -161,13 +161,29 @@
     if (!start || !start.parentNode) return;
     var box = document.createElement('div');
     box.id = 'payx-customer-fields';
-    box.innerHTML = '<label for="payx-documento" style="display:block;font-size:13px;font-weight:700;margin-bottom:7px">CPF ou CNPJ do pagador</label>' +
+    var pre = readPrefill();
+    var lbl = function (id, t) { return '<label for="' + id + '" style="display:block;font-size:13px;font-weight:700;margin:12px 0 7px">' + t + '</label>'; };
+    var inp = function (id, type, ac, val, ph) { return '<input id="' + id + '" type="' + type + '" autocomplete="' + ac + '" value="' + escAttr(val) + '" placeholder="' + ph + '" style="width:100%;padding:14px 15px;background:#fff;outline:none">'; };
+    box.innerHTML = lbl('payx-nome', 'Nome completo') + inp('payx-nome', 'text', 'name', pre.name, 'Como deve aparecer no recibo') +
+      lbl('payx-email', 'E-mail para o recibo') + inp('payx-email', 'email', 'email', pre.email, 'seuemail@empresa.com.br') +
+      lbl('payx-telefone', 'WhatsApp com DDD (opcional)') + inp('payx-telefone', 'tel', 'tel', pre.phone, '(DDD) 99999-9999') +
+      '<label for="payx-documento" style="display:block;font-size:13px;font-weight:700;margin:12px 0 7px">CPF ou CNPJ do pagador</label>' +
       '<input id="payx-documento" type="text" inputmode="numeric" autocomplete="off" maxlength="18" placeholder="000.000.000-00" style="width:100%;padding:14px 15px;background:#fff;outline:none">' +
-      '<p style="font-size:11.5px;line-height:1.5;color:#68748E;margin:8px 0 0">O Asaas exige CPF ou CNPJ para gerar a cobrança. O documento é enviado com segurança ao Asaas e não é armazenado no Raio-X.</p>';
+      '<p style="font-size:11.5px;line-height:1.5;color:#68748E;margin:8px 0 0">O Asaas exige CPF ou CNPJ para gerar a cobrança. O documento é enviado com segurança ao Asaas e não é armazenado no Raio-X.</p>' +
+      '<label style="display:flex;gap:9px;align-items:flex-start;text-align:left;margin-top:14px;font-size:13px;color:#33405C"><input id="payx-termos" type="checkbox" style="margin-top:3px;width:auto;min-height:0"><span>Li e concordo com os <a href="/termos/" target="_blank" rel="noopener" style="color:#484DCF;font-weight:700">Termos de Uso e a Política de Reembolso</a>, incluindo o direito de desistir em até 7 dias.</span></label>';
     start.parentNode.insertBefore(box, start);
     var input = document.getElementById('payx-documento');
     if (input) input.addEventListener('input', function () { input.value = formatDocument(input.value); });
   }
+
+  function readPrefill() {
+    try {
+      var p = JSON.parse(root.localStorage.getItem('ym_triagem_prefill') || 'null');
+      if (p && Date.now() - Number(p.saved_at || 0) < 30 * 24 * 3600 * 1000) return p;
+    } catch (e) {}
+    return {};
+  }
+  function escAttr(v) { return String(v || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
 
   function clearStoredSession() {
     try { if (root.localStorage) { root.localStorage.removeItem(REF_STORAGE_KEY); root.localStorage.removeItem(DRAFT_STORAGE_KEY); } } catch (e) {}
@@ -243,16 +259,26 @@
 
   async function createPayment() {
     clearPaymentMessage(); hideContingency(); ensurePaymentCustomerFields();
+    var nomeInput = document.getElementById('payx-nome');
+    var emailInput = document.getElementById('payx-email');
+    var telInput = document.getElementById('payx-telefone');
+    var termos = document.getElementById('payx-termos');
+    var nome = String(nomeInput ? nomeInput.value : '').trim();
+    var email = String(emailInput ? emailInput.value : '').trim();
+    var telefone = String(telInput ? telInput.value : '').replace(/\D/g, '');
+    if (nome.length < 3) { goPayment('<b>Informe seu nome completo.</b><br>Ele aparece no recibo do pagamento.', false); if (nomeInput) nomeInput.focus(); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { goPayment('<b>Confira o e-mail.</b><br>É para onde o Asaas envia o recibo.', false); if (emailInput) emailInput.focus(); return; }
     var docInput = document.getElementById('payx-documento');
     var documento = onlyDigits(docInput ? docInput.value : '');
     if (documento.length !== 11 && documento.length !== 14) {
       goPayment('<b>Informe o CPF ou CNPJ do pagador.</b><br>Esse dado é exigido pelo Asaas para gerar a cobrança.', false);
       docInput = document.getElementById('payx-documento'); if (docInput) docInput.focus(); return;
     }
+    if (!termos || !termos.checked) { goPayment('<b>Aceite os Termos de Uso e a Política de Reembolso para continuar.</b>', false); return; }
     var buttons = document.querySelectorAll('[data-payx-start]');
     buttons.forEach(function (b) { b.disabled = true; b.dataset.oldText = b.textContent; b.textContent = 'Preparando pagamento…'; });
     try {
-      var r = await fetch(API_BASE + '/api/pagamento/criar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ documento: documento }) });
+      var r = await fetch(API_BASE + '/api/pagamento/criar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ documento: documento, nome: nome, email: email, telefone: telefone }) });
       var d = await r.json().catch(function () { return {}; });
       if (!r.ok || !d.ok || !d.ref || !d.paymentUrl) throw new Error((d && d.error) || 'Não foi possível criar a cobrança.');
       saveRef(d.ref); paymentStatus = d.status || 'pending'; syncPaymentControls(); root.location.href = d.paymentUrl;
