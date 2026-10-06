@@ -171,7 +171,7 @@ def head(title, description, canonical, schema=None, og_type="website", extra=""
             '<link rel="preconnect" href="https://fonts.googleapis.com">'
             '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
             '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">'
-            '<link rel="stylesheet" href="/assets/ym20-public.css?v=20260929-visual1">'
+            '<link rel="stylesheet" href="/assets/ym20-public.css?v=20261006-rodape">'
             f'<link rel="stylesheet" href="/assets/ym20-conteudos.css?v={VERSION}">'
             '<script src="/assets/ym-analytics.js?v=20260929-funil1" defer></script>'
             f'<script src="/assets/ym-newsletter.js?v={VERSION}" defer></script>' + data + '</head><body>')
