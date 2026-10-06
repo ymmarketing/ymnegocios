@@ -191,7 +191,7 @@ def nav(current):
 FOOTER = ('<footer class="wrap footer"><a href="/" aria-label="Página inicial da YM"><img src="/assets/img/logo-ym-horizontal.webp" alt="YM Marketing &amp; Negócios" width="160" height="50" loading="lazy"></a>'
           '<div><a href="/">Início</a><a href="/conteudos/">Conteúdos</a><a href="/perguntas/">Perguntas frequentes</a>'
           '<a href="/raio-x-digital/">Raio-X Digital</a><a href="/quemsomos/">Quem somos</a><a href="/termos/">Termos e privacidade</a></div>'
-          '<small>Marketing certo, na ordem certa.<span class="legal">YM Marketing &amp; Negócios · CNPJ 65.606.945/0001-05 · Belo Horizonte (MG) · WhatsApp (31) 97507-3862 · © 2026</span></small></footer></body></html>')
+          '<small>Marketing certo, na ordem certa.<span class="legal">YM Marketing &amp; Negócios · CNPJ 65.606.945/0001-05 · Belo Horizonte (MG) · WhatsApp (31) 97507-3862 · © 2026 · <a class="ft-int" href="/interno" rel="nofollow">Acesso interno</a></span></small></footer></body></html>')
 
 AUTHOR = ('<aside class="article-author"><img src="/assets/img/yasmin-hero.webp" alt="Yasmin Menezes" width="72" height="84" loading="lazy">'
           '<div><p><strong>Yasmin Menezes</strong> · Fundadora da YM Marketing &amp; Negócios</p>'

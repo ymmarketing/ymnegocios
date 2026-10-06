@@ -94,3 +94,4 @@ body:has(.hero-card) :is(.cards,.journey,.product-list,.content-grid) article{tr
 .footer>div a:hover,.footer>div a:focus-visible{color:var(--blue)}
 .footer>small{grid-column:1/-1;width:auto;padding-top:20px;border-top:1px solid var(--line);font-size:13px;line-height:1.7}
 @media(max-width:900px){.footer{grid-template-columns:1fr;gap:22px}.footer>div{justify-content:start;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 20px}.footer>div a{white-space:normal}}
+.footer .ft-int{color:var(--muted);text-decoration:underline;text-underline-offset:2px;font-weight:500}
