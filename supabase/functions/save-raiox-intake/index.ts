@@ -19,6 +19,13 @@ const V2 = Object.freeze({
   scoring_version: "RX_SCORE_2.2",
   report_version: "RX_REPORT_2.2",
 });
+// Questionário de 25 perguntas + relatório RX_REPORT_3.0 (nova cadência).
+const V3 = Object.freeze({
+  packet_version: "VOS_INTAKE_3.0",
+  questionnaire_version: "RX_CANONICO_3.0",
+  scoring_version: "RX_SCORE_3.0",
+  report_version: "RX_REPORT_3.0",
+});
 
 function cors(origin: string | null) {
   const allow = origin && ALLOWED_ORIGINS.has(origin) ? origin : "https://ymnegocios.com.br";
@@ -42,8 +49,15 @@ function clean(v: unknown, max = 2000): string | null {
   const s = String(v).trim().slice(0, max);
   return s || null;
 }
+function isV3(packet: any) {
+  return packet?.packet_version === V3.packet_version;
+}
+// V2 e V3 compartilham o mesmo fluxo de CRM; só mudam contrato e número de perguntas.
 function isV2(packet: any) {
-  return packet?.packet_version === V2.packet_version;
+  return packet?.packet_version === V2.packet_version || isV3(packet);
+}
+function contractOf(packet: any) {
+  return isV3(packet) ? V3 : V2;
 }
 function packetValido(packet: any) {
   if (!packet || typeof packet !== "object" || Array.isArray(packet)) return false;
@@ -54,19 +68,21 @@ function packetValido(packet: any) {
   if (packet.route_signal !== null) return false;
 
   if (isV2(packet)) {
-    if (packet.questionnaire_version !== V2.questionnaire_version) return false;
-    if (packet.scoring_version !== V2.scoring_version) return false;
-    if (packet.report_version !== V2.report_version) return false;
+    const C = contractOf(packet);
+    if (packet.questionnaire_version !== C.questionnaire_version) return false;
+    if (packet.scoring_version !== C.scoring_version) return false;
+    if (packet.report_version !== C.report_version) return false;
     if (!packet.business_name || typeof packet.business_name !== "string") return false;
     if (!packet.answers || typeof packet.answers !== "object") return false;
-    for (let i = 1; i <= 18; i++) {
+    const totalQuestions = isV3(packet) ? 25 : 18;
+    for (let i = 1; i <= totalQuestions; i++) {
       const id = `Q${String(i).padStart(2, "0")}`;
       if (!clean(packet.answers[id], 5000)) return false;
     }
     const overall = Number(packet?.score?.overall);
     if (!Number.isFinite(overall) || overall < 0 || overall > 10) return false;
     if (packet?.score?.status !== "FINAL") return false;
-    if (!packet.report || packet.report.report_version !== V2.report_version) return false;
+    if (!packet.report || packet.report.report_version !== C.report_version) return false;
     return true;
   }
 
@@ -118,19 +134,23 @@ async function ensureV2Crm(supabase: any, intakeId: string, packet: any) {
   const urls = urlsFromV2(packet);
   const score = Number(packet?.score?.overall);
   const report = packet.report || {};
+  const C = contractOf(packet);
+  // RX_REPORT_3.0: "start_with" substitui "priority_now" e "order_plan" substitui "priorities".
+  const priorities = Array.isArray(report?.priorities) ? report.priorities
+    : Array.isArray(report?.order_plan) ? report.order_plan.map((x: any) => ({ order: x?.order, title: x?.title, why: x?.why, when: x?.when, impact: x?.impact, effort: x?.effort })) : [];
   const sourcePayload = {
     latest_raiox: {
       intake_id: intakeId,
       score_0_10: score,
-      report_version: V2.report_version,
+      report_version: C.report_version,
       headline: clean(report?.summary?.headline, 1200),
-      priority_now: clean(report?.summary?.priority_now, 1200),
+      priority_now: clean(report?.summary?.priority_now || report?.summary?.start_with, 1200),
       completed_at: clean(packet.completed_at, 80) || now,
       source_session_id: packet.source_session_id || null,
     },
     raiox_v2: {
       indicators: report?.score_panel?.indicators || [],
-      priorities: report?.priorities || [],
+      priorities,
       answers: packet.answers || {},
       complements: packet.complements || {},
       links: packet.links || [],
@@ -164,7 +184,7 @@ async function ensureV2Crm(supabase: any, intakeId: string, packet: any) {
       google_url: urls.google_url,
       other_url: urls.other_url,
       offer_summary: responseValue(packet, "Q02"),
-      notes: `Contato criado/atualizado após entrega do Raio-X ${packet.source_product === "RAIO_X_DIGITAL" ? "Digital" : "Estratégico"} RX_REPORT_2.2.`,
+      notes: `Contato criado/atualizado após entrega do Raio-X ${packet.source_product === "RAIO_X_DIGITAL" ? "Digital" : "Estratégico"} ${C.report_version}.`,
       source_payload: sourcePayload,
       active: true,
     }).select("id,source_payload").single();
@@ -187,7 +207,7 @@ async function ensureV2Crm(supabase: any, intakeId: string, packet: any) {
   if (existingOpp.error) throw new Error(`crm_opportunity_lookup:${existingOpp.error.message}`);
   let opportunity = existingOpp.data;
   if (!opportunity) {
-    const p1 = Array.isArray(report?.priorities) && report.priorities[0] ? report.priorities[0] : null;
+    const p1 = priorities[0] || null;
     const insOpp = await supabase.from("crm_opportunities").insert({
       contact_id: contact.id,
       current_stage: "RAIOX_ENTREGUE",
@@ -196,7 +216,7 @@ async function ensureV2Crm(supabase: any, intakeId: string, packet: any) {
       recommended_route: null,
       route_rationale: null,
       next_action: p1?.title ? `Avaliar continuidade a partir da prioridade 1 do Raio-X: ${clean(p1.title, 500)}` : "Avaliar continuidade após o Raio-X e validar a prioridade no Motor VOS.",
-      notes: "Raio-X RX_REPORT_2.2 conectado automaticamente ao CRM. Hipóteses e prioridades permanecem sujeitas à validação humana.",
+      notes: `Raio-X ${C.report_version} conectado automaticamente ao CRM. Hipóteses e prioridades permanecem sujeitas à validação humana.`,
     }).select("id").single();
     if (insOpp.error || !insOpp.data) throw new Error(`crm_opportunity_create:${insOpp.error?.message || "sem_id"}`);
     opportunity = insOpp.data;
