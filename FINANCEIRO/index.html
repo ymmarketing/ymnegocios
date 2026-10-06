@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="pt-BR"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
-<title>Financeiro — YM Marketing & Negócios</title>
+<title>Financeiro — Central YM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><link rel="stylesheet" href="/assets/internal-shell.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><link rel="stylesheet" href="/assets/internal-shell.css?v=20261006-rev">
 <style>
 :root{--n:#0A2540;--i:#484DCF;--o:#F59E0B;--g:#138A60;--r:#B83D3D;--line:#DDE6EE;--muted:#657B8F;--bg:#F7F9FC}
 .fin-status{display:inline-flex;align-items:center;gap:6px;border:1px solid #F1DEB8;background:#FFF8EA;color:#7B590D;border-radius:999px;padding:6px 9px;font:700 9px Montserrat;margin-bottom:10px}.fin-status:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--o)}
@@ -38,7 +38,7 @@
 <div class="ym-main"><header class="ym-topbar"><div style="display:flex;align-items:center;gap:10px"><button id="ymMenu" class="ym-mobile-toggle">☰</button><div class="ym-topbar-title">FINANCEIRO</div></div><div class="ym-topbar-meta"><span class="ym-chip stage">PRODUÇÃO ASSISTIDA</span><span class="ym-chip">ETAPA 3</span></div></header>
 <main class="ym-content"><div class="ym-header"><div><div class="ym-eyebrow">YM · ETAPA 3 · FINANCEIRO INTERNO</div><h1 class="ym-title">Financeiro da YM</h1><p class="ym-lead">A home mostra a manchete. As análises de produto, capacidade, planejamento e valuation ficam em visões próprias.</p></div><div class="ym-actions"><button id="editTarget" class="ym-btn">Alterar meta financeira</button><button id="refresh" class="ym-btn secondary">Atualizar</button></div></div>
 <div id="app"><div class="ym-empty">Carregando Financeiro…</div></div></main></div>
-<script src="/assets/internal-shell.js?v=20261006-raiox"></script><script>
+<script src="/assets/internal-shell.js?v=20261006-rev"></script><script>
 const $=id=>document.getElementById(id),S=v=>YM.esc(v),N=v=>Number(v||0),BRL=v=>N(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),PCT=v=>(N(v)*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%',PCT100=v=>N(v).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%',MONTH=v=>new Date(String(v)+'T12:00:00').toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}),MONTHLONG=v=>new Date(String(v)+'T12:00:00').toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
 let data=null;
 const currentMonth=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`};
