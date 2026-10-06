@@ -54,6 +54,15 @@
         throw new Error(messages[data.error] || 'Não foi possível concluir a avaliação agora. Tente novamente em instantes.');
       }
       track('avaliacao_concluida', { rota_inicial: data.route });
+      // Guarda os dados neste navegador para não pedir de novo no checkout e no Raio-X Digital.
+      try {
+        localStorage.setItem('ym_triagem_prefill', JSON.stringify({
+          name: String(fields.get('name') || '').trim(), business_name: String(fields.get('business_name') || '').trim(),
+          email: String(fields.get('email') || '').trim(), phone: String(fields.get('phone') || '').trim(),
+          revenue: String(fields.get('revenue') || ''), volume: String(fields.get('volume') || ''),
+          triage_id: data.id || null, saved_at: Date.now(),
+        }));
+      } catch (_) {}
       const strategic = data.route === 'ESTRATEGICO';
       const title = strategic ? 'Raio-X Estratégico YM' : 'Raio-X Digital YM';
       const target = strategic ? 'https://wa.me/5531975073862?text=' + encodeURIComponent('Olá, Yasmin! Fiz a avaliação inicial YM e gostaria de conversar sobre o Raio-X Estratégico. Código: ' + data.id) : '/raio-x.html?checkout=1';
