@@ -13,7 +13,7 @@ body{background:#F5F7FB;color:#203247;font:16px/1.6 Inter,Arial,sans-serif}main{
 <section class="card"><h2>Fontes e lacunas</h2><p id="sources"></p><p id="gaps"></p></section>
 <div class="review card"><label><input id="reviewed" type="checkbox"> Conferi os números, fontes e hipóteses desta prévia antes de compartilhar.</label><p class="muted">A impressão é manual. Este rascunho não é enviado automaticamente ao cliente.</p><button id="print" type="button" class="btn" disabled>Imprimir ou salvar PDF</button></div>
 </div>
-</main><script src="/assets/internal-shell.js?v=20261006-raiox"></script><script>
+</main><script src="/assets/internal-shell.js?v=20261006-rev"></script><script>
 const $=s=>document.querySelector(s),id=new URLSearchParams(location.search).get('opportunity_id');
 const money=n=>n===null||n===undefined?'Não medido':new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(n);
 const pct=n=>n===null||n===undefined?'Não medido':new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2}).format(n)+'%';

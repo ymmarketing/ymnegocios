@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Pesquisar empresa · Central YM</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><link rel="stylesheet" href="/assets/internal-shell.css"><link rel="stylesheet" href="/assets/internal-mobile-system.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><link rel="stylesheet" href="/assets/internal-shell.css?v=20261006-rev"><link rel="stylesheet" href="/assets/internal-mobile-system.css?v=20260901-typography3">
 <style>
 body{background:#F6F8FC;color:#263B52}main{max-width:800px;margin:auto;padding:24px 14px 72px}h1,h2{color:#0A2540}.eyebrow{color:#3D47C4;font-weight:800;font-size:12px;letter-spacing:.1em}.lead{color:#53677B;line-height:1.6}.card{background:white;border:1px solid #DAE3ED;border-radius:16px;padding:22px;margin:16px 0;box-shadow:0 8px 28px #0A25400B}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.wide{grid-column:1/-1}label{display:block;font-weight:700;color:#253B52;font-size:14px}small{display:block;font-weight:400;color:#5E6F84;line-height:1.5;margin:4px 0}input,textarea{display:block;width:100%;margin-top:7px;min-height:46px;border:1.5px solid #B9C7D7;border-radius:10px;padding:10px 12px;font:inherit;color:#1D3248;background:#fff}textarea{min-height:88px;resize:vertical}input:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid #9EBBFF;outline-offset:2px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;border:0;border-radius:10px;padding:10px 16px;background:#FF8200;color:#17233B;font-weight:800;text-decoration:none;cursor:pointer}.btn.secondary{background:#EDF2FA;color:#173554}.btn:disabled{opacity:.55}.actions{display:flex;gap:10px;flex-wrap:wrap}.notice{padding:15px;border-radius:12px;background:#FFF6E8;color:#674012;line-height:1.6}.match{border-top:1px solid #E2E8F0;padding:12px 0}.hidden{display:none!important}.error{color:#A42929;font-weight:700}@media(max-width:650px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.card{padding:18px}}
 </style></head><body><main>
@@ -28,7 +28,7 @@ body{background:#F6F8FC;color:#263B52}main{max-width:800px;margin:auto;padding:2
 </form>
 <p id="status" role="status" aria-live="polite"></p><section id="matches" class="card hidden" aria-live="polite"></section>
 <p class="notice">Uma possível correspondência bloqueia a criação. Revise a ficha existente, mesmo se estiver arquivada. Este formulário não envia e-mail nem restaura o pipeline antigo.</p>
-</main><script src="/assets/internal-shell.js?v=20261006-raiox"></script><script>
+</main><script src="/assets/internal-shell.js?v=20261006-rev"></script><script>
 const $=s=>document.querySelector(s),form=$('#form');let checkedKey='',blocked=false;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const key=()=>['business_name','email','phone'].map(n=>form.elements[n].value.trim().toLowerCase()).join('|');
