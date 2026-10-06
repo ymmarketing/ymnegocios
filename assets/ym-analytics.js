@@ -3,7 +3,7 @@
 
   var MEASUREMENT_ID = 'G-DCFLLT5D1K';
   var path = window.location.pathname || '/';
-  var blocked = /^\/(?:CENTRAL|CRM|DASHBOARD|FINANCEIRO|MOTOR|VOS|Conteudos|Identidade|areadocliente|interno)(?:\/|$)/i;
+  var blocked = /^\/(?:CENTRAL|CRM|DASHBOARD|FINANCEIRO|MOTOR|VOS|Conteudos|Identidade|RAIOX|areadocliente|interno)(?:\/|$)/i;
 
   if (blocked.test(path)) return;
 
