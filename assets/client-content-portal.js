@@ -7,7 +7,7 @@
   let portal=null,cursor=new Date(),mode=null;
   const filt={net:'instagram',fmt:'TODOS',st:'TODOS',q:''};
   const label={IDEIA:'Ideia',PLANEJADO:'Planejado',ROTEIRO:'Roteiro',EM_PRODUCAO:'Em produção',REVISAO:'Em revisão',APROVADO:'Aprovado',AGENDADO:'Agendado',PUBLICADO:'Publicado',ANALISADO:'Analisado'};
-  const FMT={REEL:'Reels',CARROSSEL:'Carrossel',ESTATICO:'Post estático'};
+  const FMT={REEL:'Reels',CARROSSEL:'Carrossel',ESTATICO:'Post estático',POST_ESTATICO:'Post estático',STORIES:'Stories',VIDEO_CURTO:'Vídeo curto'};
   const NET={instagram:'Instagram',linkedin:'LinkedIn'};
   const WD=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   try{const n=localStorage.getItem('ccpNet');if(n&&NET[n])filt.net=n}catch(e){}
@@ -130,7 +130,7 @@
   async function show(push=true){$$('.cp-view').forEach(x=>x.classList.toggle('on',x.id==='view_conteudos'));$$('[data-nav]').forEach(x=>x.classList.toggle('on',x.dataset.nav==='conteudos'));$('#cpSidebar')?.classList.remove('open');if(push)history.replaceState({},'',location.pathname+'#conteudos');if(!portal){$('#ccpBank').innerHTML='<div class="ccp-empty">Carregando seus conteúdos…</div>';portal=await readPortal()}render()}
 
   const contents=()=>portal?.contents||[];
-  const isBank=x=>!!(x.caption_instagram||x.caption_linkedin||x.reel_script?.length||x.images?.instagram?.length);
+  const isBank=x=>!!(x.caption_instagram||x.caption_linkedin||x.reel_script?.length||x.images?.instagram?.length||x.images?.linkedin?.length);
   function setMode(m){mode=m;$$('.ccp-tabs button').forEach(b=>{b.classList.toggle('on',b.dataset.mode===m);b.setAttribute('aria-selected',b.dataset.mode===m)});$('#ccpBank').hidden=m!=='banco';$('#ccpCalendar').hidden=m!=='calendario';if(m==='calendario')renderCalendar();else renderBank()}
 
   function render(){const strategy=portal?.content_strategy||null,business=portal?.client?.contact?.business_name||portal?.client?.contact?.name||'seu negócio';const st=$('#ccpStrategy');if(st)st.innerHTML=strategy?`<div class="ccp-strategy"><b>Calendário orientado pela estratégia ${E(strategy.version)}</b><span>Planejamento exclusivo para ${E(business)}${strategy.channels?.length?' · canais: '+strategy.channels.map(E).join(', '):''}.</span></div>`:`<div class="ccp-strategy"><b>Calendário exclusivo de ${E(business)}</b><span>A YM libera aqui apenas os conteúdos planejados para o seu negócio.</span></div>`;
@@ -152,7 +152,7 @@
 
   function fmtDate(iso){const d=new Date(iso+'T12:00:00');return {wd:WD[d.getDay()],day:String(d.getDate()).padStart(2,'0'),mon:d.toLocaleDateString('pt-BR',{month:'short'}).replace('.',''),short:d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}}
   function renderList(){const el=$('#bkList');if(!el)return;const net=filt.net,q=filt.q.trim().toLowerCase();
-    const list=contents().filter(isBank).filter(x=>filt.fmt==='TODOS'||x.format===filt.fmt).filter(x=>filt.st==='TODOS'||(filt.st==='POSTADO')===!!x.client_posted?.[net]).filter(x=>!q||[x.title,x.question,x.theme,x.hook].join(' ').toLowerCase().includes(q)).sort((a,b)=>String(a.publish_date).localeCompare(String(b.publish_date)));
+    const list=contents().filter(isBank).filter(x=>filt.fmt==='TODOS'||x.format===filt.fmt||(filt.fmt==='ESTATICO'&&x.format==='POST_ESTATICO')).filter(x=>filt.st==='TODOS'||(filt.st==='POSTADO')===!!x.client_posted?.[net]).filter(x=>!q||[x.title,x.question,x.theme,x.hook].join(' ').toLowerCase().includes(q)).sort((a,b)=>String(a.publish_date).localeCompare(String(b.publish_date)));
     el.innerHTML=list.length?list.map(x=>card(x,net)).join(''):'<div class="ccp-empty">Nenhum conteúdo com esses filtros.</div>'}
 
   function card(x,net){const d=fmtDate(x.publish_date),done=!!x.client_posted?.[net],imgs=x.images?.[net]||[],cap=net==='linkedin'?x.caption_linkedin:x.caption_instagram;

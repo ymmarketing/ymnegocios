@@ -19,7 +19,7 @@
   const val = (code, col) => getter(col)(code);
 
   /* ---------- estado e salvamento ---------- */
-  function blank() { return { meta: {}, kpis: {}, notes: {}, diag: {}, lists: {}, checks: {}, done: {}, calc: {} }; }
+  function blank() { return { meta: {}, kpis: {}, notes: {}, diag: {}, lists: {}, checks: {}, done: {}, calc: {}, published: {} }; }
   function normalize(d) { const b = blank(); d = d && typeof d === 'object' ? d : {}; for (const k of Object.keys(b)) b[k] = d[k] && typeof d[k] === 'object' ? d[k] : b[k]; return b; }
   function setStatus(t, cls = '') { const el = $('#rxSave'); if (el) { el.textContent = t; el.className = 'rx-save ' + cls; } }
   function touch() { dirty = true; setStatus('Alterações não salvas…', 'pending'); try { localStorage.setItem('rx-backup-' + A.id, JSON.stringify({ at: Date.now(), data: D })); } catch (e) {} clearTimeout(saveTimer); saveTimer = setTimeout(save, 900); }
@@ -268,7 +268,7 @@
   }
   function planCalc() { (D.lists.plan || []).forEach((r, i) => { const p = PRIO(r.impacto, r.esforco); out('pp_' + i, p ? `<span class="rx-chip ${p === 'Imediata' ? 'up' : p === 'Alta' ? 'info' : ''}">${p}</span>` : '—', true); }); }
   function summaryBlock() {
-    return `<section class="rx-block"><h3>Destaques automáticos</h3><div data-out="hl"></div></section>
+    return publishBlock() + `<section class="rx-block"><h3>Destaques automáticos</h3><div data-out="hl"></div></section>
     <section class="rx-block"><h3>Leitura para o cliente</h3><div class="rx-qs">${field('notes', 'sum_problemas', 'Principais problemas (até 3)', '1.\n2.\n3.', 4)}${field('notes', 'sum_oport', 'Principais oportunidades (até 3)', '1.\n2.\n3.', 4)}${field('notes', 'sum_prior', 'Prioridades dos próximos 90 dias', '30 dias:\n60 dias:\n90 dias:', 4)}${field('notes', 'sum_frase', 'Frase-síntese do Raio-X', 'Ex.: O negócio não precisa de mais tráfego agora; precisa converter e cobrar melhor o que já atrai.', 2)}</div></section>`;
   }
   function summaryCalc() {
@@ -288,6 +288,51 @@
   }
   function funnelCalcSilent(items) { const s = STEPS.find((x) => x.id === 'funil'); let worst = null; s.stages.forEach(([a, b], i) => { const x = val(a, 'agora'), y = val(b, 'agora'); if (i >= 1 && x && y != null) { const r = y / x * 100; if (!worst || r < worst.v) worst = { i, v: r }; } }); if (worst) items.push(['down', 'Gargalo do funil', `${E(s.stages[worst.i][2])} (${fmt(worst.v, 'PCT')})`]); }
 
+
+  /* ---------- levar para a Área do Cliente ---------- */
+  const CAT_BY_STEP = { fin: 'FINANCEIRO', prod: 'NEGOCIO', cli: 'NEGOCIO', funil: 'COMERCIAL', camp: 'MARKETING', rel: 'MARKETING', cal: 'MARKETING', social: 'REDES_SOCIAIS', dados: 'OPERACAO' };
+  const UNIT_MAP = { BRL: 'MOEDA', PCT: 'PERCENTUAL', NUM: 'NUMERO', DIAS: 'NUMERO', HORAS: 'NUMERO' };
+  const okStatus = (st) => (st === 'VALIDADO' || st === 'RECONCILIADO' || !st) ? 'VALIDADO' : 'PRELIMINAR';
+  function publishable() { return allKpis.filter((k) => val(k.code, 'antes') != null || val(k.code, 'agora') != null); }
+  function publishBlock() {
+    const cl = clients.find((c) => c.id === A.client_id); const list = publishable(); const pub = D.published || {}; const sel = D.meta.pub_sel || {};
+    const dt = (k, label) => `<label class="rx-field"><span>${label}</span><input type="date" data-g="meta" data-k="${k}" value="${E(D.meta[k] || '')}"></label>`;
+    return `<section class="rx-block rx-pub"><h3>Levar para a Área do Cliente</h3>
+      ${!cl ? '<p class="rx-callout">Vincule esta análise a um cliente do CRM (no topo da página) para enviar os indicadores para a aba <b>Resultados</b> dele.</p>' : `
+      <p class="rx-muted">Os indicadores marcados viram o painel de <b>Resultados</b> de <b>${E(cl.name)}</b>: o ANTES vira o ponto de partida, o AGORA vira a medição atual e a META vira a meta. Dados estimados entram como preliminares. Se o ANTES não foi monitorado, o AGORA vira a linha de base.${pub.at ? `<br><b>Último envio:</b> ${E(new Date(pub.at).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }))} · ${E(pub.count)} indicadores.` : ''}</p>
+      <div class="rx-calc rx-dates">${dt('pub_antes_ini', 'Antes: início')}${dt('pub_antes_fim', 'Antes: fim')}${dt('pub_agora_ini', 'Agora: início')}${dt('pub_agora_fim', 'Agora: fim')}${dt('pub_meta', 'Meta: até')}</div>
+      ${list.length ? `<div class="rx-checks">${list.map((k) => { const on = sel[k.code] !== false; return `<label class="rx-ck"><input type="checkbox" data-pubsel="${k.code}" ${on ? 'checked' : ''}><span><b>${E(k.name)}</b><small>${E(fmt(val(k.code, 'antes'), k.unit))} → ${E(fmt(val(k.code, 'agora'), k.unit))}${val(k.code, 'meta') != null ? ' · meta ' + E(fmt(val(k.code, 'meta'), k.unit)) : ''}</small></span></label>`; }).join('')}</div>` : '<p class="rx-muted">Nenhum indicador com valor preenchido ainda.</p>'}
+      <div class="rx-pub-act"><label class="rx-done"><input type="checkbox" id="rxPubVisible" ${D.meta.pub_hidden ? '' : 'checked'}> Visível para o cliente</label><button class="ym-btn" id="rxPublish" ${list.length ? '' : 'disabled'}>Enviar para Resultados do cliente</button></div>`}
+    </section>`;
+  }
+  async function publish() {
+    const m = D.meta, b = $('#rxPublish');
+    const need = ['pub_antes_ini', 'pub_antes_fim', 'pub_agora_ini', 'pub_agora_fim'];
+    if (need.some((k) => !m[k])) { alertBox('Preencha as datas de início e fim do ANTES e do AGORA.'); return; }
+    if (m.pub_antes_fim < m.pub_antes_ini || m.pub_agora_fim < m.pub_agora_ini) { alertBox('A data de fim precisa ser depois da data de início.'); return; }
+    const sel = m.pub_sel || {};
+    const items = publishable().filter((k) => sel[k.code] !== false).map((k) => {
+      const r = D.kpis[k.code] || {}; const a = val(k.code, 'antes'), n = val(k.code, 'agora'), t = val(k.code, 'meta');
+      const noBefore = a == null; const base = noBefore ? n : a;
+      return {
+        code: 'RX_' + k.code.toUpperCase(), name: k.name, description: k.def, category: CAT_BY_STEP[k.step] || 'OUTRO', unit: UNIT_MAP[k.unit] || 'NUMERO', direction: k.dir === 'down' ? 'MENOR_MELHOR' : 'MAIOR_MELHOR',
+        baseline: base, baseline_start: noBefore ? m.pub_agora_ini : m.pub_antes_ini, baseline_end: noBefore ? m.pub_agora_fim : m.pub_antes_fim, baseline_status: okStatus(noBefore ? r.agora_st : r.antes_st),
+        current: noBefore ? null : n, current_start: m.pub_agora_ini, current_end: m.pub_agora_fim, current_status: okStatus(r.agora_st),
+        target: t, target_end: m.pub_meta || null,
+        notes: [noBefore ? 'Linha de base iniciada no período do AGORA (antes não monitorado).' : '', r.antes_st === 'ESTIMADO' ? 'Ponto de partida estimado.' : '', r.fonte ? 'Fonte: ' + r.fonte : ''].filter(Boolean).join(' '),
+      };
+    }).filter((x) => x.baseline != null);
+    if (!items.length) { alertBox('Selecione ao menos um indicador com valor.'); return; }
+    b.disabled = true; b.textContent = 'Enviando…';
+    await save();
+    const { data, error } = await sb.rpc('raiox_publish_kpis', { p_analysis_id: A.id, p_items: items, p_visible: !D.meta.pub_hidden });
+    b.disabled = false; b.textContent = 'Enviar para Resultados do cliente';
+    if (error) { alertBox('Não foi possível enviar: ' + error.message); return; }
+    D.published = { at: new Date().toISOString(), count: data?.published || items.length };
+    alertBox(`${D.published.count} indicadores enviados para a aba Resultados do cliente.`);
+    renderStep();
+  }
+
   /* ---------- binding e cálculos ---------- */
   function out(key, html, raw) { const el = $(`[data-out="${key}"]`); if (el) el[raw ? 'innerHTML' : 'textContent'] = html; }
   function refresh() {
@@ -305,6 +350,7 @@
   function bindInputs(scope) {
     scope.addEventListener('input', onEdit); scope.addEventListener('change', onEdit);
     scope.addEventListener('click', (e) => {
+      if (e.target.closest('#rxPublish')) { publish(); return; }
       const add = e.target.closest('[data-add]'); const del = e.target.closest('[data-del]');
       if (add) { const id = add.dataset.add; (D.lists[id] ||= []).push({}); touch(); renderStep(); setTimeout(() => { const ins = $$(`[data-list="${id}"] tbody tr:last-child input, [data-list="${id}"] tbody tr:last-child select`); ins[0]?.focus(); }, 30); }
       if (del) { const id = del.dataset.del; D.lists[id].splice(+del.dataset.i, 1); touch(); renderStep(); }
@@ -312,8 +358,11 @@
   }
   function onEdit(e) {
     const t = e.target; if (!t.matches('input,select,textarea') || t.id === 'rxTitle' || t.id === 'rxClient' || t.id === 'rxStatus' || t.id === 'rxDone') return;
+    if (t.id === 'rxPubVisible' && e.type !== 'change') return;
     if (e.type === 'change' && t.tagName !== 'SELECT' && t.type !== 'checkbox') return;
     const v = t.type === 'checkbox' ? t.checked : t.value;
+    if (t.dataset.pubsel) { (D.meta.pub_sel ||= {})[t.dataset.pubsel] = t.checked; touch(); return; }
+    if (t.id === 'rxPubVisible') { D.meta.pub_hidden = !t.checked; touch(); return; }
     if (t.dataset.kpi) { const r = kv(t.dataset.kpi); r[t.dataset.col] = v; if (t.dataset.col.endsWith('_st')) { const col = t.dataset.col.slice(0, -3); const inp = $(`input[data-kpi="${t.dataset.kpi}"][data-col="${col}"]`); if (inp) { inp.disabled = v === 'NAO_MONITORADO'; inp.placeholder = v === 'NAO_MONITORADO' ? 'não medido' : UNIT_HINT[kpiByCode[t.dataset.kpi].unit]; if (v === 'NAO_MONITORADO') { inp.value = ''; r[col] = ''; } } t.className = 'rx-st ' + (v ? 'st-' + v : ''); t.title = STATUS_HELP[v] || 'Confiabilidade do dado'; } }
     else if (t.dataset.g) { (D[t.dataset.g] ||= {})[t.dataset.k] = v; }
     else if (t.dataset.list) { const row = (D.lists[t.dataset.list] ||= [])[+t.dataset.i] ||= {}; row[t.dataset.k] = v; }

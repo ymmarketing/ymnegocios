@@ -229,7 +229,7 @@
   async function boot(){
     if(!window.ClientJourneyAdmin&&!document.querySelector('script[data-client-journey-admin]')){
       const script=document.createElement('script');
-      script.src='/assets/client-journey-admin.js?v=20260825-1';
+      script.src='/assets/client-journey-admin.js?v=20260901-stability3';
       script.dataset.clientJourneyAdmin='1';
       document.head.append(script);
     }
@@ -237,7 +237,7 @@
     if(btn)btn.onclick=()=>openEventModal();
     await loadManualEvents();
     normalizeInternalLabels();
-    new MutationObserver(muts=>muts.forEach(x=>decorateEditableEvents(x.target))).observe(document.body,{childList:true,subtree:true});
+    let decoTimer=null;new MutationObserver(()=>{clearTimeout(decoTimer);decoTimer=setTimeout(()=>decorateEditableEvents(),180)}).observe(document.body,{childList:true,subtree:true});
     document.addEventListener('click',e=>{
       if(e.target?.id==='refreshAdmin')setTimeout(loadManualEvents,450);
     });

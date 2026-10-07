@@ -90,3 +90,7 @@
 @media(max-width:1180px){.rx-kh{display:none}.rx-k{grid-template-columns:repeat(3,minmax(0,1fr));}.rx-kn,.rx-var{grid-column:1/-1}.rx-cell:before{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7A8CA0}.rx-k .rx-cell:nth-of-type(2):before{content:"Antes"}.rx-k .rx-cell:nth-of-type(3):before{content:"Agora"}.rx-k .rx-cell:nth-of-type(4):before{content:"Meta"}.rx-calc{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:900px){.rx-layout{grid-template-columns:1fr}.rx-steps{position:static;display:flex;overflow-x:auto;gap:4px;padding:8px}.rx-steps-h{display:none}.rx-step{flex:0 0 auto}.rx-periods{grid-template-columns:1fr 1fr}.rx-home{grid-template-columns:1fr}.rx-qs{grid-template-columns:1fr}.rx-matrix{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.rx-k{grid-template-columns:1fr}.rx-periods{grid-template-columns:1fr}.rx-item{grid-template-columns:1fr 40px}.rx-item .rx-prog{display:none}}
+.rx-pub{border-color:#C9CEFF;background:linear-gradient(180deg,#F7F8FF,#fff)}
+.rx-dates{grid-template-columns:repeat(5,minmax(0,1fr));margin-bottom:10px}
+.rx-pub-act{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+@media(max-width:1180px){.rx-dates{grid-template-columns:repeat(2,minmax(0,1fr))}}
