@@ -15,7 +15,7 @@ body{background:#F6F8FC;color:#263B52}main{max-width:850px;margin:auto;padding:2
 <label class="wide hidden" id="assessmentWrap">CDD validado desta oportunidade *<small>A devolutiva deve estar ligada aos números conferidos por uma pessoa.</small><select name="assessment_id" id="assessment"></select></label>
 </div><p class="muted">Cada registro entra no histórico; uma nova anotação não apaga a anterior.</p><button id="save" class="btn" type="submit">Salvar registro</button></form>
 <section class="card hidden" id="history"><h2>Histórico consultivo</h2><div id="events"></div></section>
-</main><script src="/assets/internal-shell.js?v=20261006-rev"></script><script>
+</main><script src="/assets/internal-shell.js?v=20261006-semmotor"></script><script>
 const $=s=>document.querySelector(s),id=new URLSearchParams(location.search).get('opportunity_id'),form=$('#form');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const labels={ENQUADRAMENTO:'Enquadramento',IMERSAO:'Imersão',ANALISE:'Análise',DEVOLUTIVA:'Devolutiva'};
