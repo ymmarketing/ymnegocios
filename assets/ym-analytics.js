@@ -7,6 +7,11 @@
 
   if (blocked.test(path)) return;
 
+  // Algumas páginas legadas carregam este arquivo mais de uma vez.
+  // Execute a inicialização, page_view e os ouvintes apenas uma vez por página.
+  if (window.__YM_ANALYTICS_INITIALIZED__) return;
+  window.__YM_ANALYTICS_INITIALIZED__ = true;
+
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
 
