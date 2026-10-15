@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Abrindo seu Raio-X | YM Negócios</title>
+<script>
+  // Retorno do pagamento (Asaas) chega neste caminho; o app do Raio-X fica na raiz.
+  location.replace('/raio-x-app.html' + location.search + location.hash);
+</script>
+<style>body{margin:0;font:16px Inter,Arial,sans-serif;display:grid;place-items:center;min-height:100vh;color:#0B1533;background:#F5F7FC}a{color:#484DCF;font-weight:700}</style>
+</head>
+<body>
+<p>Abrindo seu Raio-X… Se não abrir em alguns segundos, <a id="go" href="/raio-x-app.html">toque aqui</a>.</p>
+<script>document.getElementById('go').href='/raio-x-app.html'+location.search+location.hash;</script>
+</body>
+</html>
