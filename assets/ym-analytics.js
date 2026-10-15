@@ -15,6 +15,47 @@
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
 
+  // LGPD: medição começa sem cookies (Consent Mode). Cookies de análise só depois do aceite.
+  var CONSENT_KEY = 'ym_consent_analytics';
+  var stored = null;
+  try { stored = window.localStorage.getItem(CONSENT_KEY); } catch (e) {}
+  window.gtag('consent', 'default', {
+    analytics_storage: stored === 'granted' ? 'granted' : 'denied',
+    ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+    wait_for_update: 500
+  });
+  window.gtag('set', 'ads_data_redaction', true);
+
+  function saveConsent(value) {
+    try { window.localStorage.setItem(CONSENT_KEY, value); } catch (e) {}
+    window.gtag('consent', 'update', { analytics_storage: value });
+  }
+
+  function showConsentBanner() {
+    if (stored === 'granted' || stored === 'denied') return;
+    var bar = document.createElement('div');
+    bar.id = 'ym-consent';
+    bar.setAttribute('role', 'region');
+    bar.setAttribute('aria-label', 'Aviso de cookies');
+    bar.innerHTML = '<p>Usamos cookies de medição para entender como o site é usado e melhorá-lo. Nenhum dado pessoal é enviado. <a href="/termos/">Saiba mais</a></p>' +
+      '<div><button type="button" data-c="denied">Recusar</button><button type="button" data-c="granted">Aceitar</button></div>';
+    var st = document.createElement('style');
+    st.textContent = '#ym-consent{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:2147483000;max-width:620px;margin:0 auto;background:#0B1533;color:#fff;border-radius:16px;padding:14px 16px;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;box-shadow:0 18px 40px rgba(0,0,0,.3);font:14px/1.45 Inter,Arial,sans-serif}' +
+      '#ym-consent p{margin:0;flex:1 1 280px;color:#DDE1F2}#ym-consent a{color:#FFB066}#ym-consent div{display:flex;gap:8px}' +
+      '#ym-consent button{border:0;border-radius:999px;padding:10px 16px;font:700 14px Inter,Arial,sans-serif;cursor:pointer}' +
+      '#ym-consent button[data-c=denied]{background:transparent;color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4)}#ym-consent button[data-c=granted]{background:#FF7A00;color:#0B1533}';
+    document.head.appendChild(st);
+    document.body.appendChild(bar);
+    bar.addEventListener('click', function (ev) {
+      var b = ev.target.closest && ev.target.closest('button[data-c]');
+      if (!b) return;
+      saveConsent(b.getAttribute('data-c'));
+      bar.remove();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showConsentBanner, { once: true });
+  else showConsentBanner();
+
   window.gtag('js', new Date());
   window.gtag('config', MEASUREMENT_ID, {
     send_page_view: false
