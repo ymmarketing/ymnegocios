@@ -972,6 +972,8 @@ t.addEventListener('scroll',upd,{passive:true});upd();})();
       if(p<1)requestAnimationFrame(step);else{void sec.offsetWidth;sec.classList.add('arrive');}
     }
     requestAnimationFrame(step);
+    // segurança: se o navegador pausar a animação (aba em segundo plano), chega ao destino mesmo assim
+    setTimeout(function(){ if(t0===null || Math.abs(window.scrollY-end)>4){ t0=-1e9; window.scrollTo(0,end); sec.classList.add('arrive'); } }, dur+250);
   }
   document.addEventListener('click',e=>{
     const a=e.target.closest('a[href^="#"]');
