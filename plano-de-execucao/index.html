@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plano de Execução · YM Marketing &amp; Negócios</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/assets/img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&display=swap">
+<style>
+/* Layout: cabeçalho fixo com progresso; quatro abas (checklist, conteúdo, outbound, números); cartões de tarefa com caixa de marcar. */
+:root{
+  --bg:#FFFFFF; --surface:#FFFFFF; --fg:#0A2540; --muted:#55657B; --line:#DCE3EE;
+  --accent:#484DCF; --accent-ink:#FFFFFF; --ver:#345BDB; --ord:#FF7A00; --sus:#047857;
+  --ver-t:#E8EEFC; --ord-t:#FFF0E0; --sus-t:#E2F4EC; --acc-t:#ECEDFB; --soft:#F3F6FB; --warn-t:#FFF6E5; --warn-ink:#7A4A00;
+  --f-head:'Montserrat','Segoe UI',system-ui,sans-serif; --f-body:'Inter','Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+.wrap{max-width:900px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-head);line-height:1.2;text-wrap:balance;margin:0}
+h2{font-size:21px;margin:30px 0 6px}
+h3{font-size:16px;margin:0 0 6px}
+p{margin:0 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:10px max(16px,env(safe-area-inset-left,0px)) 0;border-bottom:1px solid var(--line)}
+.top-in{max-width:900px;margin:0 auto}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand b{font-family:var(--f-head);font-size:17px;font-weight:800}
+.brand span{font-size:12.5px;color:var(--muted)}
+.bar{height:6px;background:var(--soft);border-radius:4px;margin:8px 0 0;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--sus);transition:width .25s}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;margin-top:6px}
+nav.tabs button{font:600 13.5px var(--f-head);background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:10px 12px;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
+button:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.panel[hidden]{display:none}
+.lead{font-size:16px;margin-top:22px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
+.box.note{background:var(--warn-t);border-color:transparent;color:var(--warn-ink)}
+.box.key{background:var(--acc-t);border-color:transparent}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.grid2>*{min-width:0}
+ul.tight{margin:6px 0 0;padding-left:18px}
+ul.tight li{margin:3px 0}
+.chip{display:inline-block;font:600 11.5px var(--f-body);padding:2px 8px;border-radius:20px;background:var(--soft);color:var(--fg);white-space:nowrap}
+.chip.alta{background:var(--ord-t)} .chip.media{background:var(--ver-t)} .chip.dep{background:var(--soft);color:var(--muted)}
+.chip.ok{background:var(--sus-t)}
+.blk{margin-top:26px}
+.blk-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:2px solid var(--line);padding-bottom:6px}
+.blk-h h2{margin:0;font-size:18px}
+.blk-h .cnt{font:600 12.5px var(--f-body);color:var(--muted)}
+.task{display:grid;grid-template-columns:28px 1fr;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:10px}
+.task>*{min-width:0}
+.task.done{opacity:.6}
+.task.done .t-title{text-decoration:line-through}
+.cb{appearance:none;-webkit-appearance:none;width:24px;height:24px;border:2px solid var(--muted);border-radius:6px;background:var(--surface);cursor:pointer;margin:2px 0 0;display:grid;place-content:center}
+.cb:checked{background:var(--sus);border-color:var(--sus)}
+.cb:checked::after{content:"";width:6px;height:12px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.t-title{font:700 15px var(--f-head)}
+.t-meta{display:flex;gap:6px;flex-wrap:wrap;margin:5px 0 8px;align-items:center}
+.t-where{font-size:13px;color:var(--muted)}
+.ba{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;margin-top:6px}
+.ba>div{min-width:0;border-radius:8px;padding:9px 11px;font-size:14px}
+.ba .b{background:var(--soft)} .ba .a{background:var(--sus-t)}
+.ba small{display:block;font:700 10.5px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.ba pre,.copytext{white-space:pre-wrap;word-break:break-word;font:14px/1.5 var(--f-body);margin:0}
+.why{font-size:13px;color:var(--muted);margin-top:6px}
+.btn{font:600 12.5px var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:8px;padding:5px 10px;cursor:pointer;margin-top:6px}
+.btn:hover{border-color:var(--accent)}
+details.post{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-top:10px}
+details.post>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:28px 1fr;gap:10px;padding:12px 14px;align-items:start}
+details.post>summary::-webkit-details-marker{display:none}
+.p-body{padding:0 14px 14px;border-top:1px solid var(--line)}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-top:12px}
+.fields>div{min-width:0;background:var(--soft);border-radius:8px;padding:9px 11px;font-size:14px}
+.fields small,.lbl{display:block;font:700 10.5px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.tw{overflow-x:auto;margin-top:8px;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:560px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font:700 11.5px var(--f-body);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--soft)}
+tr:last-child td{border-bottom:0}
+td.n,th.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.copyblock{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:10px}
+.copyblock .lbl{margin-bottom:6px}
+.sw{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.pill{font:700 12px var(--f-head);padding:3px 10px;border-radius:20px}
+.pill.v{background:var(--ver-t);color:var(--ver)} .pill.o{background:var(--ord-t);color:var(--ord)} .pill.s{background:var(--sus-t);color:var(--sus)}
+.foot{margin-top:34px;font-size:12.5px;color:var(--muted)}
+
+:root{color-scheme:light}
+h2{position:relative;padding-top:12px}
+h2::before{content:"";position:absolute;left:0;top:0;width:34px;height:4px;border-radius:3px;background:var(--accent)}
+#p-checklist h2:nth-of-type(3n+1)::before,#p-conteudo h2:nth-of-type(3n+1)::before,#p-outbound h2:nth-of-type(3n+1)::before,#p-numeros h2:nth-of-type(3n+1)::before{background:var(--ver)}
+#p-checklist h2:nth-of-type(3n+2)::before,#p-conteudo h2:nth-of-type(3n+2)::before,#p-outbound h2:nth-of-type(3n+2)::before,#p-numeros h2:nth-of-type(3n+2)::before{background:var(--ord)}
+#p-checklist h2:nth-of-type(3n)::before,#p-conteudo h2:nth-of-type(3n)::before,#p-outbound h2:nth-of-type(3n)::before,#p-numeros h2:nth-of-type(3n)::before{background:var(--sus)}
+.blk-h h2{padding-top:0}.blk-h h2::before{display:none}
+.blk-h{border-bottom:0;background:var(--soft);border-radius:10px;padding:10px 14px}
+.blk:nth-of-type(3n+1) .blk-h{border-left:5px solid var(--ver)}
+.blk:nth-of-type(3n+2) .blk-h{border-left:5px solid var(--ord)}
+.blk:nth-of-type(3n) .blk-h{border-left:5px solid var(--sus)}
+.task,.box,details.post,.copyblock{box-shadow:0 1px 2px rgba(10,37,64,.06)}
+.box.key{background:var(--acc-t)}
+header.top{box-shadow:0 1px 0 var(--line)}
+@media (max-width:520px){.lead{font-size:15px} h2{font-size:19px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="top-in">
+  <div class="brand"><b>Plano de Execução YM</b><span id="prog-txt">Carregando…</span></div>
+  <div class="bar" aria-hidden="true"><i id="prog-bar"></i></div>
+  <nav class="tabs" role="tablist" aria-label="Seções">
+    <button role="tab" id="tab-checklist" data-t="checklist" aria-selected="true">1 · Checklist</button>
+    <button role="tab" id="tab-conteudo" data-t="conteudo" aria-selected="false">2 · Conteúdo</button>
+    <button role="tab" id="tab-outbound" data-t="outbound" aria-selected="false">3 · Outbound</button>
+    <button role="tab" id="tab-numeros" data-t="numeros" aria-selected="false">4 · Números</button>
+  </nav>
+</div></header>
+
+<main>
+<!-- ============ 1. CHECKLIST ============ -->
+<section class="panel" id="p-checklist">
+  <p class="lead">Marque cada item quando terminar. A ordem é a de prioridade: as vitrines (bio, LinkedIn) vêm antes de qualquer post novo, porque é para lá que o outbound vai levar as pessoas.</p>
+  <div class="box key"><h3>Decisão adotada como padrão</h3>
+    <p><b>Frase base:</b> “Diagnóstico + sistemas que ligam o post ao caixa”. É a única das duas rotas que junta o que você faz de fato (diagnóstico e desenvolvimento) e que cabe nos dois materiais pesquisados. A palavra “jornada” fica fora dos textos públicos (regra de vocabulário da marca); no lugar entra “caminho do contato”, as 6 etapas do Raio-X (Encontrar, Entender, Confiar, Contatar, Comprar, Continuar).</p>
+    <p class="small muted" style="margin:0">Se preferir a Rota B (“posicionamento e marketing”), me diga antes de mexer na bio: os textos abaixo mudam em bloco.</p>
+  </div>
+  <div id="checklist-root"></div>
+</section>
+
+<!-- ============ 2. CONTEÚDO ============ -->
+<section class="panel" id="p-conteudo" hidden>
+  <p class="lead">Duas peças por semana, de 27/10 a 26/11 (10 peças). Cada peça nasce uma vez e sai nos dois canais: Instagram em Reels ou carrossel, em segunda pessoa (“Veja como…”); LinkedIn em texto e vídeo, em primeira pessoa (“Eu vi…”).</p>
+
+  <h2>O papel do conteúdo agora</h2>
+  <div class="box">
+    <p>Com cerca de 11 contas alcançadas por post no Instagram e 959 seguidores no LinkedIn, o conteúdo sozinho não traz volume em novembro. O papel dele passa a ser outro: <b>ser a prova que a pessoa encontra quando você a aborda</b>. Quem recebe sua mensagem abre o perfil, e o perfil precisa responder em 5 segundos o que você faz, para quem e com que prova. Por isso o plano pareia cada semana de posts com uma rodada de outbound (aba 3).</p>
+  </div>
+
+  <h2>Quem queremos atingir</h2>
+  <div class="grid2">
+    <div class="box"><span class="chip alta">Principal</span><h3 style="margin-top:6px">Clínicas de estética, bem-estar e saúde em BH</h3>
+      <p class="small">Dono(a) ou gestor(a), perfil de referência da Marcela Ribeiro (39 anos, dona de clínica em BH). Já tem Instagram ativo, recebe pedidos por direct, WhatsApp e site. Decide sozinho(a) ou com um sócio. É onde o seu caso real (Boas Bronze e Estética) e o material pesquisado apontam: ciclo curto, resultado fácil de medir em agendamentos e retorno de orçamentos.</p>
+      <p class="small muted" style="margin:0">Cuidado: sem prometer diagnóstico clínico e sem pedir dados de pacientes (LGPD).</p></div>
+    <div class="box"><span class="chip media">Secundário</span><h3 style="margin-top:6px">Serviços profissionais (contabilidade, jurídico, consultorias)</h3>
+      <p class="small">Canal principal: LinkedIn. Ciclo mais longo. Já existem leituras públicas feitas para negócios desse segmento como prova de método.</p></div>
+    <div class="box"><span class="chip ok">Multiplicador</span><h3 style="margin-top:6px">Contadores, designers, agências de tráfego, desenvolvedores</h3>
+      <p class="small">Atendem o mesmo cliente sem competir com você. Rendem indicação recorrente. Aparecem no LinkedIn e nos eventos.</p></div>
+    <div class="box"><span class="chip dep">Fora agora</span><h3 style="margin-top:6px">Imobiliárias, indústria, logística, franquias, e-commerce grande</h3>
+      <p class="small">O material ranqueia imobiliárias em segundo lugar, mas você não tem prova nem rede nesse nicho hoje. Entram depois que o primeiro nicho mostrar resultado.</p></div>
+  </div>
+
+  <h2>Mecanismo que sustenta todas as peças</h2>
+  <div class="box">
+    <p><b>O caminho de 6 etapas do Raio-X:</b> Encontrar · Entender · Confiar · Contatar · Comprar · Continuar. Cada peça mostra uma etapa em que o contato pode travar. É o mesmo desenho do Raio-X 3.0 e dos 7 casos ilustrativos que você já tem, então o conteúdo ensina o método sem virar aula.</p>
+    <div class="sw"><span class="pill v">Ver: o que acontece hoje</span><span class="pill o">Ordenar: o que vem primeiro</span><span class="pill s">Sustentar: o que mantém</span></div>
+    <p class="small muted" style="margin:0">Série fixa: “Do post ao caixa” (a frase já está no seu site). Termine todo Reel com o cartão “Do post ao caixa · YM”.</p>
+  </div>
+
+  <h2>Storytelling ou jornada do herói?</h2>
+  <div class="box">
+    <p><b>Jornada do herói completa: não.</b> Ela precisa de minutos; seus Reels têm 35 a 60 segundos. Use um <b>arco curto de 4 batidas</b>: Cena (o que acontece) → Tensão (onde trava) → Virada (o que muda ao ordenar) → Ação (próximo passo). O dono do negócio é o protagonista e a YM é quem mostra o mapa.</p>
+    <p class="small" style="margin:0">Arco curto nas peças 3, 4, 5, 6 e 8. Demonstração (2 e 9), tese (1), objeção (7) e convite (10) seguem estrutura direta: problema, tela funcionando, resultado.</p>
+  </div>
+
+  <h2>Ritmo e produção</h2>
+  <div class="box">
+    <ul class="tight">
+      <li><b>Terça 12h:</b> peça A (LinkedIn primeiro, Instagram no mesmo dia). <b>Quinta 19h:</b> peça B (Instagram primeiro, LinkedIn na sexta às 8h). Confirme os horários em Metricool, melhores horários.</li>
+      <li><b>Sexta 14h, 90 minutos:</b> gravar as duas peças da semana seguinte em sequência. Uma sessão por semana evita montar equipamento duas vezes.</li>
+      <li><b>Capa:</b> sempre no padrão da primeira capa (“Vai contratar uma consultoria de marketing?”), visual claro. Legendas automáticas em todos os vídeos.</li>
+      <li><b>Dados de tela:</b> use sempre dados de exemplo e coloque o selo “dados de exemplo”. Casos ilustrativos levam o selo “caso ilustrativo”.</li>
+      <li>Metricool gratuito não agenda LinkedIn: publique à mão. Edição de vídeo: me peça que eu monto no padrão da marca.</li>
+    </ul>
+  </div>
+  <div class="box note"><b>E o que já está agendado?</b> Os posts de 02 a 32 continuam saindo até dom 26/10. Para 27 a 31/10, revise no Metricool: mantenha só os que combinam com a frase nova, reagende o resto para novembro ou arquive. O assunto Black Friday entra na peça 9, mais perto da data.</div>
+
+  <h2>As 10 peças</h2>
+  <p class="muted small">Toque em uma peça para abrir o roteiro completo. A caixa à esquerda marca “publicado”.</p>
+  <div id="posts-root"></div>
+</section>
+
+<!-- ============ 3. OUTBOUND ============ -->
+<section class="panel" id="p-outbound" hidden>
+  <p class="lead">Do material das 18 páginas, estas são as ações que mais combinam com você hoje, em ordem. O critério foi o que já mostrou sinal no seu histórico (as leituras gratuitas foram abertas e lidas por 4 a 5 minutos), custo baixo e o fato de você trabalhar sozinha.</p>
+
+  <h2>Ações mais promissoras</h2>
+  <div class="tw"><table>
+    <thead><tr><th class="n">#</th><th>Ação</th><th>Por que promete</th><th>Esforço</th><th>Meta de atividade em novembro</th></tr></thead>
+    <tbody>
+    <tr><td class="n">1</td><td><b>Leitura gratuita enviada a uma lista qualificada</b></td><td>É a sua versão do “diagnóstico gratuito” do material. Já tem sinal: as duas leituras enviadas a prospects de serviços profissionais foram lidas por 4 a 5 minutos.</td><td>3 h/sem</td><td>60 abordagens, 12 mini-leituras, 4 leituras completas</td></tr>
+    <tr><td class="n">2</td><td><b>Indicação ativa</b></td><td>Custo zero. Você tem 3 depoimentos autorizados e uma rede (H2PL, clientes). O material aponta indicação como a de melhor conversão, mas a base é um único estudo, então vale como direção.</td><td>30 min/sem</td><td>Pedir a 10 pessoas</td></tr>
+    <tr><td class="n">3</td><td><b>Parceria com contadores</b></td><td>Contador atende clínicas e serviços e é quem o dono ouve. Já existe uma conversa aberta com um escritório de contabilidade.</td><td>1 h/sem</td><td>3 conversas, 1 acordo simples de indicação</td></tr>
+    <tr><td class="n">4</td><td><b>Lista pelo Google Maps e Instagram</b></td><td>É a fonte da ação 1: clínicas de BH com sinais públicos de oportunidade e um ponto positivo para citar.</td><td>1 h/sem</td><td>60 contas na planilha</td></tr>
+    <tr><td class="n">5</td><td><b>Social selling no LinkedIn</b></td><td>Seus 959 seguidores são o único público orgânico com histórico. Comentar antes de abordar constrói familiaridade.</td><td>15 min/dia</td><td>25 comentários por semana, convites às contas da lista</td></tr>
+    <tr><td class="n">6</td><td><b>Follow-up sistemático</b></td><td>Atravessa tudo. O material recomenda 4 a 5 toques em 2 a 3 semanas com ângulos diferentes.</td><td>embutido</td><td>4 toques por conta</td></tr>
+    <tr><td class="n">7</td><td><b>1 evento presencial</b></td><td>Confiança antes da proposta, com follow-up em até 48 h. Escolha um só e vá com cartão e o link da leitura gratuita.</td><td>1 tarde</td><td>1 evento, contatos anotados no mesmo dia</td></tr>
+    </tbody></table></div>
+  <div class="box note"><b>Fica para depois (dezembro ou janeiro):</b> workshop (precisa do caso real publicado), páginas de SEO e respostas de IA, cold e-mail (exige domínio separado, SPF, DKIM, DMARC e opt-out), mala direta e ligação fria (não é o seu canal; a mensagem no WhatsApp comercial faz esse papel).</div>
+
+  <h2>Cadência de 14 dias por conta</h2>
+  <div class="tw"><table>
+    <thead><tr><th class="n">Dia</th><th>Toque</th><th>Canal</th></tr></thead>
+    <tbody>
+    <tr><td class="n">0</td><td>Seguir, curtir 2 posts, comentar 1 com algo específico</td><td>Instagram</td></tr>
+    <tr><td class="n">1</td><td>Convite com nota curta (modelo 5), sem pitch</td><td>LinkedIn</td></tr>
+    <tr><td class="n">2</td><td>Mensagem de abertura com observação positiva real (modelo 1)</td><td>Direct ou WhatsApp comercial</td></tr>
+    <tr><td class="n">5</td><td>Follow-up com exemplo de leitura (modelo 2)</td><td>Mesmo canal</td></tr>
+    <tr><td class="n">9</td><td>Pergunta simples e oferta de mostrar em 15 minutos (modelo 3)</td><td>Mesmo canal</td></tr>
+    <tr><td class="n">14</td><td>Encerramento educado (modelo 4). Depois disso, a conta só recebe seu conteúdo.</td><td>Mesmo canal</td></tr>
+    </tbody></table></div>
+  <p class="small muted">Se respondeu: entregue a leitura (mini ou completa), ofereça 20 a 30 minutos de conversa (modelo 6) e, depois da conversa, mande um vídeo de 60 a 90 segundos com o resumo e o próximo passo (modelo 10).</p>
+
+  <h2>Duas versões da leitura, para caber no seu tempo</h2>
+  <div class="grid2">
+    <div class="box"><h3>Mini-leitura (cerca de 25 min)</h3><p class="small" style="margin:0">Gravação de tela de 60 a 90 segundos: 1 ponto forte, 2 observações do perfil, site e Google, e 1 sugestão por onde começar. Vai para todas as contas que responderem.</p></div>
+    <div class="box"><h3>Leitura completa (2 a 3 h)</h3><p class="small" style="margin:0">A página no modelo publicado (as leituras já publicadas). Só para quem respondeu e pediu, ou para as 4 contas de maior fit do mês.</p></div>
+  </div>
+  <div class="box note">Link de exemplo para o follow-up: antes de enviar o modelo 2, defina um exemplo que possa ser mostrado sem expor ninguém. A sugestão é a prévia do Raio-X 3.0 com a Clínica Essenza, marcada “caso ilustrativo”.</div>
+
+  <h2>Mensagens prontas</h2>
+  <p class="muted small">Troque o que está entre colchetes. A observação do início precisa ser verdadeira e positiva; se não achar uma, não envie. Em nenhuma mensagem se afirma que a pessoa tem um problema.</p>
+  <div id="msgs-root"></div>
+
+  <h2>Planilha mínima (ou Central YM)</h2>
+  <div class="box"><p style="margin:0">Colunas: data · conta · canal · toque (0, 1, 2, 3, 4) · respondeu · leitura enviada · leitura aberta · conversa marcada · proposta · observação. Registrar na Central YM também serve de conteúdo: é o seu próprio sistema funcionando.</p></div>
+
+  <h2>Semana a semana</h2>
+  <div id="weeks-root"></div>
+
+  <h2>Leitura no dia 25/11</h2>
+  <div class="box">
+    <ul class="tight">
+      <li><b>Poucas respostas</b> (referência de alerta do material: abaixo de 3%): rever a lista e a frase de abertura.</li>
+      <li><b>Conversas sem proposta:</b> rever o primeiro passo e a oferta.</li>
+      <li><b>Propostas sem fechamento:</b> rever prova, escopo e valor.</li>
+    </ul>
+    <p class="small muted" style="margin:8px 0 0">Com 60 contas, cada resposta pesa muito. Trate os números como indício, não como conclusão.</p>
+  </div>
+</section>
+
+<!-- ============ 4. NÚMEROS ============ -->
+<section class="panel" id="p-numeros" hidden>
+  <p class="lead">Tudo aqui vem do seu histórico verificado (Metricool, Reportei, GA4) ou está marcado como hipótese. Nada é promessa.</p>
+
+  <h2>Base real dos últimos 3 meses</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Canal</th><th>O que o histórico mostra</th></tr></thead>
+    <tbody>
+    <tr><td>Instagram orgânico</td><td>Alcance orgânico de 481 contas em 3 meses; 125 de seguidores. Média de 11 contas por post na semana de 12 a 19/10.</td></tr>
+    <tr><td>Instagram, 15/10</td><td>Alcance de 4.090 em um dia (cerca de 70% da semana). Provável efeito de anúncio; confirme no Meta antes de tratar como orgânico.</td></tr>
+    <tr><td>Instagram, seguidores</td><td>592 para 569 entre 12 e 19/10 (25 entraram, 48 saíram entre 12 e 17/10).</td></tr>
+    <tr><td>LinkedIn pessoal</td><td>3.528 impressões em 3 meses (cerca de 270 por semana), 938 pessoas alcançadas, engajamento de 2,47%, 959 seguidores.</td></tr>
+    <tr><td>Meta Ads</td><td>R$ 184,41 investidos (19/07 a 18/10): 845 cliques no link (cerca de R$ 0,22 cada), alcance de 23.972 e 25.205 impressões. Um teste anterior de público frio teve 66 cliques e nenhuma entrada no grupo de WhatsApp.</td></tr>
+    <tr><td>Site (GA4, 21/09 a 18/10)</td><td>100 usuários ativos, 318 visualizações, 19 usuários na página do Raio-X e nenhum evento principal configurado.</td></tr>
+    <tr><td>Leituras gratuitas</td><td>Duas leituras enviadas: uma com 4 usuários, 12 visualizações e 5min16s de leitura; outra com 2 usuários, 4 visualizações e 4min09s.</td></tr>
+    </tbody></table></div>
+
+  <h2>Alcance orgânico esperado em novembro</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Canal</th><th>Conservador (base real)</th><th>Razoável (hipótese)</th></tr></thead>
+    <tbody>
+    <tr><td>Instagram, por peça</td><td>10 a 30 contas</td><td>50 a 200 contas, se o gancho for forte e houver compartilhamento</td></tr>
+    <tr><td>Instagram, 10 peças</td><td>100 a 300</td><td>500 a 2.000</td></tr>
+    <tr><td>LinkedIn, por peça</td><td>cerca de 135 impressões (270 por semana divididas em 2)</td><td>300 a 600, com comentários nas contas-alvo no mesmo dia</td></tr>
+    <tr><td>LinkedIn, 10 peças</td><td>cerca de 1.350</td><td>3.000 a 6.000</td></tr>
+    </tbody></table></div>
+  <p class="small muted">A coluna “razoável” é hipótese de planejamento: o seu histórico não tem peça orgânica que comprove esses valores. Use a base real como piso e atualize no dia 25/11.</p>
+  <div class="box key"><b>Como ler:</b> mesmo no cenário razoável, o Instagram orgânico alcança em novembro menos pessoas do que as 60 abordagens diretas, que são todas de contas escolhidas. Por isso o outbound lidera e o conteúdo dá sustentação.</div>
+
+  <h2>Custo, se houver tráfego pago</h2>
+  <p>Seu histórico dá <b>R$ 7,32 por mil impressões</b> e <b>R$ 7,69 por mil contas alcançadas</b> (público amplo). Um público local e segmentado costuma custar mais; a coluna da direita supõe o triplo, como hipótese.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Investimento</th><th class="n">Alcance no custo histórico</th><th class="n">Alcance se o custo triplicar</th></tr></thead>
+    <tbody>
+    <tr><td>R$ 70 (R$ 10 por dia, 7 dias)</td><td class="n">cerca de 9.100</td><td class="n">cerca de 3.000</td></tr>
+    <tr><td>R$ 150 no mês</td><td class="n">cerca de 19.500</td><td class="n">cerca de 6.500</td></tr>
+    <tr><td>R$ 400 no mês</td><td class="n">cerca de 52.000</td><td class="n">cerca de 17.300</td></tr>
+    </tbody></table></div>
+  <div class="box note"><b>Recomendação:</b> R$ 0 de mídia até o dia 25/11. O ponto a resolver primeiro é o caminho depois do clique (nenhum evento principal no GA4 e um teste frio sem entradas), não o alcance. Quando os eventos estiverem ativos e uma peça passar de 2 vezes a sua média orgânica em 48 h, teste R$ 70 nela com objetivo “conversas” (WhatsApp) para público de BH, não “cliques no site”.</div>
+
+  <h2>Metas de atividade para novembro</h2>
+  <p class="small muted">São metas de esforço, que você controla. Não são previsão de resposta nem de venda.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Item</th><th class="n">Meta</th></tr></thead>
+    <tbody>
+    <tr><td>Peças publicadas</td><td class="n">10</td></tr>
+    <tr><td>Abordagens (contas novas)</td><td class="n">60</td></tr>
+    <tr><td>Mini-leituras entregues</td><td class="n">12</td></tr>
+    <tr><td>Leituras completas</td><td class="n">4</td></tr>
+    <tr><td>Pedidos de indicação</td><td class="n">10</td></tr>
+    <tr><td>Conversas com contadores</td><td class="n">3</td></tr>
+    <tr><td>Evento presencial</td><td class="n">1</td></tr>
+    </tbody></table></div>
+
+  <h2>Tempo por semana</h2>
+  <div class="box"><p style="margin:0">Cerca de 8 a 9 horas: gravação (1h30) + publicação (40 min) + outbound diário de segunda a quinta (4 × 35 min) + sexta de follow-ups e números (45 min) + segunda de planejamento (30 min) + leituras (2 a 3 h). A edição pode ficar comigo.</p></div>
+
+  <h2>Como ler o material pesquisado</h2>
+  <div class="box">
+    <p>Os dois PDFs foram gerados por uma ferramenta de busca com IA. Os percentuais que citam (17% e 3% a 5% de resposta, 49% de aumento com follow-up, 87,5% de conversão em indicação, 61% após eventos) vêm de blogs de vendas internacionais e de um único estudo de agência. Foram usados como <b>direção e régua de alerta</b>, não como o que você deve esperar.</p>
+    <p style="margin:0">O material também usa “pequenas empresas” e “jornada”, termos que ficam fora dos seus textos públicos, e traz mensagens que presumem uma dor antes da conversa. Os modelos da aba 3 foram reescritos para partir de uma observação real e positiva.</p>
+  </div>
+</section>
+</main>
+
+<div class="box" style="margin-top:24px"><h3>Levar as marcações para outro aparelho</h3>
+<p class="small muted">Este endereço guarda o que você marca no aparelho em que está. Para continuar em outro, copie o código aqui e cole lá.</p>
+<button class="btn" type="button" id="exp">Copiar código das marcações</button>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><input id="imp" type="text" placeholder="Cole o código aqui" aria-label="Código das marcações" style="flex:1;min-width:180px;font:14px var(--f-body);padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)"><button class="btn" type="button" id="impb" style="margin-top:0">Aplicar</button></div>
+<p class="small" id="impmsg" style="margin:6px 0 0" aria-live="polite"></p></div>
+<p class="foot">Plano preparado em 19/10/2026 a partir do diagnóstico da YM, do material de outbound e nichos, do material de vídeos e do histórico de Metricool, Reportei e GA4. Privado.</p>
+</div>
+
+<script>
+/* ---------- DADOS ---------- */
+var CHECK = [
+ {b:"0 · Decidir", sub:"Hoje, cerca de 20 min", items:[
+  {id:"c1", p:"alta", min:5, t:"Confirmar a frase base", where:"Decisão",
+   a:"Diagnóstico + sistemas que ligam o post ao caixa", why:"Toda a bio, o LinkedIn, o site e os posts partem dela. Decida antes de mexer nos perfis."},
+  {id:"c2", p:"alta", min:5, t:"Confirmar nicho principal e secundário", where:"Decisão",
+   a:"Principal: clínicas de estética, bem-estar e saúde em BH. Secundário: serviços profissionais. Contadores entram como parceiros de indicação.", why:"Material pesquisado: validar primeiro um nicho e só então ampliar."},
+  {id:"c3", p:"alta", min:5, t:"Fixar a oferta única de entrada", where:"Decisão",
+   a:"Leitura gratuita (pré-análise pública) → conversa de 20 a 30 min → Raio-X ou projeto-piloto.", why:"Uma só porta de entrada em todos os lugares: bio, site, posts, mensagens. O preço não aparece na entrada."},
+  {id:"c4", p:"alta", min:5, t:"Adotar o vocabulário público", where:"Decisão",
+   b:"“jornada”, “pequenos negócios”, “posicionamento digital”", a:"“caminho do contato”, “negócios”, “diagnóstico e sistemas”", why:"Cinco formas de se apresentar hoje; passa a ser uma."}
+ ]},
+ {b:"1 · Instagram", sub:"Até quinta 22/10", items:[
+  {id:"c5", p:"alta", min:5, t:"Nome e categoria do perfil", where:"Instagram → Editar perfil → Nome e Categoria",
+   b:"Categoria: Agência de marketing", a:"Nome: YM Marketing e Negócios | Diagnóstico BH\nCategoria: Consultor de negócios", copy:"YM Marketing e Negócios | Diagnóstico BH", why:"O nome é o campo mais pesquisado do Instagram. Confira como está o nome hoje antes de trocar."},
+  {id:"c6", p:"alta", min:10, t:"Bio", where:"Instagram → Editar perfil → Bio",
+   b:"Agência de marketing estratégico\n🔎 Descubra o que fazer e em qual ordem\n📊 Diagnóstico + estratégia + execução\n👇 Comece pelo Raio-X",
+   a:"Diagnóstico + sistemas que ligam o post ao caixa\nMétodo VOS: Ver, Ordenar, Sustentar\nClínicas e serviços · Belo Horizonte\n👇 Peça sua leitura gratuita",
+   copy:"Diagnóstico + sistemas que ligam o post ao caixa\nMétodo VOS: Ver, Ordenar, Sustentar\nClínicas e serviços · Belo Horizonte\n👇 Peça sua leitura gratuita",
+   why:"Saem “agência” e “execução”; entra o que você faz e para quem. O limite é 150 caracteres: se o app recusar, tire “Método VOS:”."},
+  {id:"c7", p:"alta", min:5, t:"Link da bio", where:"Instagram → Editar perfil → Links",
+   b:"ymnegocios.com.br", a:"ymnegocios.com.br/?utm_source=instagram&utm_medium=bio", copy:"https://ymnegocios.com.br/?utm_source=instagram&utm_medium=bio", why:"Com a marcação, o GA4 passa a mostrar quanto do site vem da bio."},
+  {id:"c8", p:"alta", min:40, t:"Destaques", where:"Instagram → perfil → Destaques",
+   b:"RAIO-X · BASTIDORES · O QUE FAZE… · DEPOIMENTOS · DÚVIDAS",
+   a:"MÉTODO · CASOS · SISTEMAS · RAIO-X · DÚVIDAS\n• MÉTODO: 3 cards do VOS + último card “Leitura gratuita”\n• CASOS: os depoimentos autorizados (só os nomes autorizados)\n• SISTEMAS: 4 prints com dados de exemplo (Central YM, ERP Sunshine, loja + ERP + CRM da Rose Modas, marcados “projeto próprio”)\n• RAIO-X: como é o relatório (caso ilustrativo)\n• DÚVIDAS: mantém",
+   why:"Depoimentos e bastidores viram provas separadas por tipo. O nome “O QUE FAZE…” está cortado hoje."},
+  {id:"c9", p:"media", min:10, t:"Fixar 3 posts", where:"Instagram → post → Fixar no perfil",
+   a:"Depois de publicados: peça 1 (o que eu faço), peça 2 (demonstração) e peça 6 (caso real). Até lá, fixe os 3 posts atuais que melhor mostram o VOS.", why:"Quem chega pela mensagem vê primeiro as provas, não o último post."}
+ ]},
+ {b:"2 · LinkedIn pessoal", sub:"Até sexta 23/10", items:[
+  {id:"c10", p:"alta", min:5, t:"Título (headline)", where:"LinkedIn → seu perfil → lápis do cabeçalho",
+   b:"Consultora de Posicionamento Digital", a:"Diagnóstico + sistemas que ligam o post ao caixa | Método VOS | Fundadora da YM", copy:"Diagnóstico + sistemas que ligam o post ao caixa | Método VOS | Fundadora da YM", why:"É a linha que aparece em cada comentário e convite que você enviar."},
+  {id:"c11", p:"alta", min:20, t:"Sobre", where:"LinkedIn → Sobre → lápis",
+   b:"Estruturo negócios que cresceram no improviso para crescerem com clareza, direção e método. Minha atuação combina quase 20 anos de experiência em operação, processos, experiência do cliente, treinamento, gestão, marketing, posicionamento, tecnologia e desenvolvimento de projetos.",
+   a:"Eu ajudo clínicas e serviços profissionais a enxergar o que acontece entre o primeiro contato e o fechamento, e a organizar isso em um sistema simples.\n\nUso o Método VOS: Ver (o que existe hoje), Ordenar (o que vem primeiro) e Sustentar (o que mantém funcionando). Começo por um diagnóstico e, quando faz sentido, desenvolvo a ferramenta: painel de contatos, CRM, integração com WhatsApp e site.\n\nSão quase 20 anos entre operação, atendimento, treinamento, gestão e tecnologia. Esse caminho me fez olhar marketing e sistema como uma coisa só.\n\nQuer uma leitura gratuita do seu caso? Me chame por mensagem ou em ymnegocios.com.br.",
+   why:"Primeira pessoa, uma ideia, uma oferta. A lista de áreas sai do texto e a experiência fica como prova."},
+  {id:"c12", p:"alta", min:10, t:"Cargo atual na experiência", where:"LinkedIn → Experiência → YM",
+   b:"Posicionamento Estratégico para Negócios", a:"Cargo: Fundadora · YM Marketing e Negócios\nDescrição: Diagnóstico e sistemas que ligam o post ao caixa. Método VOS: Ver, Ordenar, Sustentar.", copy:"Diagnóstico e sistemas que ligam o post ao caixa. Método VOS: Ver, Ordenar, Sustentar.", why:"O cargo atual é o que aparece no resumo do perfil e nas buscas."},
+  {id:"c13", p:"alta", min:30, t:"Destaques", where:"LinkedIn → Destaques → +",
+   b:"Cartões automáticos (“Nota privada para mim mesmo”, “Vocês trabalharam na empresa Atento”)",
+   a:"Remova os automáticos e coloque:\n1) Link “Leitura gratuita” (site)\n2) Link “Método VOS” (site)\n3) Depois de publicados: peça 1, peça 2 e peça 6", why:"Os cartões automáticos não dizem nada sobre o seu trabalho."},
+  {id:"c14", p:"media", min:15, t:"Banner", where:"LinkedIn → foto de capa",
+   a:"Fundo claro, símbolo YM, a frase base e “Método VOS · Ver, Ordenar, Sustentar”. Posso gerar a arte no padrão da marca.", why:"A capa é o primeiro texto que a pessoa lê, antes mesmo do título."},
+  {id:"c15", p:"media", min:10, t:"Serviços", where:"LinkedIn → Serviços → lápis",
+   b:"Consultoria de marketing, de marca, Web design, de negócios, Design de marca", a:"Consultoria de negócios · Consultoria de marketing · Desenvolvimento de software (se a opção existir). Remova Web design e Design de marca se não for mais vendê-los.", why:"Cinco serviços diluem o recado. Três cabem na frase base."},
+  {id:"c16", p:"media", min:5, t:"Site nas informações de contato", where:"LinkedIn → Informações de contato",
+   a:"https://ymnegocios.com.br/?utm_source=linkedin&utm_medium=perfil", copy:"https://ymnegocios.com.br/?utm_source=linkedin&utm_medium=perfil", why:"Mesma lógica da bio do Instagram."}
+ ]},
+ {b:"3 · Página da empresa no LinkedIn", sub:"Até 30/10", items:[
+  {id:"c17", p:"alta", min:10, t:"Slogan e banner", where:"LinkedIn → página YM → Editar",
+   b:"Clareza, estratégia e crescimento para pequenos negócios", a:"Diagnóstico + sistemas que ligam o post ao caixa.", copy:"Diagnóstico + sistemas que ligam o post ao caixa.", why:"“Pequenos negócios” sai do vocabulário. Banner igual ao do perfil pessoal."},
+  {id:"c18", p:"dep", min:10, t:"Convidar conexões a seguir a página", where:"LinkedIn → página → Admin → Convidar",
+   a:"A página tem 7 seguidores. Convide as conexões que fazem sentido, sem exagero. Para novembro, publique pelo perfil pessoal.", why:"A página pesa pouco no alcance; o perfil pessoal é o canal."}
+ ]},
+ {b:"4 · Site, medição e Google", sub:"Até 30/10", items:[
+  {id:"c19", p:"alta", min:30, t:"Eventos de conversão no site", where:"Site + GA4",
+   a:"Registrar 3 eventos, só com identificadores (nunca dado pessoal): clique_whatsapp, inicio_avaliacao, clique_checkout_raiox. Depois: GA4 → Administrar → Eventos → marcar como evento principal.", why:"Hoje o GA4 mostra 0 eventos principais. Sem isso nenhuma ação é medida. Posso instalar o código quando você pedir."},
+  {id:"c20", p:"alta", min:20, t:"Topo da página inicial", where:"ymnegocios.com.br",
+   b:"Marketing que se sustenta começa pelo terreno", a:"Título: Diagnóstico + sistemas que ligam o post ao caixa\nSubtítulo: Eu vejo onde o contato se perde, organizo o que vem primeiro e construo a ferramenta que sustenta. Método VOS.\nBotão único: Peça sua leitura gratuita (abre o WhatsApp)", why:"A imagem do terreno pode continuar mais abaixo, ao explicar o Método VOS."},
+  {id:"c21", p:"media", min:30, t:"Bloco “Casos” com depoimentos autorizados", where:"ymnegocios.com.br",
+   a:"Os depoimentos autorizados, cada um com 1 frase e o que mudou. Só entra quem confirmou como quer aparecer.", why:"A prova social é o que falta quando a pessoa vem de uma mensagem fria."},
+  {id:"c22", p:"alta", min:15, t:"Google Meu Negócio", where:"Google Business Profile",
+   a:"Categoria principal: Consultor de negócios. Descrição com a frase base. Pedir 3 avaliações a clientes que autorizaram depoimento.", why:"Quem recebe sua mensagem costuma pesquisar o seu nome no Google."},
+  {id:"c23", p:"alta", min:5, t:"Pausar anúncio de público frio para o site", where:"Meta Ads",
+   a:"Se ainda estiver ativo, pause até o item 19 estar pronto.", why:"O teste anterior teve 66 cliques e nenhuma entrada. Sem evento medido, o gasto não ensina nada."},
+  {id:"c24", p:"media", min:15, t:"Revisar posts agendados de 27 a 31/10", where:"Metricool → Planejador",
+   a:"Mantenha só o que combina com a frase nova; o restante vai para novembro ou arquivo.", why:"Evita que o perfil diga duas coisas ao mesmo tempo na semana em que o outbound começa."}
+ ]},
+ {b:"5 · Preparar o outbound", sub:"De 20 a 25/10", items:[
+  {id:"c25", p:"alta", min:90, t:"Lista de 60 contas", where:"Google Maps + Instagram",
+   a:"Clínicas de estética, saúde e bem-estar em BH e região. Para cada uma: nome, dono(a), Instagram, WhatsApp comercial, 1 observação positiva real e 1 ponto de atenção público. Planilha ou Central YM.", why:"Sem a observação positiva, a mensagem vira genérica."},
+  {id:"c26", p:"alta", min:10, t:"Salvar os 10 modelos de mensagem", where:"Aba 3 deste plano",
+   a:"Copie para o bloco de notas do celular ou para a Central YM.", why:"Responder em minutos importa mais do que a mensagem perfeita."},
+  {id:"c27", p:"alta", min:20, t:"Definir o link de exemplo da leitura", where:"Site",
+   a:"Prévia do Raio-X 3.0 (Clínica Essenza), marcada “caso ilustrativo”, ou outra leitura com autorização por escrito.", why:"É o link do modelo 2. Não use leitura de cliente sem autorização."},
+  {id:"c28", p:"alta", min:15, t:"Pedir indicação a 5 pessoas", where:"WhatsApp",
+   a:"Modelo 7 para clientes e parceiros (H2PL e clientes atuais).", why:"Custo zero e é a ação com maior conversão nas referências do material."},
+  {id:"c29", p:"alta", min:15, t:"Mensagem a 3 contadores", where:"WhatsApp ou LinkedIn",
+   a:"Modelo 8: o escritório com conversa aberta e mais 2. Combine algo simples por indicação que virar conversa.", why:"O contador atende o mesmo cliente que você quer atingir."},
+  {id:"c30", p:"alta", min:10, t:"Autorização pendente e dados do caso Boas Bronze", where:"WhatsApp",
+   a:"Modelo 9. A peça 6 só sai com o que a cliente confirmar.", why:"Uma das autorizações está pendente. Sem número confirmado, o caso sai sem número."},
+  {id:"c31", p:"media", min:20, t:"Escolher 1 evento presencial de novembro", where:"Associações comerciais, Sebrae Minas, networking local",
+   a:"Escolha um só. No dia: 5 conversas e follow-up em até 48 h com o link da leitura gratuita.", why:"Confiança antes da proposta."},
+  {id:"c32", p:"media", min:10, t:"Bloquear a rotina na agenda", where:"Agenda",
+   a:"Seg 30 min planejar. Seg a qui 35 min de outbound. Ter 12h e qui 19h publicar. Sex 14h gravar (90 min). Sex 45 min follow-ups e números.", why:"Em um plano de 8 a 9 horas por semana, o que não está na agenda não acontece."}
+ ]}
+];
+
+var POSTS = [
+{id:"p1", q:"Ter 27/10", fmt:"Reel 35 a 45 s", canal:"Instagram + LinkedIn (vídeo nativo)", etapa:"Topo", t:"O que eu faço, em 40 segundos",
+ pub:"Todos os públicos: dono(a) de clínica ou serviço em BH e parceiros.",
+ mec:"O caminho de 6 etapas, com Contatar e Comprar em destaque.",
+ hook:"“Alguém pede um orçamento pelo Instagram. Três dias depois, onde esse pedido está?”  Na tela: ONDE ESTÁ O PEDIDO DE 3 DIAS ATRÁS?",
+ beats:[["0–4 s","“Alguém pede um orçamento pelo Instagram. Três dias depois, onde esse pedido está?”","Texto grande do gancho"],
+  ["4–14 s","“Um pedaço ficou no direct. Outro, no WhatsApp. O resto, na memória de alguém.”","Três balões: Instagram, WhatsApp, cabeça"],
+  ["14–28 s","“Trazer contato é metade do caminho. A outra metade é o que acontece com ele depois.”","As 6 etapas, Contatar e Comprar destacadas"],
+  ["28–38 s","“Eu sou a Yasmin, da YM. Eu vejo esse caminho, organizo o que vem primeiro e construo a ferramenta que sustenta.”","Ver · Ordenar · Sustentar nas três cores"],
+  ["38–45 s","“Comente LEITURA e eu preparo uma leitura gratuita do caminho do seu contato.”","Palavra LEITURA grande + cartão Do post ao caixa · YM"]],
+ vira:"Divulgar traz contato; o que acontece com o contato depois também faz parte do marketing.",
+ cta:"Comentar LEITURA.",
+ ig:"Diagnóstico de marketing e sistemas para clínicas e serviços em Belo Horizonte.\n\nUm pedido chega pelo Instagram. Parte fica no direct, parte no WhatsApp, parte na memória de alguém.\n\nEu vejo esse caminho (Ver), organizo o que vem primeiro (Ordenar) e construo a ferramenta que mantém (Sustentar). É o Método VOS.\n\nComente LEITURA e eu preparo uma leitura gratuita do seu caso.\n\n#marketingestrategico #clinicasdeestetica #belohorizonte #metodovos",
+ li:"Quando olho um negócio por fora, uma pergunta me guia: se alguém pede orçamento hoje, onde esse pedido está daqui a três dias?\n\nEm muitos casos que acompanho, um pedaço está no direct, outro no WhatsApp e o resto na memória de alguém.\n\nÉ isso que eu faço: vejo o caminho do contato, organizo o que vem primeiro e construo a ferramenta que sustenta. Diagnóstico e sistemas que ligam o post ao caixa.\n\nSe quiser uma leitura gratuita do seu caso, me chame por mensagem.",
+ prod:"1 take, câmera na altura dos olhos, luz natural. Os balões e as etapas entram na edição.",
+ med:"Comentários com LEITURA, visitas ao perfil em 48 h, convites aceitos no LinkedIn."},
+{id:"p2", q:"Qui 29/10", fmt:"Reel 45 a 60 s (gravação de tela)", canal:"Instagram + LinkedIn", etapa:"Meio", t:"Do post ao caixa #1: a proposta com dono, prazo e retorno",
+ pub:"Dono(a) de clínica ou serviço que envia orçamentos e propostas.",
+ mec:"Três campos: dono, próximo passo e data.",
+ hook:"“Esta proposta foi enviada na terça. Veja o que acontece com ela.”",
+ beats:[["0–5 s","“Esta proposta foi enviada na terça. Veja o que acontece com ela.”","Central YM aberta numa proposta, selo “dados de exemplo”"],
+  ["5–15 s","“Normalmente ela fica num PDF e na boa intenção de lembrar depois.”","Print de conversa de WhatsApp com PDF"],
+  ["15–45 s","“Aqui ela tem dono, tem o próximo passo e tem data. No segundo dia aparece o lembrete. No sétimo, ela aparece em paradas.”","Gravação de tela, com zoom nos três campos"],
+  ["45–55 s","“Nenhuma proposta fica sem dono, sem data e sem retorno combinado.”","Painel com o resumo"],
+  ["55–60 s","“Quer ver isso no seu caso? Comente LEITURA.”","LEITURA + cartão da série"]],
+ vira:"Três campos mudam o destino de um contato: dono, próximo passo e data.",
+ cta:"Comentar LEITURA.",
+ ig:"Sistema simples para acompanhar propostas e orçamentos de clínicas e serviços.\n\nVeja como uma proposta ganha dono, próximo passo e data, e aparece no painel quando fica parada.\n\nÉ a série Do post ao caixa: um fluxo por vez, com a tela funcionando.\n\nQuer ver isso no seu caso? Comente LEITURA.\n\n#crm #atendimento #clinicas #metodovos",
+ li:"Eu vi, em vários negócios, que a proposta enviada é o ponto em que o acompanhamento mais depende da memória de alguém.\n\nNeste vídeo mostro um fluxo só, com dados de exemplo: a proposta ganha dono, próximo passo e data. No segundo dia aparece o lembrete; no sétimo, ela entra na lista de paradas.\n\nNão é tour de ferramenta. É uma situação, do começo ao fim.\n\nSe quiser ver isso aplicado ao seu caso, me chame por mensagem.",
+ prod:"Gravar a tela em modo retrato, 1 fluxo só. Narração gravada à parte. Nada de dado real de cliente.",
+ med:"Retenção até o fim, salvamentos, comentários LEITURA."},
+{id:"p3", q:"Ter 3/11", fmt:"Carrossel de 7 telas", canal:"Instagram + LinkedIn (documento em PDF)", etapa:"Topo", t:"Antes de olhar o seu perfil, olhei o meu",
+ pub:"Dono(a) de negócio que também nunca viu o próprio perfil como cliente. Parceiros.",
+ mec:"Teste dos 5 segundos: nome, bio, destaques, link e prova. Arco curto de 4 batidas.",
+ hook:"“Abri meu perfil como um cliente abriria. Achei cinco jeitos diferentes de me apresentar.”",
+ beats:[["Tela 1","Capa: “Abri meu perfil como um cliente abriria”","Título + símbolo YM"],
+  ["Tela 2","Cena: “Procurei meu nome. Li a bio. Olhei os destaques. Cliquei no link.”","Print do perfil antes"],
+  ["Tela 3","Tensão: “Encontrei cinco formas diferentes de me apresentar: agência, consultora de posicionamento, posicionamento estratégico, soluções digitais e o post ao caixa.”","Lista em cinco linhas"],
+  ["Tela 4","“Quem chega não sabe qual é a certa.”","Frase única"],
+  ["Tela 5","Virada: “Escolhi uma: diagnóstico + sistemas que ligam o post ao caixa.”","Frase base grande"],
+  ["Tela 6","Valor: “O teste dos 5 segundos para o seu perfil: 1 nome, 2 bio, 3 destaques, 4 link, 5 prova. Dá para responder o que você faz e para quem?”","Cinco itens"],
+  ["Tela 7","Ação: “Quer que eu faça esse teste no seu? Comente LEITURA.”","LEITURA"]],
+ vira:"Antes de mudar o que se comunica, vale ver o que já está sendo comunicado.",
+ cta:"Comentar LEITURA.",
+ ig:"Teste dos 5 segundos para o perfil do seu negócio.\n\nVeja como fazer: nome, bio, destaques, link e prova. Se alguém abrir o seu perfil agora, entende o que você faz e para quem?\n\nEu fiz o teste no meu e encontrei cinco jeitos diferentes de me apresentar. Escolhi um.\n\nQuer que eu faça no seu? Comente LEITURA.\n\n#marketingestrategico #perfilprofissional #belohorizonte",
+ li:"Antes de olhar o negócio de alguém, olhei o meu.\n\nAbri meu perfil como um cliente abriria e encontrei cinco formas diferentes de me apresentar. Cada uma estava certa sozinha. Juntas, não diziam nada.\n\nEscolhi uma: diagnóstico + sistemas que ligam o post ao caixa. Mudei bio, destaques, título e site.\n\nO teste que usei leva 5 segundos: nome, bio, destaques, link e prova. Vale para o seu perfil também.\n\nSe quiser que eu faça esse olhar no seu negócio, me chame.",
+ prod:"Carrossel no padrão visual claro. Opcional: acrescentar na tela 2 que ficou três meses sem vender o Raio-X. É sua decisão; funciona sem.",
+ med:"Salvamentos, compartilhamentos, comentários LEITURA."},
+{id:"p4", q:"Qui 5/11", fmt:"Reel 45 a 55 s", canal:"Instagram + LinkedIn", etapa:"Meio", t:"Ele amou o projeto. Depois esperou 10 dias pelo preço (caso ilustrativo)",
+ pub:"Quem envia propostas de ticket mais alto: móveis, projetos, clínicas com tratamentos em pacotes.",
+ mec:"Etapa Comprar: proposta em 48 h, com prazo e condições, e retorno em 2 e 7 dias.",
+ hook:"“Ele amou o projeto. Depois esperou 10 dias pelo preço.”",
+ beats:[["0–5 s","“Ele amou o projeto. Depois esperou 10 dias pelo preço.”","Selo CASO ILUSTRATIVO + Casa Brava"],
+  ["5–18 s","Cena: “Saiu do showroom decidido. A proposta chegou em PDF, sem prazo de entrega e sem condição de pagamento clara.”","Linha do tempo: visita, 10 dias, PDF"],
+  ["18–30 s","Tensão: “Ele não sumiu. Comprou de quem respondeu primeiro.”","Concorrente em 48 h"],
+  ["30–48 s","Virada: “A venda não travou no começo. Travou no final. O plano: proposta em 48 h com prazo e pagamento, e retorno combinado em 2 e 7 dias.”","Etapa Comprar acesa"],
+  ["48–55 s","“Salve este vídeo e revise sua última proposta com essas 3 perguntas.”","Três perguntas: prazo, pagamento, retorno"]],
+ vira:"O cliente que some depois da proposta, muitas vezes, comprou de quem respondeu primeiro.",
+ cta:"Salvar o vídeo.",
+ ig:"Como revisar a proposta que você envia ao cliente (caso ilustrativo: Casa Brava).\n\nVeja as 3 perguntas: a proposta chega em até 48 h? Ela diz prazo e condições de pagamento? Existe retorno combinado depois do envio?\n\nSalve para revisar a sua.\n\nCaso ilustrativo do Raio-X Digital, criado para mostrar o método.\n\n#propostacomercial #vendas #metodovos",
+ li:"Um caso ilustrativo do Raio-X, criado para mostrar o método: uma marcenaria que perdia clientes depois da proposta.\n\nO cliente amava o projeto e esperava de 7 a 10 dias pelo valor. A proposta chegava em PDF, sem prazo de entrega e sem condição de pagamento clara.\n\nEle não sumiu. Comprou de quem respondeu em 48 horas.\n\nO plano do caso: proposta em 48 h com tudo claro e retorno combinado em 2 e 7 dias.\n\nQuando foi a última vez que você revisou a proposta que envia?",
+ prod:"Texto animado simples, com a locução sua. Mostre o selo do caso ilustrativo do primeiro ao último segundo.",
+ med:"Salvamentos e compartilhamentos (é o que o gancho pede)."},
+{id:"p5", q:"Ter 10/11", fmt:"Reel 45 a 60 s (corte da prévia já produzida)", canal:"Instagram + LinkedIn", etapa:"Meio/fundo", t:"O preço chegava antes da avaliação (Clínica Essenza, caso ilustrativo)",
+ pub:"Principal: clínicas de estética e saúde.",
+ mec:"Etapa Contatar: o que a pessoa recebe na primeira resposta.",
+ hook:"“A clínica achava que pouca gente a encontrava. O Raio-X mostrou outra coisa: o preço chegava antes da avaliação.”",
+ beats:[["0–6 s","“A clínica achava que pouca gente a encontrava. O Raio-X mostrou outra coisa.”","Selo CASO ILUSTRATIVO + Clínica Essenza"],
+  ["6–20 s","Cena: o primeiro contato no WhatsApp pedindo valor.","Trecho da prévia do Raio-X 3.0"],
+  ["20–35 s","Tensão: “O preço chegava antes da avaliação. Quem só via o número comparava só o número.”","Etapa Contatar travada no mapa"],
+  ["35–50 s","Virada: avaliação primeiro, valor depois, e quem fez a avaliação é lembrado.","Plano 30/60/90 em uma tela"],
+  ["50–60 s","“Quer ver o mapa do seu negócio? Comente LEITURA.”","LEITURA"]],
+ vira:"Nem sempre o problema é pouca gente chegando. Às vezes é o que a pessoa recebe quando chega.",
+ cta:"Comentar LEITURA.",
+ ig:"Clínicas de estética: o que a pessoa recebe quando pergunta o valor? (caso ilustrativo: Clínica Essenza).\n\nVeja como o Raio-X mostrou que o preço chegava antes da avaliação e o que muda quando a avaliação vem primeiro.\n\nQuer ver o mapa do seu negócio? Comente LEITURA.\n\nCaso ilustrativo.\n\n#clinicadeestetica #marketingparaclinicas #belohorizonte",
+ li:"Caso ilustrativo do Raio-X: uma clínica de estética que achava que poucas pessoas a encontravam.\n\nO mapa mostrou outra coisa. O contato chegava, perguntava o valor e recebia o preço antes de conhecer a avaliação. Quem só via o número comparava o número.\n\nO plano não foi atrair mais gente: foi mudar o que a pessoa recebe na primeira resposta.\n\nSe quiser que eu olhe o caminho de contato da sua clínica, me chame.",
+ prod:"Reaproveite a prévia do Raio-X 3.0 (RAIOX_3.0_previa_para_video). Corte de 45 a 60 s com a locução nova e o selo de caso ilustrativo.",
+ med:"Comentários LEITURA de clínicas (este é o teste do nicho)."},
+{id:"p6", q:"Qui 12/11", fmt:"Reel 45 a 60 s + carrossel no LinkedIn", canal:"Instagram + LinkedIn", etapa:"Fundo", t:"Caso real: Boas Bronze e Estética",
+ pub:"Clínicas e estúdios de estética. É a primeira prova real.",
+ mec:"Arco curto com o depoimento como virada. Só entra o que a cliente confirmou.",
+ hook:"“[Frase do depoimento da cliente, até 12 palavras]”",
+ beats:[["0–5 s","Frase do depoimento, na voz ou no texto dela.","Logo/nome só se autorizado"],
+  ["5–15 s","Contexto em uma linha: quem é e o que oferece.","Foto ou perfil, com autorização"],
+  ["15–30 s","O que o Raio-X mostrou: 1 achado, nas suas palavras.","Trecho do relatório (sem dado sensível)"],
+  ["30–45 s","O que mudou: 1 ação concreta. Se a cliente confirmou um número, cite com a fonte; se não, descreva sem número.","Antes e depois da ação"],
+  ["45–55 s","“Quer ver o do seu negócio? Comente LEITURA.”","LEITURA"]],
+ vira:"O depoimento fala da mudança específica, não do elogio geral.",
+ cta:"Comentar LEITURA.",
+ ig:"Estética em Belo Horizonte: o que mudou depois do Raio-X Digital na Boas Bronze e Estética.\n\n[1 frase do depoimento]\n\nVeja o que o Raio-X mostrou e a primeira ação.\n\nQuer ver o do seu negócio? Comente LEITURA.\n\n#esteticabh #raioxdigital #metodovos",
+ li:"A Boas Bronze e Estética fez o Raio-X Digital comigo.\n\n[Frase da cliente]\n\nO que apareceu: [1 achado]. O que mudou: [1 ação]. [Número, somente se ela confirmou.]\n\nO que aprendi com o caso: [1 frase sua].\n\nSe quiser o mesmo olhar no seu negócio, me chame.",
+ prod:"Preencha os colchetes com o que a cliente responder ao modelo 9. Sem autorização por escrito, a peça não sai; troque por uma segunda demonstração.",
+ med:"Mensagens diretas pedindo a leitura. Esta peça fixa no perfil e nos Destaques."},
+{id:"p7", q:"Ter 17/11", fmt:"Reel 35 a 45 s ou texto no LinkedIn", canal:"Instagram + LinkedIn", etapa:"Fundo", t:"Já tenho planilha ou CRM. Preciso trocar?",
+ pub:"Quem já usa alguma ferramenta e desconfia de trocar de sistema.",
+ mec:"As 3 perguntas antes de trocar de ferramenta.",
+ hook:"“Antes de trocar de ferramenta, faça estas três perguntas.”",
+ beats:[["0–4 s","“Antes de trocar de ferramenta, faça estas três perguntas.”","Texto do gancho"],
+  ["4–14 s","“Um: quem é o dono de cada contato?”","Pergunta 1 na tela"],
+  ["14–24 s","“Dois: qual é o próximo passo e a data?”","Pergunta 2"],
+  ["24–34 s","“Três: você consegue ver o que está parado?”","Pergunta 3"],
+  ["34–45 s","“Se as três respostas forem sim, talvez a ferramenta não seja o problema. Se forem não, trocar de ferramenta leva o mesmo desenho para um lugar novo. Comente LEITURA e eu olho as três no seu caso.”","LEITURA"]],
+ vira:"Primeiro se organiza o caminho; depois se escolhe a ferramenta.",
+ cta:"Comentar LEITURA.",
+ ig:"Planilha, CRM ou outro sistema: antes de trocar, responda 3 perguntas.\n\n1) Quem é o dono de cada contato? 2) Qual é o próximo passo e a data? 3) Você vê o que está parado?\n\nSe forem três sins, talvez a ferramenta não seja o problema.\n\nComente LEITURA e eu olho as três no seu caso.\n\n#crm #organizacao #metodovos",
+ li:"“Já tenho planilha. Preciso trocar?” é a pergunta que mais ouço quando falo de sistema.\n\nMinha resposta começa por três perguntas: quem é o dono de cada contato, qual é o próximo passo com data e se dá para ver o que está parado.\n\nSe as três respostas forem sim, talvez a ferramenta não seja o problema. Se forem não, trocar de ferramenta costuma levar o mesmo desenho para um lugar novo.\n\nQuer que eu olhe as três no seu caso? Me chame.",
+ prod:"Um take, três perguntas em tela cheia. Peça simples, de 20 minutos de edição.",
+ med:"Comentários e respostas no LinkedIn. Esta peça serve para follow-up em quem já respondeu antes."},
+{id:"p8", q:"Qui 19/11", fmt:"Carrossel ou Reel de 60 s", canal:"Instagram + LinkedIn", etapa:"Meio", t:"Como eu organizo um sistema: Ver, Ordenar, Sustentar",
+ pub:"Quem quer entender como o trabalho acontece antes de contratar uma empresa pequena e nova.",
+ mec:"O Método VOS aplicado a um projeto real, em 3 passos.",
+ hook:"“Eu não começo instalando sistema. Eu começo olhando onde o contato se perde.”",
+ beats:[["0–6 s","“Eu não começo instalando sistema. Eu começo olhando onde o contato se perde.”","Frase + etapas"],
+  ["6–22 s","Ver: “[Situação real do projeto: onde os pedidos ficavam antes]”","Print do antes, com dados de exemplo"],
+  ["22–38 s","Ordenar: “[O que veio primeiro e por quê]”","Etapa do sistema"],
+  ["38–52 s","Sustentar: “[O que mantém funcionando: rotina, painel, alerta]”","Painel final"],
+  ["52–60 s","“Quer ver como seria no seu negócio? Comente LEITURA.”","LEITURA"]],
+ vira:"O método vem antes da tecnologia.",
+ cta:"Comentar LEITURA.",
+ ig:"Como a YM organiza um sistema para um negócio: Ver, Ordenar, Sustentar.\n\nVeja como o Método VOS aparece em um projeto real: o que foi visto, o que veio primeiro e o que mantém funcionando.\n\nProjeto próprio da YM (loja, ERP e CRM).\n\nQuer ver como seria no seu? Comente LEITURA.\n\n#metodovos #erp #crm #loja",
+ li:"Eu não começo instalando sistema. Começo olhando onde o contato se perde.\n\nNeste projeto próprio (loja, ERP e CRM), o Método VOS aparece em três passos: Ver o que existia, Ordenar o que vem primeiro, Sustentar com rotina e painel.\n\n[1 situação real: como era antes e como ficou, sem número que você não possa comprovar.]\n\nSe quiser esse desenho para o seu negócio, me chame.",
+ prod:"Use o projeto da Rose Modas ou do ERP Sunshine e diga que é projeto próprio. Preencha os colchetes com uma situação real que você mesma viveu; sem situação real, a peça não sai.",
+ med:"Visitas ao perfil, mensagens, comentários LEITURA."},
+{id:"p9", q:"Ter 24/11", fmt:"Reel 45 s ou carrossel", canal:"Instagram + LinkedIn", etapa:"Meio", t:"Black Friday na sexta: 4 perguntas antes de divulgar",
+ pub:"Clínicas e serviços que fazem campanha de fim de ano.",
+ mec:"Capacidade e caminho antes de divulgar.",
+ hook:"“A Black Friday é na sexta. Para onde vão os contatos que chegarem?”",
+ beats:[["0–5 s","“A Black Friday é na sexta. Para onde vão os contatos que chegarem?”","Gancho"],
+  ["5–15 s","“Um: quem responde e em quanto tempo?”","Pergunta 1"],
+  ["15–25 s","“Dois: onde cada contato fica registrado?”","Pergunta 2"],
+  ["25–35 s","“Três: quem retoma quem não fechou, e quando?”","Pergunta 3"],
+  ["35–45 s","“Quatro: quantos atendimentos por dia você consegue dar conta? Salve este vídeo para conferir antes de divulgar.”","Pergunta 4"]],
+ vira:"Divulgar mais só ajuda quando há para onde levar os contatos e capacidade para atender.",
+ cta:"Salvar o vídeo.",
+ ig:"Black Friday: 4 perguntas para fazer antes de divulgar (clínicas e serviços).\n\nVeja como conferir: quem responde e em quanto tempo, onde cada contato fica registrado, quem retoma quem não fechou e quantos atendimentos por dia cabem.\n\nSalve para conferir antes da sexta.\n\n#blackfriday #clinicas #atendimento #metodovos",
+ li:"A Black Friday é na sexta. Antes de divulgar, quatro perguntas:\n\n1) Quem responde, e em quanto tempo?\n2) Onde cada contato fica registrado?\n3) Quem retoma quem não fechou, e quando?\n4) Quantos atendimentos por dia você consegue dar conta?\n\nDivulgar mais só ajuda quando há para onde levar os contatos e capacidade para atender.\n\nSe quiser conferir isso no seu negócio ainda esta semana, me chame.",
+ prod:"Peça de utilidade, simples. Publique de manhã: a decisão acontece até quinta.",
+ med:"Salvamentos e compartilhamentos."},
+{id:"p10", q:"Qui 26/11", fmt:"Texto longo no LinkedIn + Reel curto de 30 s", canal:"LinkedIn primeiro, Instagram depois", etapa:"Fundo", t:"O que aprendi em novembro e vagas de leitura para dezembro",
+ pub:"Quem acompanhou o mês e ainda não pediu a leitura.",
+ mec:"Prestação de contas aberta com o que você mediu, mais convite.",
+ hook:"“Em novembro, abordei [N] negócios. Aprendi três coisas.”",
+ beats:[["0–5 s","“Em novembro, abordei [N] negócios. Aprendi três coisas.”","Número real"],
+  ["5–25 s","Os 3 aprendizados, com a leitura do dia 25/11.","3 itens na tela"],
+  ["25–30 s","“Abri [N] vagas de leitura gratuita para dezembro. Me chame no WhatsApp.”","WhatsApp"]],
+ vira:"Mostrar o que funcionou e o que não funcionou aumenta a confiança de quem está decidindo.",
+ cta:"Chamar no WhatsApp para reservar a leitura de dezembro.",
+ ig:"Fechamento de novembro: o que aprendi e as vagas de leitura gratuita para dezembro.\n\n[3 aprendizados, com números reais]\n\nPara clínicas e serviços em Belo Horizonte. Me chame no WhatsApp para reservar a sua.\n\n#metodovos #marketingestrategico #belohorizonte",
+ li:"Em novembro, abordei [N] negócios, enviei [N] leituras e conversei com [N] pessoas.\n\nO que aprendi:\n1) [aprendizado 1]\n2) [aprendizado 2]\n3) [aprendizado 3]\n\nPara dezembro, abri [N] vagas de leitura gratuita. Só use o número de vagas se ele for verdadeiro.\n\nSe for o seu momento, me chame no WhatsApp.",
+ prod:"Escreva depois da leitura do dia 25/11 (aba 3). Se os números forem pequenos, diga que são pequenos: isso é prestação de contas.",
+ med:"Pedidos de leitura para dezembro e respostas ao texto."}
+];
+
+var MSGS = [
+ {t:"1 · Abertura (dia 2)", s:"Direct ou WhatsApp comercial", x:"Oi, [nome]! Aqui é a Yasmin, da YM, em Belo Horizonte. Estava olhando o perfil da [empresa] e gostei de [observação positiva real].\n\nEu preparo uma leitura gratuita de como as pessoas chegam até um negócio e como o contato é acompanhado. Olho só o que é público (Instagram, site e Google).\n\nPosso preparar a da [empresa] e te enviar o link? Se preferir não receber mensagens, é só me avisar."},
+ {t:"2 · Follow-up com exemplo (dia 5)", s:"Mesmo canal", x:"Oi, [nome]! Passo uma vez só para deixar um exemplo de como fica a leitura (é um caso ilustrativo): [link do exemplo]. Se quiser a da [empresa], me responda “quero” que eu preparo."},
+ {t:"3 · Pergunta simples (dia 9)", s:"Mesmo canal", x:"[nome], uma pergunta sem compromisso: quando alguém pede orçamento na [empresa], quem acompanha e em quanto tempo? Se fizer sentido conversar, preparo a leitura e mostro em 15 minutos."},
+ {t:"4 · Encerramento (dia 14)", s:"Mesmo canal", x:"[nome], vou parar por aqui para não incomodar. Se em algum momento fizer sentido olhar o caminho do contato da [empresa], é só me chamar. Sucesso por aí!"},
+ {t:"5 · Convite no LinkedIn", s:"Nota de até 300 caracteres", x:"Olá, [nome]! Acompanho o trabalho da [empresa] em BH e gostei de [observação]. Trabalho com diagnóstico e sistemas para clínicas e serviços. Será um prazer conectar."},
+ {t:"6 · Leitura pronta e convite para conversar", s:"Depois de entregar", x:"[nome], a leitura da [empresa] está pronta: [link]. Leva uns 5 minutos para ler. Se quiser, converso 20 minutos sobre o que ela mostra e o que dá para fazer primeiro."},
+ {t:"7 · Pedido de indicação", s:"Clientes, parceiros, H2PL", x:"Oi, [nome]! Em novembro estou abrindo leituras gratuitas para donos de clínicas e serviços de BH. Você lembra de alguém que gostaria de ver como as pessoas chegam até o negócio dele(a)? Posso entrar em contato citando seu nome, ou você repassa este link: [link]. Obrigada!"},
+ {t:"8 · Parceria com contador", s:"WhatsApp ou LinkedIn", x:"Oi, [nome]! Atendo clientes de contabilidade e de outros serviços na parte de marketing e sistemas, olhando o caminho do contato até o fechamento. Quando um cliente seu perguntar sobre isso, posso ser a pessoa que você indica; e, quando eu encontrar quem precisa de contador, indico você. Conversamos 20 minutos? [Se quiser: combinamos algo simples por indicação que virar conversa.]"},
+ {t:"9 · Autorização e dados do caso", s:"Clientes que autorizaram depoimento", x:"Oi, [nome]! Posso contar o seu caso (o que o Raio-X mostrou e o que mudou) em um post? Mostro o texto antes de publicar. Para eu ser fiel, pode me dizer em 2 ou 3 frases: como era antes, o que mudou e se tem algum número que posso citar? E como prefere aparecer: nome do negócio, só o seu primeiro nome ou sem nome?"},
+ {t:"10 · Vídeo depois da conversa (60 a 90 s)", s:"Roteiro para gravar", x:"Oi, [nome], obrigada pela conversa. Resumo do que vimos: 1) o que apareceu na leitura; 2) o primeiro passo que eu recomendo; 3) o próximo passo combinado: [data]. Fico à disposição para ajustar o que for preciso."}
+];
+
+var WEEKS = [
+ {w:"Semana 0 · 19 a 25/10", sub:"Preparar", tasks:[
+  ["w0a","Itens 1 a 5 do checklist feitos (decisões, Instagram, LinkedIn)"],
+  ["w0b","Lista de 60 contas pronta"],
+  ["w0c","Modelos de mensagem salvos e link de exemplo definido"],
+  ["w0d","Indicação pedida a 5 pessoas e 3 contadores contatados"]]},
+ {w:"Semana 1 · 26 a 30/10", sub:"Primeira rodada", tasks:[
+  ["w1a","1ª rodada: 15 abordagens (cadência dos dias 0 a 2)"],
+  ["w1b","5 mini-leituras entregues a quem respondeu"],
+  ["w1c","Publicadas as peças 1 (ter 27) e 2 (qui 29)"],
+  ["w1d","25 comentários em contas-alvo no LinkedIn"]]},
+ {w:"Semana 2 · 2 a 6/11", sub:"Follow-up e segunda rodada", tasks:[
+  ["w2a","Follow-ups da rodada 1 (dias 5 e 9)"],
+  ["w2b","2ª rodada: 15 abordagens"],
+  ["w2c","1 leitura completa para quem pediu"],
+  ["w2d","Publicadas as peças 3 (ter 3) e 4 (qui 5)"],
+  ["w2e","Conversa com 1 contador"]]},
+ {w:"Semana 3 · 9 a 13/11", sub:"Prova e evento", tasks:[
+  ["w3a","3ª rodada: 15 abordagens + follow-ups"],
+  ["w3b","1 evento presencial, com follow-up em 48 h"],
+  ["w3c","Publicadas as peças 5 (ter 10) e 6 (qui 12)"],
+  ["w3d","Segunda leitura completa"]]},
+ {w:"Semana 4 · 16 a 20/11", sub:"Fecho das rodadas", tasks:[
+  ["w4a","4ª rodada: 15 abordagens + encerramentos da rodada 1"],
+  ["w4b","Publicadas as peças 7 (ter 17) e 8 (qui 19)"],
+  ["w4c","Nova rodada de pedidos de indicação"],
+  ["w4d","Terceira e quarta leituras completas"]]},
+ {w:"Semana 5 · 23 a 27/11", sub:"Leitura dos números", tasks:[
+  ["w5a","Publicada a peça 9 (ter 24)"],
+  ["w5b","Dia 25/11: ler os números pela escada da aba 3 e decidir o que manter"],
+  ["w5c","Publicada a peça 10 (qui 26) com os números reais"]]}
+];
+
+/* ---------- ESTADO ---------- */
+var state = {}; var db = null, docRef = null, saving = false, dirty = false, LSK = "ymplano_v1";
+function lsRead(){ try{ var v = localStorage.getItem(LSK); return v ? JSON.parse(v) : {}; }catch(e){ return {}; } }
+function lsWrite(){ try{ localStorage.setItem(LSK, JSON.stringify(state)); }catch(e){} }
+function persist(){
+  lsWrite();
+  if(!docRef) return;
+  dirty = true;
+  if(saving) return;
+  (function run(){
+    if(!dirty){ saving = false; return; }
+    saving = true; dirty = false;
+    docRef.set({done: JSON.parse(JSON.stringify(state)), at: new Date().toISOString()}).then(run, function(){ saving = false; });
+  })();
+}
+function setDone(id, v){ if(v) state[id] = true; else delete state[id]; persist(); refresh(); }
+
+/* ---------- RENDER ---------- */
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function chip(p){ return p==="alta" ? '<span class="chip alta">Prioridade alta</span>' : p==="media" ? '<span class="chip media">Prioridade média</span>' : '<span class="chip dep">Pode esperar</span>'; }
+var COPIES = [];
+function copyBtn(text, label){ COPIES.push(text); return '<button class="btn" type="button" data-copy="'+(COPIES.length-1)+'">'+(label||"Copiar")+'</button>'; }
+
+function renderChecklist(){
+  var h = "";
+  CHECK.forEach(function(b){
+    h += '<div class="blk" data-blk="'+esc(b.b)+'"><div class="blk-h"><h2>'+esc(b.b)+'</h2><span class="cnt"><span data-cnt></span> · '+esc(b.sub)+'</span></div>';
+    b.items.forEach(function(it){
+      h += '<div class="task" data-id="'+it.id+'"><input class="cb" type="checkbox" id="k-'+it.id+'" aria-label="Feito: '+esc(it.t)+'">'
+        + '<div><label for="k-'+it.id+'" class="t-title">'+esc(it.t)+'</label>'
+        + '<div class="t-meta">'+chip(it.p)+'<span class="chip">'+it.min+' min</span><span class="t-where">'+esc(it.where)+'</span></div>';
+      if(it.b){ h += '<div class="ba"><div class="b"><small>Hoje</small><pre>'+esc(it.b)+'</pre></div><div class="a"><small>Passa a ser</small><pre>'+esc(it.a)+'</pre>'+(it.copy?copyBtn(it.copy):"")+'</div></div>'; }
+      else { h += '<div class="ba"><div class="a"><small>Fazer</small><pre>'+esc(it.a)+'</pre>'+(it.copy?copyBtn(it.copy):"")+'</div></div>'; }
+      h += '<div class="why">'+esc(it.why)+'</div></div></div>';
+    });
+    h += '</div>';
+  });
+  document.getElementById("checklist-root").innerHTML = h;
+}
+function field(l, v){ return '<div><small>'+l+'</small>'+v+'</div>'; }
+function renderPosts(){
+  var h = "";
+  POSTS.forEach(function(p){
+    var rows = p.beats.map(function(r){ return '<tr><td class="n">'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td></tr>'; }).join("");
+    h += '<details class="post" data-id="'+p.id+'"><summary><input class="cb" type="checkbox" id="k-'+p.id+'" aria-label="Publicado: '+esc(p.t)+'">'
+      + '<div><div class="t-meta" style="margin:0 0 4px"><span class="chip">'+esc(p.q)+'</span><span class="chip media">'+esc(p.fmt)+'</span><span class="chip">'+esc(p.etapa)+'</span></div><div class="t-title">'+(POSTS.indexOf(p)+1)+'. '+esc(p.t)+'</div></div></summary>'
+      + '<div class="p-body"><div class="fields">'
+      + field("Canal", esc(p.canal)) + field("Quem queremos atingir", esc(p.pub)) + field("Mecanismo", esc(p.mec)) + field("Hook", esc(p.hook)) + field("Virada de chave", esc(p.vira)) + field("CTA (um só)", esc(p.cta))
+      + '</div><span class="lbl" style="margin-top:14px">Roteiro</span><div class="tw"><table><thead><tr><th class="n">Tempo</th><th>Fala ou texto</th><th>Na tela</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
+      + '<div class="copyblock"><span class="lbl">Legenda do Instagram (segunda pessoa)</span><pre class="copytext">'+esc(p.ig)+'</pre>'+copyBtn(p.ig)+'</div>'
+      + '<div class="copyblock"><span class="lbl">Texto do LinkedIn (primeira pessoa)</span><pre class="copytext">'+esc(p.li)+'</pre>'+copyBtn(p.li)+'</div>'
+      + '<div class="fields">'+field("Produção", esc(p.prod))+field("O que olhar depois", esc(p.med))+'</div></div></details>';
+  });
+  document.getElementById("posts-root").innerHTML = h;
+}
+function renderMsgs(){
+  document.getElementById("msgs-root").innerHTML = MSGS.map(function(m){
+    return '<div class="copyblock"><span class="lbl">'+esc(m.t)+' · '+esc(m.s)+'</span><pre class="copytext">'+esc(m.x)+'</pre>'+copyBtn(m.x)+'</div>';
+  }).join("");
+}
+function renderWeeks(){
+  document.getElementById("weeks-root").innerHTML = WEEKS.map(function(w){
+    var t = w.tasks.map(function(k){ return '<div class="task" data-id="'+k[0]+'" style="margin-top:6px;padding:8px 12px"><input class="cb" type="checkbox" id="k-'+k[0]+'" aria-label="Feito: '+esc(k[1])+'"><label for="k-'+k[0]+'" class="t-title" style="font:500 14px var(--f-body)">'+esc(k[1])+'</label></div>'; }).join("");
+    return '<div class="blk" style="margin-top:16px"><div class="blk-h"><h2 style="font-size:16px">'+esc(w.w)+'</h2><span class="cnt">'+esc(w.sub)+'</span></div>'+t+'</div>';
+  }).join("");
+}
+
+function refresh(){
+  var total = 0, done = 0;
+  document.querySelectorAll("[data-id]").forEach(function(el){
+    var id = el.getAttribute("data-id"), cb = el.querySelector(".cb"); if(!cb) return;
+    cb.checked = !!state[id]; el.classList.toggle("done", !!state[id]);
+  });
+  CHECK.forEach(function(b){ b.items.forEach(function(it){ total++; if(state[it.id]) done++; }); });
+  document.querySelectorAll(".blk[data-blk]").forEach(function(el){
+    var b = CHECK.filter(function(x){ return x.b === el.getAttribute("data-blk"); })[0]; if(!b) return;
+    var d = b.items.filter(function(it){ return state[it.id]; }).length;
+    el.querySelector("[data-cnt]").textContent = d + " de " + b.items.length;
+  });
+  var pub = POSTS.filter(function(p){ return state[p.id]; }).length;
+  document.getElementById("prog-txt").textContent = "Checklist " + done + "/" + total + " · Peças publicadas " + pub + "/" + POSTS.length;
+  document.getElementById("prog-bar").style.width = Math.round(100*done/total) + "%";
+}
+
+/* ---------- AÇÕES ---------- */
+document.addEventListener("change", function(e){
+  var t = e.target; if(!t.classList || !t.classList.contains("cb")) return;
+  var host = t.closest("[data-id]"); if(host) setDone(host.getAttribute("data-id"), t.checked);
+});
+document.addEventListener("click", function(e){
+  var b = e.target.closest && e.target.closest("[data-copy]"); if(!b) return;
+  var text = COPIES[+b.getAttribute("data-copy")], old = b.textContent;
+  function ok(){ b.textContent = "Copiado"; setTimeout(function(){ b.textContent = old; }, 1400); }
+  function fb(){
+    var ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly",""); ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); ok(); }catch(err){ b.textContent = "Selecione e copie"; }
+    document.body.removeChild(ta);
+  }
+  try{ navigator.clipboard.writeText(text).then(ok, fb); }catch(err){ fb(); }
+});
+var TABS = ["checklist","conteudo","outbound","numeros"];
+function showTab(t){
+  if(TABS.indexOf(t) < 0) t = "checklist";
+  TABS.forEach(function(k){
+    document.getElementById("p-"+k).hidden = (k !== t);
+    document.getElementById("tab-"+k).setAttribute("aria-selected", k === t ? "true" : "false");
+  });
+}
+document.querySelectorAll("nav.tabs button").forEach(function(b){
+  b.addEventListener("click", function(){ showTab(b.getAttribute("data-t")); try{ history.replaceState(null,"","#"+b.getAttribute("data-t")); }catch(e){} window.scrollTo(0,0); });
+});
+
+
+document.getElementById("exp").addEventListener("click",function(){var c=btoa(unescape(encodeURIComponent(JSON.stringify(state))));var b=this;function ok(){b.textContent="Copiado";setTimeout(function(){b.textContent="Copiar código das marcações"},1400)}try{navigator.clipboard.writeText(c).then(ok,function(){document.getElementById("imp").value=c})}catch(e){document.getElementById("imp").value=c}});
+document.getElementById("impb").addEventListener("click",function(){var m=document.getElementById("impmsg");try{var o=JSON.parse(decodeURIComponent(escape(atob(document.getElementById("imp").value.trim()))));if(!o||typeof o!=="object")throw 0;state=o;persist();refresh();m.textContent="Marcações aplicadas."}catch(e){m.textContent="Código inválido. Copie de novo no outro aparelho."}});
+/* ---------- INÍCIO ---------- */
+renderChecklist(); renderPosts(); renderMsgs(); renderWeeks();
+state = lsRead(); refresh();
+showTab((location.hash || "").replace("#",""));
+(async function(){
+  try{
+    if(!window.claude || !window.claude.use) return;
+    db = await window.claude.use("db"); if(!db) return;
+    docRef = db.doc("plano/estado");
+    docRef.onSnapshot(function(snap){
+      var d = snap.exists ? snap.data() : null;
+      if(d && d.done && !saving){ state = d.done; lsWrite(); refresh(); }
+      else if(!d && Object.keys(state).length && !saving){ persist(); }
+    }, function(){ docRef = null; });
+  }catch(e){ docRef = null; }
+})();
+</script>
+
+</body>
+</html>
