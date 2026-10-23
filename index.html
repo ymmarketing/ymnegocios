@@ -59,6 +59,7 @@
         "name": "Diagnósticos YM",
         "itemListElement": [
           {"@type": "Offer", "price": "0", "priceCurrency": "BRL", "url": "https://ymnegocios.com.br/triagem/", "itemOffered": {"@type": "Service", "name": "Avaliação inicial gratuita", "description": "Questionário de cerca de 4 minutos que indica o ponto de partida do seu negócio."}},
+          {"@type": "Offer", "url": "https://ymnegocios.com.br/#caminhos", "priceSpecification": {"@type": "UnitPriceSpecification", "minPrice": 500, "priceCurrency": "BRL", "unitText": "mês"}, "itemOffered": {"@type": "Service", "name": "Acompanhamento mensal YM", "description": "Acompanhamento contínuo de marketing e negócios, com reunião mensal e conversa direta."}},
           {"@type": "Offer", "url": "https://ymnegocios.com.br/raio-x-digital/", "itemOffered": {"@id": "https://ymnegocios.com.br/raio-x-digital/#servico"}},
           {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Raio-X Estratégico YM", "description": "Diagnóstico consultivo com imersão, dados do negócio, impacto econômico e plano de ação."}}
         ]
@@ -99,7 +100,8 @@
       "mainEntity": [
         {"@type": "Question", "name": "O que a YM Marketing & Negócios faz?", "acceptedAnswer": {"@type": "Answer", "text": "Investigamos onde a empresa perde clientes, tempo e dinheiro, definimos o que resolver primeiro e construímos a solução: estratégia, marca, sistemas, conteúdo, anúncios e relatórios que cruzam marketing e financeiro."}},
         {"@type": "Question", "name": "Para quem é a consultoria da YM?", "acceptedAnswer": {"@type": "Answer", "text": "Para empresas que já têm uma jornada digital ou querem começar uma, de negócios em estruturação a empresas que faturam centenas de milhares ou milhões por mês."}},
-        {"@type": "Question", "name": "Quanto custa começar?", "acceptedAnswer": {"@type": "Answer", "text": "A avaliação inicial é gratuita e leva cerca de 4 minutos. Ela indica a profundidade certa: o Raio-X Digital ou o Raio-X Estratégico, com valor definido depois de uma conversa."}},
+        {"@type": "Question", "name": "Quanto custa começar?", "acceptedAnswer": {"@type": "Answer", "text": "A avaliação inicial é gratuita e leva cerca de 4 minutos. O acompanhamento mensal começa em R$ 500 por mês e varia conforme o porte da empresa e o que entra no plano. Jobs e projetos têm valor definido depois de uma análise. O valor do Raio-X Digital é abatido se você contratar o mensal ou o Raio-X Estratégico em até 30 dias."}},
+        {"@type": "Question", "name": "Posso contratar só uma parte?", "acceptedAnswer": {"@type": "Answer", "text": "Pode. Além do acompanhamento mensal, a YM faz jobs (corrigir um ponto, como o Perfil da Empresa no Google ou o roteiro do WhatsApp) e projetos (site, loja virtual, brand book, CRM, jornada digital). O serviço é o mesmo; muda só a forma de contratar."}},
         {"@type": "Question", "name": "A YM atende fora de Belo Horizonte?", "acceptedAnswer": {"@type": "Answer", "text": "Sim. A YM é de Belo Horizonte e atende empresas de todo o Brasil online."}},
         {"@type": "Question", "name": "O que é o Método VOS?", "acceptedAnswer": {"@type": "Answer", "text": "É o método da YM em três etapas: Ver (entender os dados e a jornada do cliente), Ordenar (decidir o que resolver primeiro) e Sustentar (transformar a decisão em processo, sistema e acompanhamento)."}},
         {"@type": "Question", "name": "Fazer a avaliação me obriga a contratar algo?", "acceptedAnswer": {"@type": "Answer", "text": "Não. A avaliação inicial é gratuita e sem compromisso. Você recebe uma indicação de ponto de partida e decide se e quando quer seguir."}}
@@ -306,6 +308,44 @@ tr.alert td{color:var(--orange);font-weight:600}
 .path .btn{margin-top:10px;justify-self:start}
 .path.first .btn{background:#fff;color:var(--ink)}
 @media (max-width:900px){.paths{grid-template-columns:1fr}}
+
+/* três portas: mesmo serviço, três formas de contratar */
+.doors{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.door{border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:12px;background:var(--card)}
+.door.main{border:2px solid var(--blue);box-shadow:var(--shadow)}
+.door h3{font-size:22px}
+.door .say{font-size:16px;color:var(--ink2)}
+.door ul{margin:0;padding-left:18px;font-size:14.5px;display:grid;gap:6px;color:var(--ink2)}
+.door .price{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);font-family:var(--display);font-weight:800;font-size:20px;color:var(--ink)}
+.door .price small{display:block;font-family:var(--body);font-weight:500;font-size:13px;color:var(--muted);margin-top:2px}
+.door .btn{justify-self:start;align-self:flex-start}
+.door.main .btn{background:var(--blue);color:#fff}
+.entry{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.estep{border-radius:16px;padding:20px;background:var(--card);border:1px solid var(--line);display:grid;gap:8px;align-content:start}
+.estep .k{font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
+.estep h4{font-size:17px}
+.estep p{font-size:14.5px;color:var(--ink2)}
+.estep a{font-weight:700;color:var(--blue);font-size:14.5px;text-decoration:none}
+.pay{margin-top:18px;font-size:14px;color:var(--muted)}
+@media (max-width:900px){.doors,.entry{grid-template-columns:1fr}}
+
+/* segmentos */
+.segs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.seg{border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:6px;align-content:start;text-decoration:none;background:var(--card);transition:border-color .2s,transform .2s}
+.seg:hover{border-color:var(--blue);transform:translateY(-2px)}
+.seg b{font-family:var(--display);font-size:16px}
+.seg span{font-size:14px;color:var(--ink2)}
+.seg.other{border-style:dashed}
+.seg.other span{color:var(--blue);font-weight:600}
+@media (max-width:900px){.segs{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.segs{grid-template-columns:1fr}}
+
+/* experiência em números */
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+.num{background:var(--bg2);border-radius:14px;padding:14px}
+.num b{display:block;font-family:var(--display);font-weight:800;font-size:26px;color:var(--blue);line-height:1.1}
+.num span{font-size:13px;color:var(--ink2);line-height:1.35;display:block;margin-top:4px}
+@media (max-width:900px){.nums{grid-template-columns:1fr 1fr}}
 
 /* yasmin + cta */
 .me{display:grid;grid-template-columns:auto 1fr;gap:36px;align-items:center}
@@ -845,14 +885,62 @@ img{max-width:100%}
 
 <section id="caminhos" class="tint"><div class="wrap">
   <div class="sec-head">
-    <div class="eyebrow">Como começar</div>
-    <h2>Todo projeto começa pelo terreno.</h2>
-    <p class="lead">A avaliação gratuita indica a profundidade certa de diagnóstico para o momento da sua empresa. Você só investe quando sabe o que está comprando.</p>
+    <div class="eyebrow">Como trabalhamos</div>
+    <h2>A forma de trabalhar é a mesma. Você escolhe como contratar.</h2>
+    <p class="lead">Antes de qualquer execução, analisamos seu negócio para identificar o que precisa ser priorizado e gerar mais impacto nos resultados.</p>
   </div>
-  <div class="paths">
-    <div class="path first"><span class="badge"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span><div class="eyebrow">Para todos</div><h3>Avaliação inicial</h3><ul><li>Gratuita, cerca de 4 minutos</li><li>Indica o seu ponto de partida</li><li>Sem compromisso</li></ul><a class="btn" href="/triagem/">Fazer a avaliação gratuita</a></div>
-    <div class="path"><span class="badge"><svg class="ic" aria-hidden="true"><use href="#i-bars"/></svg></span><div class="eyebrow">Leitura digital</div><h3>Raio-X Digital</h3><ul><li>100% online</li><li>Relatório com a ordem certa</li><li>Reunião de esclarecimento</li></ul><a class="btn btn-ghost" href="/raio-x-digital/">Conhecer o Raio-X Digital</a></div>
-    <div class="path"><span class="badge" style="--c:var(--orange)"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg></span><div class="eyebrow">Investigação consultiva</div><h3>Raio-X Estratégico</h3><ul><li>Imersão nos dados do negócio</li><li>Faturamento, retorno e prioridades</li><li>Plano de ação com indicadores</li></ul><a class="btn btn-ghost" href="https://wa.me/5531975073862?text=Ol%C3%A1%2C%20Yasmin!%20Vim%20pelo%20site%20da%20YM%20e%20quero%20conversar." target="_blank" rel="noopener">Conversar sobre o Estratégico</a></div>
+  <div class="doors">
+    <div class="door main">
+      <span class="badge"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span>
+      <div class="eyebrow">Mensal</div>
+      <h3>Precisa de acompanhamento contínuo?</h3>
+      <p class="say">A YM trabalha ao seu lado, mês a mês.</p>
+      <ul><li>Reunião mensal e contato direto com a Yasmin</li><li>Execução e ajustes ao longo do mês</li><li>Relatório que conecta o conteúdo aos resultados financeiros</li></ul>
+      <p class="price">A partir de R$ 500/mês<small>O valor varia conforme o porte da empresa e os serviços incluídos no plano.</small></p>
+      <a class="btn" href="https://wa.me/5531975073862?text=Ol%C3%A1%2C%20Yasmin!%20Vim%20pelo%20site%20e%20quero%20saber%20do%20acompanhamento%20mensal." target="_blank" rel="noopener">Conversar sobre o plano mensal</a>
+    </div>
+    <div class="door">
+      <span class="badge" style="--c:var(--orange)"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg></span>
+      <div class="eyebrow" style="color:var(--orange)">Pontual (Job)</div>
+      <h3>Precisa resolver algo específico?</h3>
+      <p class="say">Analisamos a necessidade e desenvolvemos a solução.</p>
+      <ul><li>Perfil da Empresa no Google</li><li>Bio e destaques do Instagram</li><li>Roteiro de atendimento no WhatsApp</li><li>Métricas no site</li><li>Desenho de funil</li></ul>
+      <p class="price">Valor definido após análise<small>O orçamento é definido de acordo com o que precisa ser resolvido.</small></p>
+      <a class="btn btn-ghost" href="https://wa.me/5531975073862?text=Ol%C3%A1%2C%20Yasmin!%20Vim%20pelo%20site%20e%20quero%20corrigir%20um%20ponto%20do%20meu%20neg%C3%B3cio." target="_blank" rel="noopener">Solicitar uma análise</a>
+    </div>
+    <div class="door">
+      <span class="badge" style="--c:var(--green)"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg></span>
+      <div class="eyebrow" style="color:var(--green)">Projeto</div>
+      <h3>Tem um projeto em mente?</h3>
+      <p class="say">A YM estrutura e implanta seu projeto.</p>
+      <ul><li>Site ou loja virtual</li><li>Brand book</li><li>CRM e ERP</li><li>Jornada digital completa</li><li>Estratégia de posicionamento</li><li>Implantação de marketing para empresas em fase de abertura</li></ul>
+      <p class="price">Valor definido após análise<small>Escopo, prazo e condições de parcelamento definidos em conjunto com você.</small></p>
+      <a class="btn btn-ghost" href="https://wa.me/5531975073862?text=Ol%C3%A1%2C%20Yasmin!%20Vim%20pelo%20site%20e%20tenho%20um%20projeto%20em%20mente." target="_blank" rel="noopener">Contar sobre meu projeto</a>
+    </div>
+  </div>
+  <div class="entry">
+    <div class="estep"><span class="k">Não sabe por onde começar?</span><h4>Avaliação inicial gratuita</h4><p>Em cerca de 4 minutos, descubra seu ponto de partida. Sem custo e sem compromisso.</p><a href="/triagem/">Fazer a avaliação →</a></div>
+    <div class="estep"><span class="k">Quer uma leitura completa?</span><h4>Raio-X Digital</h4><p>Receba um relatório com as prioridades do seu negócio organizadas e participe de uma reunião online de 30 minutos com a Yasmin.</p><p>Se contratar o plano mensal ou o Raio-X Estratégico em até 30 dias, o valor pago pelo Raio-X Digital será abatido.</p><a href="/raio-x-digital/">Conhecer o Raio-X →</a></div>
+    <div class="estep"><span class="k">Empresa acima de R$ 200 mil/mês?</span><h4>Raio-X Estratégico</h4><p>Uma imersão nos dados do seu negócio para analisar faturamento, retorno e prioridades, com um plano de ação.</p><a href="https://wa.me/5531975073862?text=Ol%C3%A1%2C%20Yasmin!%20Vim%20pelo%20site%20e%20quero%20conversar%20sobre%20o%20Raio-X%20Estrat%C3%A9gico." target="_blank" rel="noopener">Conversar sobre o Estratégico →</a></div>
+  </div>
+  <p class="pay"><b>Formas de pagamento:</b> aceitamos Pix, boleto e cartão. O plano mensal pode ser contratado por assinatura, e os projetos podem ser parcelados.</p>
+</div></section>
+
+<section id="segmentos"><div class="wrap">
+  <div class="sec-head">
+    <div class="eyebrow">Para o seu negócio</div>
+    <h2>Escolha o seu segmento.</h2>
+    <p class="lead">Cada setor tem um ponto que pesa mais no resultado. A avaliação gratuita começa por ele.</p>
+  </div>
+  <div class="segs">
+    <a class="seg" href="/triagem/"><b>Clínicas e saúde</b><span>Agenda cheia com quem já confia em você.</span></a>
+    <a class="seg" href="/triagem/"><b>Contabilidade e finanças</b><span>Ser encontrado além da indicação.</span></a>
+    <a class="seg" href="/triagem/"><b>Alimentos e produtores</b><span>Do produto artesanal à venda recorrente.</span></a>
+    <a class="seg" href="/triagem/"><b>Moda e varejo</b><span>Loja que vende enquanto você atende.</span></a>
+    <a class="seg" href="/triagem/"><b>Consultorias e B2B</b><span>Autoridade que vira reunião.</span></a>
+    <a class="seg" href="/triagem/"><b>Turismo</b><span>Ser encontrado antes da viagem ser decidida.</span></a>
+    <a class="seg" href="/triagem/"><b>Restaurantes e bares</b><span>Mesa cheia também nos dias mais vazios.</span></a>
+    <a class="seg other" href="/triagem/"><b>Outro segmento</b><span>Fazer a avaliação gratuita →</span></a>
   </div>
 </div></section>
 
@@ -876,7 +964,8 @@ img{max-width:100%}
   <div class="faq">
     <details><summary>O que a YM Marketing &amp; Negócios faz?</summary><p>Investigamos onde a empresa perde clientes, tempo e dinheiro, definimos o que resolver primeiro e construímos a solução: estratégia, marca, sistemas, conteúdo, anúncios e relatórios que cruzam marketing e financeiro.</p></details>
     <details><summary>Para quem é a consultoria da YM?</summary><p>Para empresas que já têm uma jornada digital ou querem começar uma, de negócios em estruturação a empresas que faturam centenas de milhares ou milhões por mês.</p></details>
-    <details><summary>Quanto custa começar?</summary><p>A avaliação inicial é gratuita e leva cerca de 4 minutos. Ela indica a profundidade certa: o Raio-X Digital ou o Raio-X Estratégico, com valor definido depois de uma conversa.</p></details>
+    <details><summary>Quanto custa começar?</summary><p>A avaliação inicial é gratuita e leva cerca de 4 minutos. O acompanhamento mensal começa em R$ 500 por mês e varia conforme o porte da empresa e o que entra no plano. Jobs e projetos têm valor definido depois de uma análise. O valor do Raio-X Digital é abatido se você contratar o mensal ou o Raio-X Estratégico em até 30 dias.</p></details>
+    <details><summary>Posso contratar só uma parte?</summary><p>Pode. Além do acompanhamento mensal, a YM faz jobs (corrigir um ponto, como o Perfil da Empresa no Google ou o roteiro do WhatsApp) e projetos (site, loja virtual, brand book, CRM, jornada digital). O serviço é o mesmo; muda só a forma de contratar.</p></details>
     <details><summary>A YM atende fora de Belo Horizonte?</summary><p>Sim. A YM é de Belo Horizonte e atende empresas de todo o Brasil online.</p></details>
     <details><summary>O que é o Método VOS?</summary><p>É o método da YM em três etapas: Ver (entender os dados e a jornada do cliente), Ordenar (decidir o que resolver primeiro) e Sustentar (transformar a decisão em processo, sistema e acompanhamento).</p></details>
     <details><summary>Fazer a avaliação me obriga a contratar algo?</summary><p>Não. A avaliação inicial é gratuita e sem compromisso. Você recebe uma indicação de ponto de partida e decide se e quando quer seguir.</p></details>
@@ -888,8 +977,14 @@ img{max-width:100%}
   <div>
     <div class="eyebrow">Quem está por trás</div>
     <h2 style="font-size:clamp(28px,3.4vw,40px);margin-top:10px">Prazer, sou Yasmin Menezes.</h2>
-    <p class="lead" style="margin-top:14px">Sou formada em Marketing e construí quase 20 anos de experiência também em operações, processos, experiência do cliente e tecnologia. Foi olhando para essas áreas juntas que percebi como uma decisão isolada pode criar trabalho sem resolver o problema do negócio.</p>
-    <p class="lead" style="margin-top:12px">Na YM, combino essa visão com ferramentas digitais para investigar o cenário, organizar prioridades e levar a solução escolhida para a prática. Você fala diretamente comigo.</p>
+    <p class="lead" style="margin-top:14px">Quase 20 anos unindo marketing, operações, experiência do cliente e tecnologia. Foi olhando para essas áreas juntas que percebi como uma decisão isolada pode criar trabalho sem resolver o problema do negócio.</p>
+    <p class="lead" style="margin-top:12px">Na YM, combino essa visão com ferramentas digitais para investigar o cenário, organizar prioridades e levar a solução escolhida para a prática. Você fala diretamente comigo, do diagnóstico à entrega.</p>
+    <div class="nums">
+      <div class="num"><b>~20</b><span>anos em marketing, operações, CX e tecnologia</span></div>
+      <div class="num"><b>30</b><span>diagnósticos e leituras de negócio feitos</span></div>
+      <div class="num"><b>5</b><span>sistemas em uso por clientes</span></div>
+      <div class="num"><b>2</b><span>MBAs em curso: Marketing Digital e Gestão Financeira</span></div>
+    </div>
     <div class="links"><a href="/quemsomos/">Conhecer a YM</a><a href="https://br.linkedin.com/in/yasmin-menezes-06a187193" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.instagram.com/ym_marketingenegocios/" target="_blank" rel="noopener">Instagram</a></div>
   </div>
 </div></section>
