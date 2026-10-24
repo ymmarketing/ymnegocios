@@ -1133,4 +1133,12 @@ body{background:var(--paper)}
 @media (max-width:900px){.f7 .ymnl{grid-template-columns:minmax(0,1fr);padding:28px 0 0;margin:32px 0 0}.f7 .ymnl>form{grid-column:1;grid-row:auto;margin-top:12px}.f7 .ymnl form{grid-template-columns:1fr}}
 .anc{display:block;height:0;overflow:hidden}
 html{scroll-padding-top:85px}
+/* tablet deitado / notebook pequeno: menu recolhido e Casa com coluna de texto mais larga */
+@media (min-width:901px) and (max-width:1180px){
+  .nav nav,.nav .act .area{display:none}
+  .nav .act{margin-left:auto}
+  .nav .menu{display:flex}
+  .c7-grid{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px}
+  .c7 h2{font-size:30px}
+}
 @media (max-width:900px){html{scroll-padding-top:69px}}
