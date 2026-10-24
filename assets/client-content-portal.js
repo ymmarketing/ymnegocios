@@ -4,7 +4,7 @@
   const sb=window.supabase.createClient(SUPABASE_URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
   const E=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  let portal=null,cursor=new Date(),mode=null;
+  let portal=null,cursor=new Date(),mode=null;const adjusting=new Set();
   const filt={net:'instagram',fmt:'TODOS',st:'TODOS',q:''};
   const label={IDEIA:'Ideia',PLANEJADO:'Planejado',ROTEIRO:'Roteiro',EM_PRODUCAO:'Em produção',REVISAO:'Em revisão',APROVADO:'Aprovado',AGENDADO:'Agendado',PUBLICADO:'Publicado',ANALISADO:'Analisado'};
   const FMT={REEL:'Reels',CARROSSEL:'Carrossel',ESTATICO:'Post estático',POST_ESTATICO:'Post estático',STORIES:'Stories',VIDEO_CURTO:'Vídeo curto'};
@@ -95,6 +95,16 @@
   .bk-done{display:inline-flex;align-items:center;gap:8px;border:1px solid #CFE3DA;background:#fff;color:#0F6B4F;border-radius:10px;padding:8px 12px;font:700 12.5px Inter;cursor:pointer}
   .bk-done.on{background:#117A5B;border-color:#117A5B;color:#fff}
   .bk-done i{width:16px;height:16px;border-radius:5px;border:2px solid currentColor;display:inline-grid;place-items:center;font-style:normal;font-size:11px;line-height:1}
+  .bk-appr{display:flex;flex-direction:column;gap:8px;flex:1 1 320px;min-width:0}
+  .bk-appr p{margin:0;font:500 12.5px/1.5 Inter;color:#3A4A5E}
+  .bk-appr .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .bk-approve{border:0;background:#0066FF;color:#fff;border-radius:10px;padding:10px 14px;font:700 12.5px Inter;cursor:pointer;min-height:40px}
+  .bk-adjust{border:1px solid #C3CEDB;background:#fff;color:#0A2540;border-radius:10px;padding:9px 13px;font:600 12.5px Inter;cursor:pointer;min-height:40px}
+  .bk-link{border:0;background:none;color:#0050C8;font:600 12px Inter;cursor:pointer;padding:6px 0}
+  .bk-state{display:inline-flex;align-items:center;gap:6px;border-radius:9px;padding:7px 11px;font:700 12px/1.4 Inter}
+  .bk-state.ok{background:#E2F3ED;color:#11674F}.bk-state.wait{background:#FDEDE3;color:#A8430F}.bk-state.info{background:#E6F0FF;color:#0050C8}
+  .bk-appr textarea{width:100%;box-sizing:border-box;min-height:74px;border:1px solid #C3CEDB;border-radius:10px;padding:9px 10px;font:500 13px/1.45 Inter;resize:vertical}
+  .bk-appr label{font:700 12px Inter;color:#0A2540}
   .bk-zoom{position:fixed;inset:0;z-index:400;background:rgba(7,26,46,.86);display:flex;align-items:center;justify-content:center;padding:20px}
   .bk-zoom[hidden]{display:none}
   .bk-zoom img{max-width:min(92vw,620px);max-height:84vh;border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.4);background:#fff}
@@ -161,7 +171,18 @@
     else{media=`<div class="bk-lbl"><span>${imgs.length>1?imgs.length+' imagens · '+NET[net]:'Imagem · '+NET[net]}</span>${imgs.length?`<button class="bk-mini" data-dlall="${E(x.id)}">Baixar ${imgs.length>1?'todas':'imagem'}</button>`:''}</div>${imgs.length?`<div class="bk-strip">${imgs.map((u,i)=>`<button data-zoom="${E(x.id)}" data-i="${i}" aria-label="Ampliar imagem ${i+1}"><img src="${E(u)}" alt="${E(x.title)} — imagem ${i+1}" loading="lazy">${imgs.length>1?`<em>${i+1}/${imgs.length}</em>`:''}</button>`).join('')}</div>`:'<div class="ccp-empty">Imagens em produção pela YM.</div>'}`}
     return `<article class="bk-card ${done?'done':''}" id="bk-${E(x.id)}"><div class="bk-top"><div class="bk-date"><small>${d.wd}</small><b>${d.day}</b><i>${d.mon}</i></div><div class="bk-head"><div class="bk-tags"><span class="bk-tag ${E(x.format)}">${E(FMT[x.format]||x.format)}</span>${x.cta?`<span class="bk-tag cta">CTA: ${E(x.cta)}</span>`:''}${done?`<span class="bk-tag ok">✓ Postado no ${NET[net]}</span>`:''}</div><h3>${E(x.title)}</h3>${x.question?`<p>Responde: “${E(x.question)}”</p>`:''}</div></div>
     <div class="bk-body"><div class="bk-col">${media}</div><div class="bk-col"><div class="bk-lbl"><span>Legenda · ${NET[net]}</span>${cap?`<button class="bk-mini" data-copy="${E(x.id)}">Copiar legenda</button>`:''}</div>${cap?`<div class="bk-cap">${E(cap)}</div>`:'<div class="ccp-empty">Legenda em produção pela YM.</div>'}</div></div>
-    <div class="bk-foot"><div class="bk-links">${x.article_url?`<a class="bk-mini" href="${E(x.article_url)}" target="_blank" rel="noopener">Ver guia no site ↗</a>`:''}${x.script_url?`<a class="bk-mini" href="${E(x.script_url)}" target="_blank" rel="noopener">Roteiro no Drive ↗</a>`:''}${x.asset_url?`<a class="bk-mini" href="${E(x.asset_url)}" target="_blank" rel="noopener">Material no Drive ↗</a>`:''}</div><button class="bk-done ${done?'on':''}" data-done="${E(x.id)}" aria-pressed="${done}"><i>${done?'✓':''}</i>${done?'Postado no '+NET[net]:'Marcar como postado no '+NET[net]}</button></div></article>`}
+    <div class="bk-foot"><div class="bk-links">${x.article_url?`<a class="bk-mini" href="${E(x.article_url)}" target="_blank" rel="noopener">Ver guia no site ↗</a>`:''}${x.script_url?`<a class="bk-mini" href="${E(x.script_url)}" target="_blank" rel="noopener">Roteiro no Drive ↗</a>`:''}${x.asset_url?`<a class="bk-mini" href="${E(x.asset_url)}" target="_blank" rel="noopener">Material no Drive ↗</a>`:''}</div>${autoPub()?approvalBlock(x):`<button class="bk-done ${done?'on':''}" data-done="${E(x.id)}" aria-pressed="${done}"><i>${done?'✓':''}</i>${done?'Postado no '+NET[net]:'Marcar como postado no '+NET[net]}</button>`}</div></article>`}
+
+  const autoPub=()=>!!portal?.publishing?.auto_schedule;
+  function whenTxt(dt){if(!dt)return '';const d=new Date(String(dt).slice(0,19)+'-03:00');return d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'}).replace('.','')+' às '+String(dt).slice(11,16)}
+  function approvalBlock(x){const ap=x.approval||{status:'PENDENTE'},sc=x.schedule||{},id=E(x.id);
+    if(adjusting.has(x.id))return `<div class="bk-appr"><label for="adj-${id}">O que você quer mudar neste conteúdo?</label><textarea id="adj-${id}" placeholder="Ex.: trocar a foto, ajustar o texto, mudar o dia…"></textarea><div class="row"><button class="bk-approve" data-sendadj="${id}">Enviar para a YM</button><button class="bk-adjust" data-canceladj="${id}">Cancelar</button></div></div>`;
+    if(ap.status==='APROVADO'){
+      const nets=(sc.networks||[]).map(n=>NET[n]||n).join(' e ');
+      const st=sc.status==='AGENDADO'?`<span class="bk-state ok">✓ Aprovado · agendado para ${E(whenTxt(sc.scheduled_for))}${nets?' no '+E(nets):''}</span>`:sc.status==='ERRO'?`<span class="bk-state info">✓ Aprovado · a YM está finalizando o agendamento</span>`:`<span class="bk-state ok">✓ Aprovado · a YM cuida da publicação</span>`;
+      return `<div class="bk-appr"><div class="row">${st}</div><div class="row"><button class="bk-link" data-adjust="${id}">Preciso mudar algo</button></div></div>`}
+    if(ap.status==='AJUSTE_SOLICITADO')return `<div class="bk-appr"><div class="row"><span class="bk-state wait">Ajuste pedido</span></div><p>“${E(ap.comment)}” · A YM vai te mandar a nova versão aqui.</p><div class="row"><button class="bk-adjust" data-approve="${id}">Aprovar esta versão mesmo assim</button></div></div>`;
+    return `<div class="bk-appr"><p>Está tudo certo? Ao aprovar, a YM agenda a publicação automaticamente${x.publish_date?' para '+E(whenTxt(x.publish_date+'T'+String(x.publish_time||'12:00').slice(0,5))):''}.</p><div class="row"><button class="bk-approve" data-approve="${id}">Aprovar e agendar</button><button class="bk-adjust" data-adjust="${id}">Pedir ajuste</button></div></div>`}
 
   const zoom={list:[],i:0,name:()=>''};
   function openZoom(x,i){const net=filt.net;zoom.list=x.images?.[net]||[];zoom.i=i;zoom.name=k=>`${(x.publish_date||'').replace(/-/g,'')}-${slug(x.title)}-${net}-${String(k+1).padStart(2,'0')}.jpg`;$('#bkZoom').hidden=false;paintZoom()}
@@ -179,6 +200,14 @@
     if(t.dataset.zoom){openZoom(byId(t.dataset.zoom),+t.dataset.i);return}
     if(t.dataset.copy){const x=byId(t.dataset.copy);const ok=await copy(filt.net==='linkedin'?x.caption_linkedin:x.caption_instagram);const old=t.textContent;t.textContent=ok?'Copiada ✓':'Selecione e copie';setTimeout(()=>t.textContent=old,1800);return}
     if(t.dataset.dlall){const x=byId(t.dataset.dlall),net=filt.net,list=x.images?.[net]||[];t.disabled=true;t.textContent='Baixando…';for(let i=0;i<list.length;i++){await download(list[i],`${(x.publish_date||'').replace(/-/g,'')}-${slug(x.title)}-${net}-${String(i+1).padStart(2,'0')}.jpg`);await new Promise(r=>setTimeout(r,350))}t.disabled=false;t.textContent='Baixado ✓';return}
+    if(t.dataset.adjust){adjusting.add(t.dataset.adjust);renderList();setTimeout(()=>document.getElementById('adj-'+t.dataset.adjust)?.focus(),50);return}
+    if(t.dataset.canceladj){adjusting.delete(t.dataset.canceladj);renderList();return}
+    if(t.dataset.approve||t.dataset.sendadj){const id=t.dataset.approve||t.dataset.sendadj,x=byId(id),decision=t.dataset.approve?'APROVADO':'AJUSTE_SOLICITADO';const comment=decision==='AJUSTE_SOLICITADO'?(document.getElementById('adj-'+id)?.value||'').trim():'';
+      if(decision==='AJUSTE_SOLICITADO'&&!comment){toast('Conte o que você quer mudar.',true);return}
+      t.disabled=true;const old=t.textContent;t.textContent=decision==='APROVADO'?'Agendando…':'Enviando…';
+      try{const j=await post({action:'CONTENT_APPROVAL',content_id:id,decision,comment});x.approval=j.approval||x.approval;x.schedule=j.schedule||x.schedule;adjusting.delete(id);
+        toast(decision==='AJUSTE_SOLICITADO'?'Pedido de ajuste enviado para a YM.':x.schedule?.status==='AGENDADO'?'Aprovado e agendado.':'Aprovado. A YM cuida da publicação.');renderList()}
+      catch(err){toast('Não foi possível salvar agora. Tente novamente.',true);t.disabled=false;t.textContent=old}return}
     if(t.dataset.done){const x=byId(t.dataset.done),net=filt.net,next=!x.client_posted?.[net];t.disabled=true;try{const j=await post({action:'CONTENT_MARK_POSTED',content_id:x.id,channel:net,posted:next});x.client_posted=j.client_posted||{};toast(next?`Marcado como postado no ${NET[net]}.`:'Marcação removida.');renderBank()}catch(err){toast('Não foi possível salvar agora. Tente novamente.',true);t.disabled=false}return}
   }
 

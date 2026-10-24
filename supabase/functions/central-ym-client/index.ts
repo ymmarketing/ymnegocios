@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { credsFromEnv, scheduleApprovedContent } from "../_shared/metricool.ts";
 
 const PROD='https://ymnegocios.com.br';
 const ORIGINS=new Set([PROD,'http://localhost:3000','http://localhost:5173']);
@@ -45,8 +46,10 @@ Deno.serve(async(req:Request)=>{
     return map;
   }
 
+  function scheduleView(sync:any){const s=sync||{};const nets=Object.keys(s.networks||{}).filter(n=>s.networks[n]?.id||s.networks[n]?.uuid);return {status:s.status||'',scheduled_for:s.scheduled_for||null,networks:nets,needs_ym:s.status==='ERRO'||!!s.adjust_after_schedule};}
+
   async function loadPortal(){
-    const [cq,sq,pq,eq,dq,aq,nq,contentQ,strategyQ,performanceKpiQ,performanceMeasurementQ,performanceActionQ,contentMetricQ]=await Promise.all([
+    const [cq,sq,pq,eq,dq,aq,nq,contentQ,strategyQ,performanceKpiQ,performanceMeasurementQ,performanceActionQ,publishingQ,contentMetricQ]=await Promise.all([
       admin.from('crm_clients').select('id,status,became_client_at,source_intake_id,source_case_id,contact:crm_contacts(id,name,business_name,email,phone,city_state,segment,website_url,linkedin_url,instagram_url)').eq('id',clientId).maybeSingle(),
       admin.from('crm_client_services').select('id,service_code,service_name,service_type,status,contracted_value,monthly_value,recurrence_months,start_date,end_date,next_billing_date,project:client_project_meta(id,display_name,portal_status,progress_pct,current_phase,summary,next_step,next_step_due_at,visible_to_client),payments:crm_payments(id,amount,status,payment_date,paid_at,due_date,payment_method,competence_month)').eq('client_id',clientId).order('created_at',{ascending:true}),
       admin.from('client_calendar_events').select('id,client_service_id,title,description,event_type,starts_at,ends_at,all_day,external_url,status,cancelled_at,cancellation_reason').eq('client_id',clientId).eq('visible_to_client',true).order('starts_at',{ascending:true}),
@@ -54,14 +57,15 @@ Deno.serve(async(req:Request)=>{
       admin.from('client_approval_items').select('id,client_service_id,title,content_type,description,status,due_at,scheduled_at,created_at,versions:client_approval_versions(id,version_number,drive_url,notes,created_at),actions:client_approval_actions(id,version_id,action,comment,actor_type,created_at)').eq('client_id',clientId).eq('visible_to_client',true).order('created_at',{ascending:false}),
       admin.from('client_notifications').select('id,notification_type,title,message,target_url,read_at,created_at').eq('client_id',clientId).order('created_at',{ascending:false}).limit(100),
       admin.from('client_communication_preferences').select('transactional_email,marketing_email,whatsapp_opt_in,email').eq('client_id',clientId).ilike('email',email).maybeSingle(),
-      admin.from('central_ym_content_items').select('id,client_title,client_objective,client_notes,function,territory,angle,theme,primary_channel,secondary_channels,format,hook,cta_text,script_drive_url,asset_drive_url,publish_date,publish_time,status,published_url,caption_instagram,caption_linkedin,hashtags,reel_script,recording_notes,asset_images,article_url,source_question,client_posted').eq('client_id',clientId).eq('visible_to_client',true).order('publish_date',{ascending:true}).order('publish_time',{ascending:true}),
+      admin.from('central_ym_content_items').select('id,client_title,client_objective,client_notes,function,territory,angle,theme,primary_channel,secondary_channels,format,hook,cta_text,script_drive_url,asset_drive_url,publish_date,publish_time,status,published_url,caption_instagram,caption_linkedin,hashtags,reel_script,recording_notes,asset_images,article_url,source_question,client_posted,client_approval_status,client_approval_comment,client_approved_at,schedule_sync').eq('client_id',clientId).eq('visible_to_client',true).order('publish_date',{ascending:true}).order('publish_time',{ascending:true}),
       admin.from('client_content_strategies').select('id,version,effective_date,persona_name,icp_summary,objectives,territories,channels,formats,paid_media_enabled').eq('client_id',clientId).eq('status','ACTIVE').order('effective_date',{ascending:false}).limit(1).maybeSingle(),
       admin.from('client_performance_kpis').select('id,code,name,description,category,unit,direction,periodicity,baseline_value,baseline_period_start,baseline_period_end,target_value,target_period_start,target_period_end,ideal_min_value,ideal_max_value,source_type').eq('client_id',clientId).eq('active',true).eq('visible_to_client',true).order('category').order('name'),
       admin.from('client_performance_measurements').select('id,kpi_id,period_start,period_end,value,source_type,validation_status,is_baseline,observed_at').eq('client_id',clientId).neq('validation_status','DESCARTADO').order('period_start'),
       admin.from('client_performance_actions').select('id,content_id,action_type,title,description,action_date,status,expected_lag_days,evidence_url').eq('client_id',clientId).eq('visible_to_client',true).order('action_date',{ascending:false}),
+      admin.from('client_social_publishing').select('auto_schedule,networks').eq('client_id',clientId).maybeSingle(),
       admin.from('central_ym_content_performance').select('id,content_id,metric_code,metric_label,unit,direction,baseline_value,target_value,result_value,measurement_start,measurement_end,source_type').eq('client_id',clientId).eq('visible_to_client',true).order('created_at')
     ]);
-    const qs=[cq,sq,pq,eq,dq,aq,nq,contentQ,strategyQ,performanceKpiQ,performanceMeasurementQ,performanceActionQ,contentMetricQ];
+    const qs=[cq,sq,pq,eq,dq,aq,nq,contentQ,strategyQ,performanceKpiQ,performanceMeasurementQ,performanceActionQ,publishingQ,contentMetricQ];
     const failed=qs.find((q:any)=>q.error);
     if(failed?.error)throw failed.error;
     let raiox:any=null;
@@ -99,12 +103,14 @@ Deno.serve(async(req:Request)=>{
       recording_notes:x.recording_notes||'',
       article_url:x.article_url||'',
       images:{instagram:sign(x.asset_images?.instagram),linkedin:sign(x.asset_images?.linkedin)},
-      client_posted:x.client_posted||{}
+      client_posted:x.client_posted||{},
+      approval:{status:x.client_approval_status||'PENDENTE',comment:x.client_approval_comment||'',approved_at:x.client_approved_at||null},
+      schedule:scheduleView(x.schedule_sync)
     }));
     const performanceKpis=(performanceKpiQ.data||[]).map((k:any)=>({...k,measurements:(performanceMeasurementQ.data||[]).filter((m:any)=>m.kpi_id===k.id)}));
     const contentMetrics=contentMetricQ.data||[];
     const portalContents=contents.map((content:any)=>({...content,performance_metrics:contentMetrics.filter((metric:any)=>metric.content_id===content.id)}));
-    return {user:{email},access:{id:chosen.id,client_id:clientId,role:chosen.role,onboarding_completed_at:chosen.onboarding_completed_at},client,services:sq.data||[],calendar:pq.data||[],documents:eq.data||[],approvals:dq.data||[],notifications:aq.data||[],preferences:nq.data||{email,transactional_email:true,marketing_email:false,whatsapp_opt_in:false},raiox,contents:portalContents,content_strategy:strategyQ.data||null,performance:{kpis:performanceKpis,actions:performanceActionQ.data||[]},client_options:options};
+    return {user:{email},access:{id:chosen.id,client_id:clientId,role:chosen.role,onboarding_completed_at:chosen.onboarding_completed_at},client,services:sq.data||[],calendar:pq.data||[],documents:eq.data||[],approvals:dq.data||[],notifications:aq.data||[],preferences:nq.data||{email,transactional_email:true,marketing_email:false,whatsapp_opt_in:false},raiox,contents:portalContents,content_strategy:strategyQ.data||null,performance:{kpis:performanceKpis,actions:performanceActionQ.data||[]},client_options:options,publishing:{auto_schedule:!!publishingQ.data?.auto_schedule,networks:publishingQ.data?.networks||[]}};
   }
 
   if(req.method==='GET'){
@@ -148,6 +154,24 @@ Deno.serve(async(req:Request)=>{
       await admin.from('client_notifications').insert({client_id:clientId,notification_type:'CANCELAMENTO',title:'Compromisso cancelado',message:event.data.title,target_url:'/areadocliente#calendario',created_by:email});
       await admin.from('vos_access_audit').insert({email,role:'CLIENTE',event:'CENTRAL_YM_EVENT_CANCELLED',metadata:{client_id:clientId,event_id:b.event_id,reason:reason||null}});
       return reply(200,{ok:true,event:update.data},origin);
+    }
+    if(action==='CONTENT_APPROVAL'&&uuid(b.content_id)){
+      const act=text(b.decision,40);if(!['APROVADO','AJUSTE_SOLICITADO'].includes(act))return reply(400,{ok:false,error:'invalid_decision'},origin);
+      const comment=text(b.comment,4000);if(act==='AJUSTE_SOLICITADO'&&!comment)return reply(400,{ok:false,error:'comment_required'},origin);
+      const cur=await admin.from('central_ym_content_items').select('id,client_title,theme,client_approval_status,schedule_sync').eq('id',b.content_id).eq('client_id',clientId).eq('visible_to_client',true).maybeSingle();
+      if(cur.error)throw cur.error;if(!cur.data)return reply(404,{ok:false,error:'content_not_found'},origin);
+      const sync=cur.data.schedule_sync||{};const alreadyScheduled=sync.status==='AGENDADO';
+      if(act==='APROVADO'&&cur.data.client_approval_status==='APROVADO'&&alreadyScheduled)return reply(200,{ok:true,approval:{status:'APROVADO'},schedule:scheduleView(sync),already:true},origin);
+      const patch:any={client_approval_status:act,client_approval_comment:act==='AJUSTE_SOLICITADO'?comment:'',client_approved_at:act==='APROVADO'?new Date().toISOString():null,client_approved_by:act==='APROVADO'?email:null};
+      if(act==='AJUSTE_SOLICITADO'&&alreadyScheduled)patch.schedule_sync={...sync,adjust_after_schedule:{comment,at:new Date().toISOString(),by:email}};
+      const up=await admin.from('central_ym_content_items').update(patch).eq('id',b.content_id).eq('client_id',clientId);if(up.error)throw up.error;
+      await admin.from('vos_access_audit').insert({email,role:'CLIENTE',event:'CENTRAL_YM_CONTENT_APPROVAL',metadata:{client_id:clientId,content_id:b.content_id,decision:act,after_schedule:alreadyScheduled}});
+      let schedule=scheduleView(patch.schedule_sync||sync);
+      if(act==='APROVADO'){
+        try{const s=await scheduleApprovedContent(admin,fetch,credsFromEnv((k)=>Deno.env.get(k)),b.content_id,email);schedule=scheduleView(s);}
+        catch(e:any){console.error('metricool schedule',e?.message||e);await admin.from('central_ym_content_items').update({schedule_sync:{...sync,status:'ERRO',error:String(e?.message||e).slice(0,300),attempted_at:new Date().toISOString()}}).eq('id',b.content_id);schedule={...schedule,status:'ERRO',needs_ym:true};}
+      }
+      return reply(200,{ok:true,approval:{status:act,comment:patch.client_approval_comment,approved_at:patch.client_approved_at},schedule},origin);
     }
     if(action==='APPROVAL_ACTION'&&uuid(b.approval_id)){
       const act=text(b.approval_action,40);if(!['APROVADO','AJUSTE_SOLICITADO','COMENTARIO'].includes(act))return reply(400,{ok:false,error:'invalid_approval_action'},origin);
