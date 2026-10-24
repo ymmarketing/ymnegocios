@@ -94,7 +94,7 @@
 
     var top=document.createElement('div');
     top.className='ym-public-topbar';
-    top.textContent='Raio-X Estratégico · diagnóstico por R$ 97';
+    top.textContent='Raio-X Digital · diagnóstico por R$ 97';
     oldNav.parentNode.insertBefore(top,oldNav);
 
     var oldLinks=[];
@@ -109,11 +109,11 @@
       '<div class="navin">'+
         '<a href="/" aria-label="Voltar para a página inicial da YM"><img class="logo" src="/assets/img/logo-ym-horizontal.webp" alt="YM Marketing & Negócios"></a>'+
         '<div class="navlinks">'+
-          '<a href="/#ganhos">O Raio-X</a>'+
-          '<a href="/#depoimentos">Depoimentos</a>'+
-          '<a href="/#sobre">Sobre mim</a>'+
-          '<a href="/#como">Como funciona</a>'+
-          '<a class="btn ym-public-cta" href="/raio-x.html?checkout=1">Fazer meu Raio-X</a>'+
+          '<a href="/#casa">O que fazemos</a>'+
+          '<a href="/#caminhos">Como contratar</a>'+
+          '<a href="/#casos">Projetos</a>'+
+          '<a href="/#contato">Contato</a>'+
+          '<a class="btn ym-public-cta" href="/raio-x-digital/">Raio-X Digital</a>'+
           '<a class="ym-public-pill current" href="/quemsomos" aria-current="page">Quem somos</a>'+
           '<a class="ym-public-pill client" href="/areadocliente">Área do cliente</a>'+
         '</div>'+

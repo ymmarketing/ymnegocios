@@ -3,7 +3,8 @@
 
   var MEASUREMENT_ID = 'G-DCFLLT5D1K';
   var path = window.location.pathname || '/';
-  var blocked = /^\/(?:CENTRAL|CRM|DASHBOARD|FINANCEIRO|MOTOR|VOS|Conteudos|Identidade|RAIOX|areadocliente|interno)(?:\/|$)/i;
+  // Sem a flag i: /Conteudos/ (interno) não pode bloquear /conteudos/ (público).
+  var blocked = /^\/(?:CENTRAL|CRM|DASHBOARD|FINANCEIRO|MOTOR|VOS|Conteudos|Identidade|RAIOX|areadocliente|interno)(?:\/|$)/;
 
   if (blocked.test(path)) return;
 

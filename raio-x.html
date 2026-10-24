@@ -10,7 +10,7 @@
     var p=new URLSearchParams(location.search);
     hasFlow=p.get('checkout')==='1'||p.get('novo')==='1'||!!p.get('ref')||!!localStorage.getItem('ym_raiox_ref');
   }catch(e){}
-  if(!hasFlow){ location.replace('/'); return; }
+  if(!hasFlow){ location.replace('/raio-x-digital/'); return; }
   document.documentElement.classList.add('ym-flow-booting');
 })();
 </script>
