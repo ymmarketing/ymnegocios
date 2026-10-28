@@ -12,3 +12,5 @@
   .cpj-intro{font-size:13px!important}.cpj-track{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:10px;overflow:visible!important;padding:6px 0!important}.cpj-step{flex:none!important;width:100%!important;padding:10px 12px 10px 58px!important;border:1px solid #dfe6ee;border-radius:13px;background:#fff;min-height:70px}.cpj-step:not(:last-child):after{display:none!important}.cpj-node{position:absolute;left:10px;top:13px}.cpj-copy{padding:0!important}.cpj-copy b{font-size:14px!important}.cpj-copy p{font-size:12.5px!important}.cpj-status{font-size:10px!important}
 }
 @media(max-width:390px){.cp-kpis{grid-template-columns:minmax(0,1fr)!important}}
+
+.hidden,.cp-overlay.hidden{display:none!important}

@@ -42,7 +42,8 @@
   }
 
   function render(root, steps) {
-    const rows = [...steps.map(step => ({...step, ...clientCopy(step)})), { title:'Próximos passos', description:'Eles serão definidos conforme o andamento do trabalho e as decisões tomadas em conjunto.', status:'PLANEJADA', future:true }];
+    const hidden = (step) => { const k = String(step.step_key || '').toUpperCase(); return k === 'MOTOR_VOS' || (k === 'RAIOX' && step.status !== 'CONCLUIDA'); };
+    const rows = [...steps.filter(step => !hidden(step)).map(step => ({...step, ...clientCopy(step)})), { title:'Próximos passos', description:'Eles serão definidos conforme o andamento do trabalho e as decisões tomadas em conjunto.', status:'PLANEJADA', future:true }];
     root.innerHTML = `<div class="cpj-intro"><b>Sua jornada com a YM.</b> Aqui você acompanha o que já aconteceu, o que está em andamento e o que ainda pode fazer parte do trabalho. Os próximos passos só são definidos depois de entendermos o cenário e alinharmos a decisão com você.</div><article class="cp-card cp-panel"><div class="cpj-track">${rows.map((step, index) => `<div class="cpj-step ${E(step.status)} ${step.future ? 'future' : ''}"><div class="cpj-node">${step.future ? '?' : index + 1}</div><div class="cpj-copy"><b>${E(step.title)}</b><p>${E(step.description || '')}</p><span class="cpj-status">${step.future ? 'A DEFINIR' : E(labels[step.status] || step.status)}</span></div></div>`).join('')}</div></article>`;
   }
 

@@ -46,7 +46,7 @@ Deno.serve(async(req:Request)=>{
   }
 
   async function loadPortal(){
-    const [cq,sq,pq,eq,dq,aq,nq,contentQ,strategyQ,performanceKpiQ,performanceMeasurementQ,performanceActionQ,contentMetricQ]=await Promise.all([
+    const [cq,sq,pq,eq,dq,aq,nq,contentQ,strategyQ,performanceKpiQ,performanceMeasurementQ,performanceActionQ,contentMetricQ,contractQ]=await Promise.all([
       admin.from('crm_clients').select('id,status,became_client_at,source_intake_id,source_case_id,contact:crm_contacts(id,name,business_name,email,phone,city_state,segment,website_url,linkedin_url,instagram_url)').eq('id',clientId).maybeSingle(),
       admin.from('crm_client_services').select('id,service_code,service_name,service_type,status,contracted_value,monthly_value,recurrence_months,start_date,end_date,next_billing_date,project:client_project_meta(id,display_name,portal_status,progress_pct,current_phase,summary,next_step,next_step_due_at,visible_to_client),payments:crm_payments(id,amount,status,payment_date,paid_at,due_date,payment_method,competence_month)').eq('client_id',clientId).order('created_at',{ascending:true}),
       admin.from('client_calendar_events').select('id,client_service_id,title,description,event_type,starts_at,ends_at,all_day,external_url,status,cancelled_at,cancellation_reason').eq('client_id',clientId).eq('visible_to_client',true).order('starts_at',{ascending:true}),
@@ -59,9 +59,10 @@ Deno.serve(async(req:Request)=>{
       admin.from('client_performance_kpis').select('id,code,name,description,category,unit,direction,periodicity,baseline_value,baseline_period_start,baseline_period_end,target_value,target_period_start,target_period_end,ideal_min_value,ideal_max_value,source_type').eq('client_id',clientId).eq('active',true).eq('visible_to_client',true).order('category').order('name'),
       admin.from('client_performance_measurements').select('id,kpi_id,period_start,period_end,value,source_type,validation_status,is_baseline,observed_at').eq('client_id',clientId).neq('validation_status','DESCARTADO').order('period_start'),
       admin.from('client_performance_actions').select('id,content_id,action_type,title,description,action_date,status,expected_lag_days,evidence_url').eq('client_id',clientId).eq('visible_to_client',true).order('action_date',{ascending:false}),
-      admin.from('central_ym_content_performance').select('id,content_id,metric_code,metric_label,unit,direction,baseline_value,target_value,result_value,measurement_start,measurement_end,source_type').eq('client_id',clientId).eq('visible_to_client',true).order('created_at')
+      admin.from('central_ym_content_performance').select('id,content_id,metric_code,metric_label,unit,direction,baseline_value,target_value,result_value,measurement_start,measurement_end,source_type').eq('client_id',clientId).eq('visible_to_client',true).order('created_at'),
+      admin.from('client_contracts').select('id,client_service_id,contract_type,status,drive_url,sent_at,signed_at').eq('client_id',clientId).neq('status','CANCELADO').order('created_at',{ascending:false})
     ]);
-    const qs=[cq,sq,pq,eq,dq,aq,nq,contentQ,strategyQ,performanceKpiQ,performanceMeasurementQ,performanceActionQ,contentMetricQ];
+    const qs=[cq,sq,pq,eq,dq,aq,nq,contentQ,strategyQ,performanceKpiQ,performanceMeasurementQ,performanceActionQ,contentMetricQ,contractQ];
     const failed=qs.find((q:any)=>q.error);
     if(failed?.error)throw failed.error;
     let raiox:any=null;
@@ -104,7 +105,7 @@ Deno.serve(async(req:Request)=>{
     const performanceKpis=(performanceKpiQ.data||[]).map((k:any)=>({...k,measurements:(performanceMeasurementQ.data||[]).filter((m:any)=>m.kpi_id===k.id)}));
     const contentMetrics=contentMetricQ.data||[];
     const portalContents=contents.map((content:any)=>({...content,performance_metrics:contentMetrics.filter((metric:any)=>metric.content_id===content.id)}));
-    return {user:{email},access:{id:chosen.id,client_id:clientId,role:chosen.role,onboarding_completed_at:chosen.onboarding_completed_at},client,services:sq.data||[],calendar:pq.data||[],documents:eq.data||[],approvals:dq.data||[],notifications:aq.data||[],preferences:nq.data||{email,transactional_email:true,marketing_email:false,whatsapp_opt_in:false},raiox,contents:portalContents,content_strategy:strategyQ.data||null,performance:{kpis:performanceKpis,actions:performanceActionQ.data||[]},client_options:options};
+    return {user:{email},access:{id:chosen.id,client_id:clientId,role:chosen.role,onboarding_completed_at:chosen.onboarding_completed_at,modules:Array.isArray(chosen.portal_modules)?chosen.portal_modules:[]},client,services:sq.data||[],calendar:pq.data||[],documents:eq.data||[],approvals:dq.data||[],notifications:aq.data||[],preferences:nq.data||{email,transactional_email:true,marketing_email:false,whatsapp_opt_in:false},raiox,contents:portalContents,content_strategy:strategyQ.data||null,performance:{kpis:performanceKpis,actions:performanceActionQ.data||[]},contracts:contractQ.data||[],client_options:options};
   }
 
   if(req.method==='GET'){

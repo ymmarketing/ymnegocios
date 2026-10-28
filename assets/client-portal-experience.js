@@ -31,26 +31,5 @@
  observer.observe(document.documentElement,{subtree:true,childList:true,characterData:true});
  humanize();
 
- async function fastBootstrap(){
-  try{
-   if(!window.supabase)return;
-   const sb=window.__ymClientPortalSupabase||(window.__ymClientPortalSupabase=window.supabase.createClient(SUPABASE_URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'ym_client_portal_auth_v1'}}));
-   const {data:{session}}=await sb.auth.getSession();
-   if(!session)return;
-   const response=await fetch(SUPABASE_URL+'/functions/v1/central-ym-client-bootstrap',{headers:{Authorization:'Bearer '+session.access_token,apikey:PUBLISHABLE_KEY}});
-   if(!response.ok)return;
-   const json=await response.json();const boot=json.bootstrap;if(!boot?.access)return;
-   window.__ymClientBootstrap=boot;
-   if(boot.access.onboarding_completed_at)return;
-   const contact=boot.client?.contact||{};
-   const business=contact.business_name||contact.name||'seu negócio';
-   const businessEl=document.getElementById('onboardingBusiness');if(businessEl)businessEl.textContent=business;
-   const projectsEl=document.getElementById('onboardingProjects');if(projectsEl)projectsEl.textContent=String(boot.services_count||0);
-   document.getElementById('authScreen')?.classList.add('hidden');
-   document.getElementById('portalScreen')?.classList.remove('hidden');
-   document.getElementById('onboardingOverlay')?.classList.remove('hidden');
-   window.dispatchEvent(new CustomEvent('centralym:initial-info-open',{detail:boot}));
-  }catch(_){/* o carregamento completo assume em caso de falha */}
- }
- fastBootstrap();
+
 })();
