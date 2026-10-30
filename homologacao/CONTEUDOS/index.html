@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Conteúdos — Central YM (cópia de teste)</title>
+<link rel="icon" href="/assets/img/ym-app-icon.svg?v=20260829" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="/assets/internal-shell.css?v=20261006-rev"><link rel="stylesheet" href="/assets/internal-mobile-system.css?v=20260901-typography3">
+<style>
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}.cal-h{font-size:11.5px;font-weight:800;color:#6B7C91;text-transform:uppercase;text-align:center;padding:4px 0}
+.cal-d{min-height:108px;background:#fff;border:1px solid #DCE5F0;border-radius:10px;padding:6px;display:flex;flex-direction:column;gap:4px}.cal-d.out{background:#F6F8FB;opacity:.6}.cal-d.today{border-color:#484DCF;box-shadow:inset 0 0 0 1px #484DCF}
+.cal-n{font-size:12px;font-weight:800;color:#52667A;display:flex;justify-content:space-between}.cal-n button{border:0;background:none;color:#484DCF;font-weight:800;cursor:pointer;font-size:14px;line-height:1;padding:0 2px}
+.post{border:0;text-align:left;font:inherit;border-radius:7px;padding:4px 6px;background:#EEF0FF;color:#2A2F8F;font-size:11.5px;line-height:1.3;cursor:pointer;width:100%}.post:hover{filter:brightness(.96)}.post small{display:block;font-size:10.5px;opacity:.85}
+.post.PUBLICADO,.post.ANALISADO{background:#E7F6EE;color:#0F6A4E}.post.IDEIA{background:#F2F4F7;color:#52667A}.post.AGENDADO,.post.APROVADO{background:#FFF4E0;color:#7A4A00}
+.month-nav{display:flex;gap:8px;align-items:center}.month-nav b{min-width:160px;text-align:center;color:#0A2540;font-size:15px}
+#ctVisualGuide .vg-panel p,#ctVisualGuide .vg-panel li,#ctVisualGuide .vg-note,#ctVisualGuide .vg-check,#ctVisualGuide .vg-mini{font-size:13px!important;line-height:1.55!important}#ctVisualGuide .vg-panel h3{font-size:14px!important}#ctVisualGuide .vg-code{font-size:12px!important}#ctVisualGuide .vg-swatch b{font-size:12px!important}#ctVisualGuide .vg-swatch span{font-size:11.5px!important}#ctVisualGuide .vg-type-row b{font-size:13px!important}
+@media(max-width:760px){.cal{display:none}#monthList{display:grid!important}}
+</style></head><body>
+<div class="ym-main"><header class="ym-topbar"><div style="display:flex;align-items:center;gap:10px"><button id="ymMenu" class="ym-mobile-toggle">☰</button><div class="ym-topbar-title">CONTEÚDOS</div></div><div class="ym-topbar-meta"><span id="clk" class="ym-meta"></span></div></header>
+<main class="ym-content">
+<div class="ym-header"><div><h1 class="ym-title">Conteúdos</h1></div><div class="ym-actions"><select id="fClient" class="ym-select" aria-label="Cliente" style="min-width:230px"></select><button id="btnNew" class="ym-btn">＋ Novo conteúdo</button></div></div>
+<div class="v2-tabs" role="tablist"><button class="on" data-tab="cal">Calendário</button><button data-tab="guide">Guia Visual</button></div>
+<section id="tab-cal">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0"><div class="month-nav"><button id="prev" class="ym-btn secondary" aria-label="Mês anterior">‹</button><b id="mLabel"></b><button id="next" class="ym-btn secondary" aria-label="Próximo mês">›</button></div><span id="meta" class="ym-meta"></span></div>
+  <div class="cal" id="cal"></div>
+  <div id="monthList" class="v2-list" style="display:none;margin-top:10px"></div>
+  <p class="v2-hint">Programar no calendário registra a data do post. A publicação nas redes continua sendo feita pela plataforma (Metricool ou manual); esta tela não publica automaticamente.</p>
+</section>
+<section id="tab-guide" style="display:none;margin-top:12px"><p class="ym-meta" id="guideNote" style="margin:0 0 10px"></p><div id="ctVisualGuide"></div></section>
+</main></div>
+<script src="/assets/homolog/shell-v2.js?v=20261030-4"></script>
+<script src="/assets/homolog/ym-v2.js?v=20261030-2"></script>
+<script>
+(() => {
+  const { E, date, opts, modal, rpc, ready, toast, clock, today, isHttp, busy } = YMV2;
+  const $ = (id) => document.getElementById(id);
+  const FORMAT = { REEL: 'Reels', CARROSSEL: 'Carrossel', ESTATICO: 'Post estático', STORIES: 'Stories', VIDEO_CURTO: 'Vídeo curto', VIDEO_EXPLICATIVO: 'Vídeo explicativo', TEXTO_CURTO: 'Texto curto', TEXTO_LONGO: 'Texto longo / artigo' };
+  const CHANNEL = { INSTAGRAM: 'Instagram', LINKEDIN: 'LinkedIn', TIKTOK: 'TikTok', YOUTUBE: 'YouTube', FACEBOOK: 'Facebook', BLOG: 'Blog / site', WHATSAPP: 'WhatsApp' };
+  const STATUS = { IDEIA: 'Ideia', PLANEJADO: 'Programado', ROTEIRO: 'Roteiro', EM_PRODUCAO: 'Em produção', REVISAO: 'Em revisão', APROVADO: 'Aprovado', AGENDADO: 'Agendado na plataforma', PUBLICADO: 'Publicado', ANALISADO: 'Analisado' };
+  const YM_ID = '8ed7b547-f2e2-4e29-8bc0-d2ea2b6cba8e';
+  let clients = [], items = [], cursor = today().slice(0, 7);
+  const owner = (it) => (!it.client_id || it.client_id === YM_ID ? 'YM' : it.client_id);
+  const ownerName = (k) => (k === 'YM' ? 'YM' : clients.find((c) => c.id === k)?.name || 'Cliente');
+  const ym = (s, n) => { const [y, m] = s.split('-').map(Number); const d = new Date(Date.UTC(y, m - 1 + n, 1)); return d.toISOString().slice(0, 7); };
+
+  async function load() {
+    const ov = await rpc('central_ym_overview_v2'); clients = (ov.clients || []).filter((c) => c.status === 'ATIVO');
+    const sel = $('fClient'), cur = sel.value; sel.innerHTML = '<option value="">Todos os clientes</option><option value="YM">YM (conteúdos próprios)</option>' + clients.map((c) => `<option value="${E(c.id)}">${E(c.name)}</option>`).join(''); sel.value = cur;
+    await loadMonth();
+  }
+  async function loadMonth() {
+    const from = ym(cursor, -1) + '-20', to = ym(cursor, 1) + '-10';
+    const { data, error } = await YM.sb.from('central_ym_content_items').select('id,client_id,title_internal,client_title,format,primary_channel,publish_date,publish_time,status,notes,caption_instagram,asset_drive_url,published_url').gte('publish_date', from).lte('publish_date', to).order('publish_date').order('publish_time', { nullsFirst: true });
+    if (error) return toast(error.message, true);
+    items = data || []; render();
+  }
+  function visible() { const f = $('fClient').value; return items.filter((it) => !f || owner(it) === f); }
+  function render() {
+    const [y, m] = cursor.split('-').map(Number);
+    $('mLabel').textContent = new Date(Date.UTC(y, m - 1, 15)).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric', timeZone: 'UTC' }).replace(/^./, (c) => c.toUpperCase());
+    const first = new Date(Date.UTC(y, m - 1, 1)), start = new Date(first); start.setUTCDate(1 - first.getUTCDay());
+    const vis = visible(), t = today(), f = $('fClient').value;
+    const inMonth = vis.filter((it) => it.publish_date.startsWith(cursor));
+    $('meta').textContent = `${inMonth.length} post(s) em ${$('mLabel').textContent.toLowerCase()}${f ? ' · ' + ownerName(f) : ' · todos os clientes'}`;
+    let html = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((d) => `<div class="cal-h">${d}</div>`).join('');
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(start); d.setUTCDate(start.getUTCDate() + i); const key = d.toISOString().slice(0, 10);
+      if (i >= 35 && key.slice(0, 7) !== cursor) break;
+      const posts = vis.filter((it) => it.publish_date === key);
+      html += `<div class="cal-d ${key.slice(0, 7) !== cursor ? 'out' : ''} ${key === t ? 'today' : ''}"><div class="cal-n"><span>${Number(key.slice(8))}</span><button type="button" data-add="${key}" title="Novo conteúdo neste dia" aria-label="Novo conteúdo em ${date(key)}">＋</button></div>${posts.map((p) => `<button type="button" class="post ${E(p.status)}" data-id="${E(p.id)}">${E(p.client_title || p.title_internal)}<small>${f ? '' : E(ownerName(owner(p))) + ' · '}${E(FORMAT[p.format] || p.format)}${p.publish_time ? ' · ' + p.publish_time.slice(0, 5) : ''}</small></button>`).join('')}</div>`;
+    }
+    $('cal').innerHTML = html;
+    $('monthList').innerHTML = inMonth.map((p) => `<button type="button" class="v2-row" data-id="${E(p.id)}"><span><b>${date(p.publish_date)} · ${E(p.client_title || p.title_internal)}</b><small>${E(ownerName(owner(p)))} · ${E(FORMAT[p.format] || p.format)} · ${E(STATUS[p.status] || p.status)}</small></span></button>`).join('') || '<div class="v2-empty">Nenhum post neste mês.</div>';
+    document.querySelectorAll('[data-id]').forEach((b) => (b.onclick = () => edit(items.find((x) => x.id === b.dataset.id))));
+    document.querySelectorAll('[data-add]').forEach((b) => (b.onclick = () => edit(null, b.dataset.add)));
+    $('guideNote').textContent = f && f !== 'YM' ? `Guia visual da YM (padrão de produção). Um guia próprio de ${ownerName(f)} pode ser cadastrado em Documentos.` : 'Guia visual e prompt mestre da YM.';
+  }
+  function edit(it, day) {
+    const isNew = !it; const f = $('fClient').value;
+    it = it || { client_id: f && f !== 'YM' ? f : null, format: 'REEL', primary_channel: 'INSTAGRAM', status: 'PLANEJADO', publish_date: day || today() };
+    const curOwner = isNew ? (f || '') : owner(it);
+    const m = modal({ wide: true, title: isNew ? 'Novo conteúdo' : (it.client_title || it.title_internal), subtitle: isNew ? 'Programação do post' : `${ownerName(owner(it))} · ${date(it.publish_date)}`,
+      body: `<div class="v2-form">
+        <div><label class="ym-label">Cliente</label><select class="ym-select" data-f="owner"><option value="YM" ${curOwner === 'YM' ? 'selected' : ''}>YM (conteúdo próprio)</option>${clients.map((c) => `<option value="${E(c.id)}" ${c.id === curOwner ? 'selected' : ''}>${E(c.name)}</option>`).join('')}</select></div>
+        <div><label class="ym-label">Formato</label><select class="ym-select" data-f="format">${opts(FORMAT, it.format)}</select></div>
+        <div><label class="ym-label">Data</label><input type="date" class="ym-input" data-f="publish_date" value="${E(it.publish_date || '')}"></div>
+        <div><label class="ym-label">Horário (opcional)</label><input type="time" class="ym-input" data-f="publish_time" value="${E((it.publish_time || '').slice(0, 5))}"></div>
+        <div><label class="ym-label">Rede</label><select class="ym-select" data-f="primary_channel">${opts(CHANNEL, it.primary_channel || 'INSTAGRAM')}</select></div>
+        <div><label class="ym-label">Status</label><select class="ym-select" data-f="status">${opts(STATUS, it.status || 'PLANEJADO')}</select></div>
+        <div class="v2-wide"><label class="ym-label">Título do post</label><input class="ym-input" data-f="title" value="${E(it.client_title || it.title_internal || '')}"></div>
+        <div class="v2-wide"><label class="ym-label">Informações do post (tema, roteiro, observações)</label><textarea class="ym-textarea" data-f="notes" rows="5">${E(it.notes || '')}</textarea></div>
+        <div class="v2-wide"><label class="ym-label">Legenda (opcional)</label><textarea class="ym-textarea" data-f="caption_instagram" rows="4">${E(it.caption_instagram || '')}</textarea></div>
+        <div><label class="ym-label">Link do material (Drive/Canva)</label><input class="ym-input" data-f="asset_drive_url" placeholder="https://…" value="${E(it.asset_drive_url || '')}"></div>
+        <div><label class="ym-label">Link publicado</label><input class="ym-input" data-f="published_url" placeholder="https://…" value="${E(it.published_url || '')}"></div>
+      </div><p class="v2-hint">A produção é feita fora da Central. Aqui ficam a programação e as informações do post.</p>`,
+      actions: '<button class="ym-btn secondary" data-x>Cancelar</button><button class="ym-btn" data-s>Salvar</button>' });
+    m.querySelector('[data-s]').onclick = (e) => busy(e.currentTarget, 'Salvando…', async () => {
+      const p = {}; m.querySelectorAll('[data-f]').forEach((el) => (p[el.dataset.f] = el.value.trim()));
+      if (!p.title) return toast('Dê um título ao post.', true);
+      if (!p.publish_date) return toast('Escolha a data.', true);
+      for (const k of ['asset_drive_url', 'published_url']) if (p[k] && !isHttp(p[k])) return toast('Os links precisam começar com https://', true);
+      const row = { client_id: p.owner === 'YM' ? null : p.owner, title_internal: p.title, client_title: p.title, format: p.format, primary_channel: p.primary_channel, status: p.status, publish_date: p.publish_date, publish_time: p.publish_time || null, notes: p.notes, caption_instagram: p.caption_instagram, asset_drive_url: p.asset_drive_url, published_url: p.published_url, updated_at: new Date().toISOString() };
+      const q = isNew ? await YM.sb.from('central_ym_content_items').insert({ ...row, function: 'ATRACAO', territory: '' }) : await YM.sb.from('central_ym_content_items').update(row).eq('id', it.id);
+      if (q.error) return toast(q.error.message, true);
+      m.close(); toast(isNew ? 'Conteúdo programado.' : 'Conteúdo atualizado.'); await loadMonth();
+    });
+  }
+  document.querySelectorAll('[data-tab]').forEach((b) => (b.onclick = () => { document.querySelectorAll('[data-tab]').forEach((x) => x.classList.toggle('on', x === b)); $('tab-cal').style.display = b.dataset.tab === 'cal' ? '' : 'none'; $('tab-guide').style.display = b.dataset.tab === 'guide' ? '' : 'none'; }));
+  $('prev').onclick = () => { cursor = ym(cursor, -1); loadMonth(); }; $('next').onclick = () => { cursor = ym(cursor, 1); loadMonth(); };
+  $('fClient').onchange = render; $('btnNew').onclick = () => edit(null); clock('clk');
+  ready().then((s) => s && load()).catch((e) => toast(e.message, true));
+})();
+</script>
+<script src="/assets/central-ym-visual-guide.js?v=20260901-1"></script>
+</body></html>

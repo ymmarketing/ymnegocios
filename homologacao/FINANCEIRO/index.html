@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Financeiro — Central YM (cópia de teste)</title>
+<link rel="icon" href="/assets/img/ym-app-icon.svg?v=20260829" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="/assets/internal-shell.css?v=20261006-rev"><link rel="stylesheet" href="/assets/internal-mobile-system.css?v=20260901-typography3">
+<style>.fin-bar{height:10px;border-radius:999px;background:#EDF2F6;overflow:hidden;margin-top:8px}.fin-bar>span{display:block;height:100%;background:#484DCF;border-radius:999px}.fin-neg{color:#A52A2A}.fin-pos{color:#137A5B}</style>
+</head><body>
+<div class="ym-main"><header class="ym-topbar"><div style="display:flex;align-items:center;gap:10px"><button id="ymMenu" class="ym-mobile-toggle">☰</button><div class="ym-topbar-title">FINANCEIRO</div></div><div class="ym-topbar-meta"><span id="clk" class="ym-meta"></span></div></header>
+<main class="ym-content">
+<div class="ym-header"><div><h1 class="ym-title">Visão executiva</h1></div><div class="ym-actions"><label class="ym-label" for="month" style="margin:0 6px 0 0;align-self:center">Mês</label><input id="month" type="month" class="ym-input" style="max-width:180px"></div></div>
+<div id="kpis" class="v2-kpis"></div>
+<section class="v2-section"><h2>Vencimentos e baixas</h2><p>Próximo vencimento de cada mensalidade ativa. Dê baixa quando o pagamento entrar. O lembrete por e-mail sai automaticamente às 9h, 2 dias antes do vencimento, só se ainda não houver baixa (com cópia para ymmarketingenegocios@gmail.com).</p><div class="v2-scroll"><table class="v2-table" id="dues"></table></div></section>
+<section class="v2-section"><h2>Recebimentos do mês</h2><p>Pagamentos com baixa e parcelas previstas dentro do mês escolhido.</p><div class="v2-scroll"><table class="v2-table" id="pays"></table></div></section>
+<section class="v2-section"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><h2 style="font:800 16px Montserrat;margin:0 0 4px;color:#0A2540">Custos da operação</h2><p style="font-size:13px;color:#6B7C91;margin:0">Somente os custos informados em 29/10/2026. Itens compartilhados entram integralmente, sem rateio. Ativos e depreciação ficam para outra etapa.</p></div><button id="btnCost" class="ym-btn secondary">＋ Novo custo</button></div><div class="v2-scroll" style="margin-top:10px"><table class="v2-table" id="costs"></table></div></section>
+<section class="v2-section"><h2>Preços e capacidade</h2><div id="pricing"></div></section>
+</main></div>
+<script src="/assets/homolog/shell-v2.js?v=20261030-4"></script>
+<script src="/assets/homolog/ym-v2.js?v=20261030-2"></script>
+<script>
+(() => {
+  const { E, BRL, date, dateShort, opts, modal, row, rpc, ready, toast, clock, today, busy } = YMV2;
+  const $ = (id) => document.getElementById(id);
+  let F = null;
+  const curMonth = () => $('month').value || today().slice(0, 7);
+  const addMonths = (ym, n) => { const [y, m] = ym.split('-').map(Number); const d = new Date(Date.UTC(y, m - 1 + n, 1)); return d.toISOString().slice(0, 7); };
+  const addDays = (d, n) => { const x = new Date(d + 'T12:00:00Z'); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
+  const targetFor = (ym) => { const h = (F.target_history || []).filter((x) => x.month <= ym).sort((a, b) => b.month.localeCompare(a.month)); return h.length ? Number(h[0].value) : Number(F.target || 0); };
+
+  async function load() { F = await rpc('central_ym_finance_v2', { p_month: curMonth() }); render(); }
+  function render() {
+    const ym = curMonth(), t = today();
+    const rec = F.services.filter((s) => s.type === 'RECORRENTE' && Number(s.monthly) > 0);
+    const expected = rec.reduce((n, s) => n + Number(s.monthly), 0);
+    const paid = F.payments_month.filter((p) => p.status === 'PAGO');
+    const received = paid.reduce((n, p) => n + Number(p.amount), 0);
+    const target = targetFor(ym), costs = F.costs.reduce((n, c) => n + Number(c.value), 0);
+    const uniqueClients = new Set(F.services.filter((s) => s.type === 'RECORRENTE' && s.kind === 'CLIENTE').map((s) => s.client_id)).size;
+    const q0 = addMonths(ym, -((Number(ym.slice(5)) - 1) % 3)), qMonths = [0, 1, 2].map((i) => addMonths(q0, i)), qTarget = qMonths.reduce((n, m) => n + targetFor(m), 0);
+    const yMonths = Array.from({ length: 12 }, (_, i) => `${ym.slice(0, 4)}-${String(i + 1).padStart(2, '0')}`), yTarget = yMonths.reduce((n, m) => n + targetFor(m), 0);
+    const pctT = target ? Math.min(100, (expected / target) * 100) : 0, result = expected - costs;
+    const card = (k, n, l, s, cta, extra = '') => `<button type="button" class="v2-kpi" data-k="${k}"><b>${n}</b><span>${l}</span><small>${s}</small>${extra}<i>${cta} →</i></button>`;
+    $('kpis').innerHTML =
+      card('target', BRL(target), 'Meta do mês', `Trimestre: ${BRL(qTarget)} · Ano: ${BRL(yTarget)} (soma das metas mensais)`, 'Editar meta', `<div class="fin-bar" aria-label="Receita prevista sobre a meta"><span style="width:${pctT.toFixed(1)}%"></span></div><small>${pctT.toFixed(0)}% da meta com a receita recorrente prevista</small>`)
+      + card('expected', BRL(expected), 'Receita recorrente prevista', `${rec.length} mensalidade(s) ativa(s)`, 'Ver de quem')
+      + card('received', BRL(received), 'Recebido no mês', `${paid.length} pagamento(s) com baixa em ${ym.slice(5)}/${ym.slice(0, 4)}`, 'Ver recebimentos')
+      + card('costs', BRL(costs), 'Custos mensais', `${F.costs.length} itens · equivalente mensal`, 'Ver custos')
+      + card('result', BRL(result), 'Resultado previsto', 'Receita recorrente prevista − custos', 'Ver a conta')
+      + card('capacity', `${uniqueClients}/${F.capacity || 15}`, 'Capacidade de clientes fixos', 'Clientes recorrentes únicos (sem prestação interna). Avulsos não têm teto fixo.', 'Ver clientes');
+    $('kpis').querySelectorAll('[data-k]').forEach((b) => (b.onclick = () => kpi(b.dataset.k, { rec, paid, costs, expected, result })));
+    { const rb = $('kpis').querySelector('[data-k="result"] b'); if (rb) rb.style.color = result < 0 ? '#A52A2A' : '#137A5B'; }
+
+    $('dues').innerHTML = `<thead><tr><th>Cliente</th><th>Serviço</th><th class="num">Valor</th><th>Próximo vencimento</th><th>Situação</th><th>Lembrete</th><th></th></tr></thead><tbody>${rec.sort((a, b) => String(a.next_billing || '9').localeCompare(String(b.next_billing || '9'))).map((s) => {
+      const late = s.next_billing && s.next_billing < t && !s.paid_next, sit = s.paid_next ? '<span class="v2-chip ok">Pago</span>' : late ? '<span class="v2-chip bad">Em atraso</span>' : '<span class="v2-chip warn">Em aberto</span>';
+      const rem = s.reminder_sent ? `Enviado ${date(s.reminder_sent)}` : !s.email ? '<span class="fin-neg">Sem e-mail cadastrado</span>' : s.next_billing ? `Agendado ${dateShort(addDays(s.next_billing, -2))} às 9h` : '—';
+      return `<tr><td><b>${E(s.client)}</b>${s.kind !== 'CLIENTE' ? '<br><small>prestação interna</small>' : ''}</td><td>${E(s.service)}</td><td class="num">${BRL(s.monthly)}</td><td>${s.next_billing ? date(s.next_billing) : '<span class="fin-neg">Sem data</span>'}</td><td>${sit}</td><td>${rem}</td><td style="white-space:nowrap"><button class="ym-btn secondary" data-pay="${E(s.id)}">Dar baixa</button> ${s.email && !s.paid_next ? `<button class="ym-btn secondary" data-remind="${E(s.id)}">Enviar lembrete</button>` : ''}</td></tr>`;
+    }).join('') || '<tr><td colspan="7">Nenhuma mensalidade ativa.</td></tr>'}</tbody>`;
+    $('dues').querySelectorAll('[data-pay]').forEach((b) => (b.onclick = () => payModal(F.services.find((s) => s.id === b.dataset.pay))));
+    $('dues').querySelectorAll('[data-remind]').forEach((b) => (b.onclick = () => remind(b, F.services.find((s) => s.id === b.dataset.remind))));
+
+    $('pays').innerHTML = `<thead><tr><th>Cliente</th><th>Serviço</th><th class="num">Valor</th><th>Vencimento</th><th>Pago em</th><th>Situação</th><th></th></tr></thead><tbody>${F.payments_month.map((p) => `<tr><td>${E(p.client)}</td><td>${E(p.service)}</td><td class="num">${BRL(p.amount)}</td><td>${date(p.due_date)}</td><td>${p.status === 'PAGO' ? date(p.paid_on) : '—'}</td><td>${p.status === 'PAGO' ? '<span class="v2-chip ok">Pago</span>' : '<span class="v2-chip warn">Previsto</span>'}</td><td>${p.status === 'PAGO' ? `<button class="ym-btn secondary" data-undo="${E(p.id)}">Desfazer baixa</button>` : `<button class="ym-btn secondary" data-paid="${E(p.id)}">Marcar como pago</button>`}</td></tr>`).join('') || '<tr><td colspan="7">Nada neste mês.</td></tr>'}</tbody>`;
+    $('pays').querySelectorAll('[data-undo]').forEach((b) => (b.onclick = () => setPay(b, b.dataset.undo, 'PREVISTO', 'Baixa desfeita.')));
+    $('pays').querySelectorAll('[data-paid]').forEach((b) => (b.onclick = () => setPay(b, b.dataset.paid, 'PAGO', 'Pagamento marcado como pago.')));
+
+    $('costs').innerHTML = `<thead><tr><th>Item</th><th>Tipo</th><th>Área</th><th>Categoria</th><th>Prioridade</th><th>Origem</th><th class="num">Equivalente mensal</th></tr></thead><tbody>${F.costs.map((c) => `<tr class="click" data-cost="${E(c.id)}"><td><b>${E(c.name)}</b>${c.notes ? `<br><small>${E(c.notes)}</small>` : ''}</td><td>${E(c.periodicity === 'ANUAL' ? 'Anual' : 'Fixo')}</td><td>${E(c.area || '—')}</td><td>${E(c.category || '—')}</td><td>${E(c.priority || '—')}</td><td>${E(c.origin || 'YM')}</td><td class="num">${BRL(c.value)}</td></tr>`).join('')}<tr><td colspan="6"><b>Total</b></td><td class="num"><b>${BRL(costs)}</b></td></tr></tbody>`;
+    $('costs').querySelectorAll('[data-cost]').forEach((tr) => (tr.onclick = () => costModal(F.costs.find((c) => c.id === tr.dataset.cost))));
+
+    $('pricing').innerHTML = `<div class="v2-list">
+      ${row('data-p="min"', `Mensalidade mínima: ${BRL(F.min_fee || 500)}`, 'Progressão ligada ao faturamento do cliente. Exceção negociada: Divino Armazém, R$ 300.', '', '')}
+      ${row('data-p="cap"', `Capacidade: ${F.capacity || 15} clientes fixos mensais`, 'Independentemente do serviço. Serviços avulsos não têm teto fixo definido, o que não significa disponibilidade infinita.', '', '')}
+      ${row('data-p="cat"', 'Catálogo de produtos e preços', `Pendente: a tabela vigente ainda vai ser indicada. O catálogo antigo (${F.legacy_products} itens) está guardado e fora da operação.`, '<span class="v2-chip warn">Pendente</span>', '')}</div>`;
+  }
+
+  function kpi(k, x) {
+    if (k === 'target') return targetModal();
+    if (k === 'costs') return document.getElementById('costs').scrollIntoView({ behavior: 'smooth' });
+    if (k === 'received') return document.getElementById('pays').scrollIntoView({ behavior: 'smooth' });
+    const clientRows = (list) => list.map((s) => row(`data-c="${E(s.client_id)}"`, E(s.client), `${E(s.service)} · próximo vencimento ${s.next_billing ? date(s.next_billing) : '—'}`, `<b style="color:#137A5B">${BRL(s.monthly)}/mês</b>`)).join('');
+    const bind = (m) => m.querySelectorAll('[data-c]').forEach((b) => (b.onclick = () => (location.href = '/homologacao/CENTRAL/?client=' + encodeURIComponent(b.dataset.c))));
+    if (k === 'expected') { const m = modal({ title: 'Receita recorrente prevista', subtitle: `Total ${BRL(x.expected)} por mês`, body: `<div class="v2-list">${clientRows(x.rec)}</div>` }); bind(m); }
+    if (k === 'capacity') { const r = x.rec.filter((s) => s.kind === 'CLIENTE'); const m = modal({ title: 'Clientes fixos mensais', subtitle: `${new Set(r.map((s) => s.client_id)).size} de ${F.capacity || 15}`, body: `<div class="v2-list">${clientRows(r)}</div><p class="v2-hint">A Sunshine Oráculos é prestação interna e não ocupa vaga.</p>` }); bind(m); }
+    if (k === 'result') modal({ title: 'Resultado previsto', body: `<table class="v2-table"><tr><td>Receita recorrente prevista</td><td class="num">${BRL(x.expected)}</td></tr><tr><td>(−) Custos mensais</td><td class="num">${BRL(x.costs)}</td></tr><tr><td><b>Resultado</b></td><td class="num"><b>${BRL(x.result)}</b></td></tr></table><p class="v2-hint">Não inclui serviços avulsos, impostos sobre faturamento além do item “Imposto YM” nem ativos.</p>` });
+  }
+  function targetModal() {
+    const ym = curMonth();
+    const m = modal({ title: 'Meta mensal', subtitle: `Vale a partir de ${ym.slice(5)}/${ym.slice(0, 4)} até a próxima alteração`, body: `<div class="v2-form"><div><label class="ym-label">Mês de início</label><input type="month" class="ym-input" data-tm value="${ym}"></div><div><label class="ym-label">Meta mensal (R$)</label><input type="number" min="0" step="100" class="ym-input" data-tv value="${targetFor(ym)}"></div></div><p class="v2-hint">Trimestre e ano somam as metas de cada mês. Histórico:</p><div class="v2-list">${(F.target_history || []).map((h) => `<div class="v2-row" style="cursor:default"><span><b>${h.month.slice(5)}/${h.month.slice(0, 4)}</b><small>${E(h.note || '')}</small></span><span class="v2-right"><b>${BRL(h.value)}</b></span></div>`).join('')}</div>`, actions: '<button class="ym-btn secondary" data-x>Cancelar</button><button class="ym-btn" data-s>Salvar meta</button>' });
+    m.querySelector('[data-s]').onclick = (e) => busy(e.currentTarget, 'Salvando…', async () => { try { await rpc('central_ym_set_target', { p_month: m.querySelector('[data-tm]').value, p_value: Number(m.querySelector('[data-tv]').value) }); m.close(); toast('Meta salva.'); await load(); } catch (err) { toast(err.message, true); } });
+  }
+  function payModal(s) {
+    const m = modal({ title: `Dar baixa · ${s.client}`, subtitle: E(s.service), body: `<div class="v2-form"><div><label class="ym-label">Vencimento</label><input type="date" class="ym-input" data-d value="${E(s.next_billing || today())}"></div><div><label class="ym-label">Pago em</label><input type="date" class="ym-input" data-p value="${today()}"></div><div><label class="ym-label">Valor (R$)</label><input type="number" step="0.01" min="0" class="ym-input" data-v value="${Number(s.monthly || 0)}"></div><div><label class="ym-label">Forma</label><select class="ym-select" data-m>${opts({ PIX: 'Pix', BOLETO: 'Boleto', TRANSFERENCIA: 'Transferência', CARTAO: 'Cartão', DINHEIRO: 'Dinheiro' }, 'PIX')}</select></div><div class="v2-wide"><label class="ym-label">Observação (opcional)</label><input class="ym-input" data-n></div></div><p class="v2-hint">Ao dar baixa no vencimento atual, o próximo vencimento avança um mês e o lembrete desse mês não é enviado.</p>`, actions: '<button class="ym-btn secondary" data-x>Cancelar</button><button class="ym-btn" data-s>Confirmar baixa</button>' });
+    m.querySelector('[data-s]').onclick = (e) => busy(e.currentTarget, 'Salvando…', async () => { try { await rpc('central_ym_register_payment', { p_service_id: s.id, p_due: m.querySelector('[data-d]').value, p_amount: Number(m.querySelector('[data-v]').value), p_paid_on: m.querySelector('[data-p]').value, p_method: m.querySelector('[data-m]').value, p_note: m.querySelector('[data-n]').value }); m.close(); toast('Baixa registrada.'); await load(); } catch (err) { toast(err.message, true); } });
+  }
+  async function setPay(btn, id, st, msg) { await busy(btn, 'Salvando…', async () => { try { await rpc('central_ym_payment_set_status', { p_payment_id: id, p_status: st }); toast(msg); await load(); } catch (err) { toast(err.message, true); } }); }
+  async function remind(btn, s) {
+    if (!confirm(`Enviar agora o lembrete de vencimento para ${s.client} (${s.email})?`)) return;
+    await busy(btn, 'Enviando…', async () => {
+      try { const ses = await YM.requireSession(location.pathname); const r = await fetch(YM.SUPABASE_URL + '/functions/v1/central-billing-reminders', { method: 'POST', headers: { Authorization: 'Bearer ' + ses.access_token, apikey: YM.PUBLISHABLE_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'SEND_ONE', service_id: s.id }) }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.detail || j.error || 'Falha ao enviar');
+        const res = j.result?.result; toast(res === 'SENT' ? 'Lembrete enviado.' : res === 'SKIPPED_PAID' ? 'Não enviado: este vencimento já tem baixa.' : res === 'SKIPPED_NO_EMAIL' ? 'Não enviado: cliente sem e-mail.' : 'Resultado: ' + res, res !== 'SENT'); await load(); } catch (err) { toast(err.message, true); }
+    });
+  }
+  function costModal(c) {
+    const isNew = !c; c = c || { origin: 'YM', periodicity: 'FIXO' };
+    const f = (k, l, v, t = 'text') => `<div><label class="ym-label">${l}</label><input class="ym-input" data-f="${k}" type="${t}" value="${E(v ?? '')}"></div>`;
+    const m = modal({ title: isNew ? 'Novo custo' : c.name, body: `<div class="v2-form">${f('name', 'Item', c.name)}${f('value', 'Equivalente mensal (R$)', c.value, 'number')}<div><label class="ym-label">Tipo</label><select class="ym-select" data-f="periodicity">${opts({ FIXO: 'Fixo', ANUAL: 'Anual (equivalente mensal)' }, c.periodicity || 'FIXO')}</select></div><div><label class="ym-label">Área</label><select class="ym-select" data-f="area">${opts({ Empresa: 'Empresa', 'Pessoal/Empresa': 'Pessoal/Empresa' }, c.area || 'Empresa')}</select></div>${f('category', 'Categoria', c.category || 'Estrutura')}<div><label class="ym-label">Prioridade</label><select class="ym-select" data-f="priority">${opts({ 'Inegociável': 'Inegociável', Prioridade: 'Prioridade', 'Necessário': 'Necessário', 'Em análise': 'Em análise' }, c.priority || 'Necessário')}</select></div><div class="v2-wide">${f('notes', 'Observação', c.notes).replace('<div>', '').replace(/<\/div>$/, '')}</div></div>`,
+      actions: `${isNew ? '' : '<button class="ym-btn secondary" data-del style="margin-right:auto">Retirar da operação</button>'}<button class="ym-btn secondary" data-x>Cancelar</button><button class="ym-btn" data-s>Salvar</button>` });
+    const collect = () => { const p = { type: m.querySelector('[data-f="name"]').value.toLowerCase().includes('imposto') ? 'IMPOSTO' : 'FIXO' }; m.querySelectorAll('[data-f]').forEach((el) => (p[el.dataset.f] = el.value)); return p; };
+    m.querySelector('[data-s]').onclick = (e) => busy(e.currentTarget, 'Salvando…', async () => { const p = collect(); if (!p.name || p.value === '') return toast('Informe item e valor.', true); try { await rpc('central_ym_cost_upsert', { p_id: isNew ? null : c.id, p }); m.close(); toast('Custo salvo.'); await load(); } catch (err) { toast(err.message, true); } });
+    m.querySelector('[data-del]')?.addEventListener('click', (e) => busy(e.currentTarget, 'Salvando…', async () => { if (!confirm('Retirar este custo da operação? Ele continua guardado no histórico.')) return; try { await rpc('central_ym_cost_upsert', { p_id: c.id, p: { deactivate: 'true' } }); m.close(); toast('Custo retirado.'); await load(); } catch (err) { toast(err.message, true); } }));
+  }
+  $('month').value = today().slice(0, 7); $('month').onchange = load; $('btnCost').onclick = () => costModal(null); clock('clk');
+  ready().then((s) => s && load()).catch((e) => toast(e.message, true));
+})();
+</script></body></html>

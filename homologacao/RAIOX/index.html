@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Análise Raio-X — Central YM (cópia de teste)</title>
+<link rel="icon" href="/assets/img/ym-app-icon.svg?v=20260829" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="/assets/internal-shell.css?v=20261006-rev"><link rel="stylesheet" href="/assets/internal-mobile-system.css?v=20260901-typography3">
+<style>
+.rx-sec{border:1px solid #DCE5F0;border-radius:14px;padding:14px;margin-bottom:10px;background:#fff}.rx-sec h3{font:800 15px Montserrat;color:#0A2540;margin:0 0 2px}.rx-sec>p{font-size:12.5px;color:#6B7C91;margin:0 0 10px}
+.rx-q{margin-bottom:12px}.rx-q label{display:block;font-weight:700;font-size:13.5px;color:#22394F;margin-bottom:3px}.rx-q small{display:block;color:#7A8B9B;font-size:12px;margin-bottom:5px}
+.rx-q .ns{display:flex;gap:6px;align-items:center;font-size:12.5px;color:#52667A;margin-top:4px;font-weight:600}.rx-progress{height:8px;border-radius:999px;background:#EDF2F6;overflow:hidden;margin-top:6px}.rx-progress i{display:block;height:100%;background:#137A5B}
+.rx-flow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:13px;color:#33495E;margin:4px 0 12px}.rx-flow span{background:#EEF0FF;color:#3B40B5;border-radius:999px;padding:5px 10px;font-weight:700}.rx-flow i{font-style:normal;color:#9AA8B7}
+.rx-att{display:grid;grid-template-columns:1fr 1.4fr auto;gap:6px;margin-bottom:6px}@media(max-width:600px){.rx-att{grid-template-columns:1fr}}
+</style></head><body>
+<div class="ym-main"><header class="ym-topbar"><div style="display:flex;align-items:center;gap:10px"><button id="ymMenu" class="ym-mobile-toggle">☰</button><div class="ym-topbar-title">ANÁLISE RAIO-X</div></div><div class="ym-topbar-meta"><span id="clk" class="ym-meta"></span></div></header>
+<main class="ym-content">
+<div class="ym-header"><div><h1 class="ym-title">Análise Raio-X</h1></div><div class="ym-actions"><a class="ym-btn secondary" href="/RAIOX/">Análises antigas</a><button id="btnNew" class="ym-btn">＋ Nova coleta</button></div></div>
+<div class="rx-flow" aria-label="Fluxo"><span>1. Conversa com o cliente</span><i>→</i><span>2. Respostas e anotações</span><i>→</i><span>3. Consolidação com IA (fora da Central)</span><i>→</i><span>4. Análise e anexos vinculados ao cliente</span><i>→</i><span>5. Continuidade do VOS</span></div>
+<div class="v2-toolbar"><input id="q" class="ym-input" placeholder="Buscar empresa…"><select id="fSt" class="ym-select"><option value="">Todas as coletas</option><option value="COLETA">Em coleta</option><option value="ANALISE_EXTERNA">Em análise com IA</option><option value="CONCLUIDA">Concluídas</option></select></div>
+<div id="list" class="v2-list"><div class="v2-empty">Carregando…</div></div>
+</main></div>
+<script src="/assets/homolog/shell-v2.js?v=20261030-4"></script>
+<script src="/assets/homolog/ym-v2.js?v=20261030-2"></script>
+<script>
+(() => {
+  const { E, date, opts, modal, rpc, ready, toast, clock, today, isHttp, busy } = YMV2;
+  const $ = (id) => document.getElementById(id);
+  const ST = { COLETA: 'Em coleta', ANALISE_EXTERNA: 'Em análise com IA', CONCLUIDA: 'Concluída' };
+  const GUIDE = [
+    { k: 'origem', t: 'Origem e contexto', d: 'Como chegamos até aqui e o que o cliente espera.', q: [
+      ['origem_contato', 'Como o contato chegou até a YM?', 'Sebrae, indicação, Instagram, prospecção…'],
+      ['contexto', 'Qual o contexto desta conversa?', 'Presencial, online, quem participou.'],
+      ['objetivo', 'O que o cliente quer alcançar?', 'Nas palavras dele. Ex.: “quero vender mais pelo Instagram”.'] ] },
+    { k: 'negocio', t: 'O negócio', d: 'Perguntas simples, sem siglas.', q: [
+      ['o_que_vende', 'O que você vende?', 'Produtos ou serviços principais.'],
+      ['para_quem', 'Para quem você vende?', 'Quem mais compra: perfil, região, faixa de preço.'],
+      ['como_atende', 'Como você atende o cliente?', 'Loja, delivery, WhatsApp, agendamento, presencial.'] ] },
+    { k: 'vendas', t: 'Vendas', d: 'Como o dinheiro entra hoje.', q: [
+      ['como_chegam', 'Como os clientes chegam até você?', 'Indicação, Instagram, Google, passagem…'],
+      ['propostas', 'Como você acompanha orçamentos e propostas?', 'Caderno, planilha, WhatsApp, sistema, ou não acompanha.'],
+      ['como_vende', 'Como é o seu processo de venda?', 'Do primeiro contato até o pagamento.'] ] },
+    { k: 'financeiro', t: 'Informações financeiras', d: 'Só o que o cliente realmente tem. Anote período e fonte. Nunca estimar por ele.', q: [
+      ['fin_info', 'Que números você acompanha?', 'Faturamento, vendas por mês, ticket, margem… O que tiver.'],
+      ['fin_periodo', 'De qual período são esses números?', 'Ex.: setembro/2026, últimos 3 meses.'],
+      ['fin_fonte', 'De onde vêm esses números?', 'Sistema da loja, maquininha, extrato, planilha, “de cabeça”.'] ] },
+    { k: 'canais', t: 'Canais e materiais', d: 'O que já existe para comunicar e vender.', q: [
+      ['canais', 'Quais canais você usa?', 'Instagram, WhatsApp, site, Google, marketplace…'],
+      ['conteudos', 'Como são os conteúdos e campanhas hoje?', 'Frequência, quem produz, se já anunciou.'],
+      ['ferramentas', 'Quais ferramentas e materiais você tem?', 'Logo, fotos, catálogo, sistema, agenda.'] ] },
+    { k: 'prioridades', t: 'Dificuldades e prioridades', d: 'O que dói e o que vem primeiro.', q: [
+      ['dificuldades', 'Qual é a maior dificuldade hoje?', ''],
+      ['prioridades', 'Se pudesse resolver uma coisa agora, qual seria?', ''],
+      ['expectativas', 'O que você espera da YM?', ''] ] },
+  ];
+  const ALLQ = GUIDE.flatMap((s) => s.q.map((x) => x[0]));
+  let rows = [], clients = [], opps = [];
+  const progress = (a) => { a = a || {}; const done = ALLQ.filter((k) => (a[k]?.v || '').trim() || a[k]?.ns).length; return { done, total: ALLQ.length, pct: Math.round((done / ALLQ.length) * 100) }; };
+  const label = (r) => r.business_label || clients.find((c) => c.id === r.client_id)?.name || opps.find((o) => o.id === r.opportunity_id)?.name || 'Sem nome';
+  async function load() {
+    const [ov, q] = await Promise.all([rpc('central_ym_overview_v2'), YM.sb.from('raiox_collections').select('*').order('collected_at', { ascending: false })]);
+    if (q.error) throw q.error;
+    clients = ov.clients || []; opps = (ov.opportunities || []).filter((o) => o.stage !== 'GANHO'); rows = q.data || []; render();
+  }
+  function render() {
+    const qq = $('q').value.toLowerCase(), st = $('fSt').value;
+    const list = rows.filter((r) => (!st || r.status === st) && (!qq || label(r).toLowerCase().includes(qq)));
+    $('list').innerHTML = list.map((r) => { const p = progress(r.answers); return `<button type="button" class="v2-row" data-id="${E(r.id)}"><span><b>${E(label(r))}</b><small>Coleta de ${date(r.collected_at)} · ${p.done} de ${p.total} perguntas respondidas ou marcadas “não sabe”${r.analysis_url ? ' · análise vinculada' : ''}</small><span class="rx-progress" style="display:block;width:220px"><i style="width:${p.pct}%"></i></span></span><span class="v2-right"><span class="v2-chip ${r.status === 'CONCLUIDA' ? 'ok' : r.status === 'ANALISE_EXTERNA' ? 'info' : 'warn'}">${E(ST[r.status])}</span></span></button>`; }).join('') || '<div class="v2-empty">Nenhuma coleta ainda. Use “＋ Nova coleta” na próxima conversa com cliente.</div>';
+    $('list').querySelectorAll('[data-id]').forEach((b) => (b.onclick = () => edit(rows.find((r) => r.id === b.dataset.id))));
+  }
+  function promptFor(r, a, att) {
+    const lines = GUIDE.map((s) => `## ${s.t}\n` + s.q.map(([k, t]) => `- ${t}\n  Resposta: ${a[k]?.ns ? 'NÃO SABE / NÃO REGISTRA' : (a[k]?.v || '(sem resposta)').trim()}`).join('\n')).join('\n\n');
+    return `Você vai consolidar a coleta do Raio-X Estratégico da YM Marketing & Negócios (Método VOS: Ver, Ordenar, Sustentar).
+
+EMPRESA: ${label(r)}
+DATA DA COLETA: ${date(r.collected_at)}
+
+REGRAS OBRIGATÓRIAS
+1. Organize as informações por área (negócio, vendas, financeiro, canais, prioridades).
+2. Só faça cálculos quando houver número informado, com período e fonte. Mostre a conta.
+3. Não invente faturamento, indicadores, resultados ou percentuais ausentes. Onde faltar dado, escreva “não informado”.
+4. Separe o que é fato relatado, o que é hipótese e o que precisa ser confirmado.
+5. Liste no final as informações que ainda faltam coletar.
+6. Linguagem simples, sem siglas que o cliente não usa.
+
+RESPOSTAS DA CONVERSA
+${lines}
+
+ANOTAÇÕES DO APLICADOR
+${(r.applicator_notes || '').trim() || '(nenhuma)'}
+
+INFORMAÇÕES AINDA AUSENTES (segundo o aplicador)
+${(r.missing_info || '').trim() || '(nenhuma registrada)'}
+
+DOCUMENTOS COLETADOS
+${att.filter((x) => x.url).map((x) => `- ${x.label || 'Documento'}: ${x.url}`).join('\n') || '(nenhum)'}`;
+  }
+  function edit(r) {
+    const isNew = !r; r = r || { status: 'COLETA', collected_at: today(), answers: {}, attachments: [] };
+    const a = JSON.parse(JSON.stringify(r.answers || {})); let att = Array.isArray(r.attachments) ? [...r.attachments] : [];
+    const link = r.client_id ? 'c:' + r.client_id : r.opportunity_id ? 'o:' + r.opportunity_id : '';
+    const m = modal({ wide: true, title: isNew ? 'Nova coleta do Raio-X' : 'Coleta · ' + label(r), subtitle: 'Guia do aplicador · responda com as palavras do cliente; “não sabe” é uma resposta válida',
+      body: `<div class="v2-form" style="margin-bottom:12px">
+        <div><label class="ym-label">Vincular a</label><select class="ym-select" data-f="link"><option value="">Só pelo nome (ainda sem cadastro)</option><optgroup label="Clientes">${clients.map((c) => `<option value="c:${E(c.id)}" ${link === 'c:' + c.id ? 'selected' : ''}>${E(c.name)}</option>`).join('')}</optgroup><optgroup label="Leads">${opps.map((o) => `<option value="o:${E(o.id)}" ${link === 'o:' + o.id ? 'selected' : ''}>${E(o.name)}</option>`).join('')}</optgroup></select></div>
+        <div><label class="ym-label">Nome da empresa (se não houver cadastro)</label><input class="ym-input" data-f="business_label" value="${E(r.business_label || '')}"></div>
+        <div><label class="ym-label">Data da coleta</label><input type="date" class="ym-input" data-f="collected_at" value="${E(r.collected_at)}"></div>
+        <div><label class="ym-label">Situação</label><select class="ym-select" data-f="status">${opts(ST, r.status)}</select></div></div>
+        <div data-prog class="ym-meta"></div><div class="rx-progress"><i data-bar></i></div><div style="height:10px"></div>
+        ${GUIDE.map((s) => `<section class="rx-sec"><h3>${E(s.t)}</h3><p>${E(s.d)}</p>${s.q.map(([k, t, h]) => `<div class="rx-q"><label for="q_${k}">${E(t)}</label>${h ? `<small>${E(h)}</small>` : ''}<textarea class="ym-textarea" id="q_${k}" data-q="${k}" rows="2">${E(a[k]?.v || '')}</textarea><label class="ns"><input type="checkbox" data-ns="${k}" ${a[k]?.ns ? 'checked' : ''}> Não sabe / não registra</label></div>`).join('')}</section>`).join('')}
+        <section class="rx-sec"><h3>Fechamento do aplicador</h3><p>Suas anotações e o que ainda falta. As conclusões são geradas depois, com IA, fora da Central.</p>
+          <div class="rx-q"><label>Anotações do aplicador</label><textarea class="ym-textarea" data-f="applicator_notes" rows="3">${E(r.applicator_notes || '')}</textarea></div>
+          <div class="rx-q"><label>Informações ainda ausentes</label><textarea class="ym-textarea" data-f="missing_info" rows="2">${E(r.missing_info || '')}</textarea></div>
+          <div class="rx-q"><label>Documentos coletados (links)</label><div data-att></div><button type="button" class="ym-btn secondary" data-addatt>＋ Adicionar link</button></div></section>
+        <section class="rx-sec"><h3>Resultado da análise com IA</h3><p>Copie o material para a IA, gere a análise fora da Central e cole aqui o link do documento final.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button type="button" class="ym-btn" data-copy>Copiar material para a IA</button>${isHttp(r.analysis_url) ? `<a class="ym-btn secondary" href="${E(r.analysis_url)}" target="_blank" rel="noopener">Abrir análise ↗</a>` : ''}</div>
+          <div class="rx-q"><label>Link da análise final</label><input class="ym-input" data-f="analysis_url" placeholder="https://…" value="${E(r.analysis_url || '')}"></div></section>`,
+      actions: '<button class="ym-btn secondary" data-x>Fechar</button><button class="ym-btn" data-s>Salvar coleta</button>' });
+    const sync = () => { m.querySelectorAll('[data-q]').forEach((t) => { const k = t.dataset.q; a[k] = { v: t.value, ns: m.querySelector(`[data-ns="${k}"]`).checked }; }); const p = progress(a); m.querySelector('[data-prog]').textContent = `${p.done} de ${p.total} perguntas respondidas ou marcadas “não sabe”. Nenhuma é obrigatória para salvar.`; m.querySelector('[data-bar]').style.width = p.pct + '%'; };
+    const drawAtt = () => { m.querySelector('[data-att]').innerHTML = att.map((x, i) => `<div class="rx-att"><input class="ym-input" data-al="${i}" placeholder="Nome (ex.: cardápio)" value="${E(x.label || '')}"><input class="ym-input" data-au="${i}" placeholder="https://…" value="${E(x.url || '')}"><button type="button" class="ym-btn secondary" data-ad="${i}">Remover</button></div>`).join(''); m.querySelectorAll('[data-al]').forEach((el) => (el.oninput = () => (att[el.dataset.al].label = el.value))); m.querySelectorAll('[data-au]').forEach((el) => (el.oninput = () => (att[el.dataset.au].url = el.value.trim()))); m.querySelectorAll('[data-ad]').forEach((b) => (b.onclick = () => { att.splice(Number(b.dataset.ad), 1); drawAtt(); })); };
+    m.addEventListener('input', sync); m.addEventListener('change', sync); sync(); drawAtt();
+    m.querySelector('[data-addatt]').onclick = () => { att.push({ label: '', url: '' }); drawAtt(); };
+    const collect = () => { const p = {}; m.querySelectorAll('[data-f]').forEach((el) => (p[el.dataset.f] = el.value.trim())); return p; };
+    m.querySelector('[data-copy]').onclick = async () => { sync(); const p = collect(); const txt = promptFor({ ...r, ...p, business_label: p.business_label || r.business_label }, a, att); try { await navigator.clipboard.writeText(txt); toast('Material copiado. Cole na IA para gerar a análise.'); } catch { toast('Não foi possível copiar automaticamente.', true); } };
+    m.querySelector('[data-s]').onclick = (e) => busy(e.currentTarget, 'Salvando…', async () => {
+      sync(); const p = collect();
+      if (!p.link && !p.business_label) return toast('Vincule a um cliente/lead ou informe o nome da empresa.', true);
+      if (p.analysis_url && !isHttp(p.analysis_url)) return toast('O link da análise precisa começar com https://', true);
+      if (att.some((x) => x.url && !isHttp(x.url))) return toast('Os links dos documentos precisam começar com https://', true);
+      const row = { client_id: p.link.startsWith('c:') ? p.link.slice(2) : null, opportunity_id: p.link.startsWith('o:') ? p.link.slice(2) : null, business_label: p.business_label || null, collected_at: p.collected_at || today(), status: p.status, answers: a, applicator_notes: p.applicator_notes || null, missing_info: p.missing_info || null, analysis_url: p.analysis_url || null, attachments: att.filter((x) => x.url), updated_at: new Date().toISOString(), updated_by: 'CENTRAL_RAIOX' };
+      const q = isNew ? await YM.sb.from('raiox_collections').insert({ ...row, created_by: 'CENTRAL_RAIOX' }).select().single() : await YM.sb.from('raiox_collections').update(row).eq('id', r.id).select().single();
+      if (q.error) return toast(q.error.message, true);
+      toast('Coleta salva.'); m.close(); await load();
+    });
+  }
+  $('q').oninput = render; $('fSt').onchange = render; $('btnNew').onclick = () => edit(null); clock('clk');
+  ready().then((s) => s && load()).catch((e) => toast(e.message, true));
+})();
+</script></body></html>

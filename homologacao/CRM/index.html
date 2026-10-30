@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>CRM — Central YM (cópia de teste)</title>
+<link rel="icon" href="/assets/img/ym-app-icon.svg?v=20260829" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="/assets/internal-shell.css?v=20261006-rev"><link rel="stylesheet" href="/assets/internal-mobile-system.css?v=20260901-typography3">
+<style>
+.crm-row{display:grid;grid-template-columns:minmax(200px,1.6fr) 120px minmax(130px,.9fr) 110px 120px minmax(120px,.8fr) minmax(140px,.9fr);gap:10px;align-items:center;width:100%;text-align:left;font:inherit;background:#fff;border:1px solid #DCE5F0;border-radius:12px;padding:11px 13px;cursor:pointer;color:inherit}
+.crm-row:hover,.crm-row:focus-visible{border-color:#484DCF;background:#F7F8FF;outline:none}
+.crm-row b{display:block;font-size:14px;color:#0A2540}.crm-row small{display:block;font-size:12px;color:#6B7C91;margin-top:2px}
+.crm-cell{font-size:13px;color:#33495E}.crm-cell .lbl{display:none}.crm-late{color:#A52A2A;font-weight:700}
+.crm-head{display:grid;grid-template-columns:minmax(200px,1.6fr) 120px minmax(130px,.9fr) 110px 120px minmax(120px,.8fr) minmax(140px,.9fr);gap:10px;padding:0 13px 6px;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:#6B7C91;font-weight:700}
+.crm-list{display:grid;gap:6px}
+@media(max-width:1100px){.crm-head{display:none}.crm-row{grid-template-columns:1fr 1fr}.crm-row>:first-child{grid-column:1/-1}.crm-cell .lbl{display:block;font-size:11px;color:#7A8B9B;text-transform:uppercase;letter-spacing:.04em}}
+</style></head><body>
+<div class="ym-main"><header class="ym-topbar"><div style="display:flex;align-items:center;gap:10px"><button id="ymMenu" class="ym-mobile-toggle">☰</button><div class="ym-topbar-title">CRM</div></div><div class="ym-topbar-meta"><span id="clk" class="ym-meta"></span></div></header>
+<main class="ym-content">
+<div class="ym-header"><div><h1 class="ym-title">Clientes e oportunidades</h1></div><div class="ym-actions"><button id="btnLegacy" class="ym-btn secondary">Histórico (legado)</button><button id="btnNew" class="ym-btn">＋ Novo lead</button></div></div>
+<div id="kpis" class="v2-kpis"></div>
+<div class="v2-toolbar"><input id="q" class="ym-input" placeholder="Buscar empresa, pessoa, cidade, segmento…" aria-label="Buscar"><select id="fType" class="ym-select" aria-label="Tipo"><option value="">Leads, integração e clientes ativos</option><option value="TODOS">Tudo, incluindo inativos</option><option value="LEAD">Só leads</option><option value="INTEGRACAO">Só em integração</option><option value="CLIENTE">Só clientes ativos</option><option value="INATIVO">Só clientes inativos</option></select><select id="fSource" class="ym-select" aria-label="Origem"><option value="">Todas as origens</option></select><select id="fTemp" class="ym-select" aria-label="Temperatura"><option value="">Todas as temperaturas</option><option value="QUENTE">Quente</option><option value="MORNO">Morno</option><option value="FRIO">Frio</option></select><select id="fStage" class="ym-select" aria-label="Status"><option value="">Todos os status</option></select></div>
+<div id="meta" class="ym-meta" style="margin:2px 2px 8px"></div>
+<div class="crm-head"><span>Nome</span><span>Tipo</span><span>Status</span><span>Temperatura</span><span>Follow-up</span><span>Origem</span><span>Contrato</span></div>
+<div id="list" class="crm-list"><div class="v2-empty">Carregando…</div></div>
+<section class="v2-section"><h2>Relatório por origem</h2><p>Base comercial atual (desde 29/10/2026, incluindo a base inicial identificada). Clique numa origem para filtrar a lista.</p><div class="v2-scroll"><table class="v2-table" id="bySource"></table></div></section>
+</main></div>
+<script src="/assets/homolog/shell-v2.js?v=20261030-4"></script>
+<script src="/assets/homolog/ym-v2.js?v=20261030-2"></script>
+<script>
+(() => {
+  const { E, BRL, date, dateShort, opts, pct, modal, row, rpc, ready, toast, clock, isHttp, today } = YMV2;
+  const $ = (id) => document.getElementById(id);
+  const STAGE = { LEAD_MAPEADO: 'Lead mapeado', LEITURA_EM_PRODUCAO: 'Leitura em produção', LEITURA_ENVIADA: 'Leitura enviada', FOLLOW_UP: 'Follow-up', CONVERSA_AGENDADA: 'Conversa agendada', RAIOX_OFERTADO: 'Raio-X ofertado', RAIOX_PAGO: 'Raio-X pago', RAIOX_ENTREGUE: 'Raio-X entregue', PROPOSTA: 'Proposta enviada', PERDIDO: 'Perdido', DESQUALIFICADO: 'Desqualificado' };
+  const OPEN_STAGES = ['LEAD_MAPEADO', 'LEITURA_EM_PRODUCAO', 'LEITURA_ENVIADA', 'FOLLOW_UP', 'CONVERSA_AGENDADA', 'RAIOX_OFERTADO', 'RAIOX_PAGO', 'RAIOX_ENTREGUE', 'PROPOSTA'];
+  const TEMP = { QUENTE: 'Quente', MORNO: 'Morno', FRIO: 'Frio' };
+  const CONTACT = { NAO_INICIADO: 'Ainda não contatado', MENSAGEM_ENVIADA: 'Mensagem enviada', RESPONDEU: 'Respondeu', CONVERSA_AGENDADA: 'Conversa agendada', SEM_RETORNO: 'Sem retorno', NAO_INTERESSADO: 'Não interessado' };
+  const LOSS = { SEM_RETORNO: 'Sem retorno', SEM_INTERESSE: 'Sem interesse', PRECO: 'Preço', MOMENTO: 'Momento', SEM_PRIORIDADE: 'Sem prioridade', JA_TEM_FORNECEDOR: 'Já tem fornecedor', NAO_IDENTIFICOU_NECESSIDADE: 'Não identificou necessidade', OUTRO: 'Outro' };
+  const ORIGINS = ['Sebrae', 'Prospecção ativa', 'Inbound', 'Instagram', 'Relacionamento familiar', 'Indicação', 'Presencial', 'Cliente direto', 'Outra'];
+  const SRC_LABEL = { SEBRAE: 'Sebrae', PRESENCIAL: 'Presencial', CLIENTE_DIRETO: 'Cliente direto', MANUAL: 'Cadastro manual', PROSPECCAO_PLANILHA: 'Prospecção ativa', RAIO_X_PAGO: 'Raio-X pago (site)', RAIOX: 'Raio-X (site)', TRIAGEM_YM20: 'Avaliação gratuita (site)' };
+  const srcLabel = (s) => (s ? SRC_LABEL[s] || s : 'Não informada');
+  const TYPE_LABEL = { LEAD: 'Lead', INTEGRACAO: 'Integração', CLIENTE: 'Cliente ativo', INATIVO: 'Cliente inativo' };
+  const tempChip = (t) => `<span class="v2-chip ${t === 'QUENTE' ? 'q' : t === 'MORNO' ? 'm' : 'f'}">${TEMP[t || 'FRIO']}</span>`;
+  const typeChip = (t) => `<span class="v2-chip ${t === 'CLIENTE' ? 'ok' : t === 'INTEGRACAO' ? 'warn' : t === 'INATIVO' ? '' : 'info'}">${TYPE_LABEL[t]}</span>`;
+  const contractLabel = (c) => { const p = []; if (Number(c.monthly) > 0) p.push(`${BRL(c.monthly)}/mês · Recorrente`); if (Number(c.one_off) > 0) p.push(`${BRL(c.one_off)} · Avulso`); if (!p.length) p.push((c.types || []).includes('RECORRENTE') ? 'Recorrente · sem valor' : (c.types || []).includes('AVULSO') ? 'Avulso · sem valor' : 'Sem serviço ativo'); return p.join(' + '); };
+  let D = null, items = [];
+
+  async function load() {
+    D = await rpc('central_ym_crm_v2');
+    const leads = D.opportunities.filter((o) => OPEN_STAGES.includes(o.stage)).map((o) => ({ ...o, type: 'LEAD', key: 'o:' + o.id }));
+    const clients = D.clients.map((c) => ({ ...c, type: c.phase === 'INATIVO' ? 'INATIVO' : c.phase === 'INTEGRACAO' ? 'INTEGRACAO' : 'CLIENTE', key: 'c:' + c.id }));
+    items = [...leads, ...clients];
+    const srcs = [...new Set(items.map((i) => i.source || ''))].sort((a, b) => srcLabel(a).localeCompare(srcLabel(b), 'pt-BR'));
+    const fs = $('fSource'), cur = fs.value; fs.innerHTML = '<option value="">Todas as origens</option>' + srcs.map((s) => `<option value="${E(s)}">${E(srcLabel(s))}</option>`).join(''); fs.value = cur;
+    const st = $('fStage'), cs = st.value; st.innerHTML = '<option value="">Todos os status</option>' + OPEN_STAGES.map((s) => `<option value="${s}">${E(STAGE[s])}</option>`).join(''); st.value = cs;
+    $('btnLegacy').textContent = `Histórico (legado · ${D.legacy_count})`;
+    render();
+  }
+
+  function base() { return D.opportunities.filter((o) => ['BASE_INICIAL', 'ATUAL', null, undefined].includes(o.base)); }
+  function kpis() {
+    const b = base(), contacted = b.filter((o) => o.contacted), won = b.filter((o) => o.stage === 'GANHO'), wonContacted = won.filter((o) => o.contacted);
+    const leads = items.filter((i) => i.type === 'LEAD'), prop = leads.filter((o) => o.stage === 'PROPOSTA');
+    const cli = items.filter((i) => i.type === 'CLIENTE' && i.kind === 'CLIENTE'), integ = items.filter((i) => i.type === 'INTEGRACAO');
+    const card = (k, n, l, s, cta) => `<button type="button" class="v2-kpi" data-k="${k}"><b>${n}</b><span>${l}</span><small>${s}</small><i>${cta} →</i></button>`;
+    $('kpis').innerHTML = card('leads', leads.length, 'Leads em aberto', `${leads.filter((o) => o.contacted).length} já contatados`, 'Ver leads')
+      + card('prop', prop.length, 'Em proposta', prop.map((o) => E(o.name)).join(' · ') || 'Nenhuma', 'Ver propostas')
+      + card('integ', integ.length, 'Em integração', integ.map((o) => E(o.name)).join(' · ') || 'Nenhum', 'Ver integração')
+      + card('cli', cli.length, 'Clientes ativos', 'Sem contar prestação interna', 'Ver clientes')
+      + card('conv', pct(wonContacted.length, contacted.length), 'Conversão de contatados', `${wonContacted.length} cliente(s) ganho(s) ÷ ${contacted.length} lead(s) contatado(s) · base desde 29/10/2026, com a base inicial`, 'Ver a conta');
+    $('kpis').querySelectorAll('[data-k]').forEach((b) => (b.onclick = () => kpiClick(b.dataset.k, { contacted, wonContacted })));
+  }
+  function kpiClick(k, x) {
+    if (k === 'leads') { $('fType').value = 'LEAD'; resetOthers(); return render(); }
+    if (k === 'prop') { $('fType').value = 'LEAD'; resetOthers(); $('fStage').value = 'PROPOSTA'; return render(); }
+    if (k === 'integ') { $('fType').value = 'INTEGRACAO'; resetOthers(); return render(); }
+    if (k === 'cli') { $('fType').value = 'CLIENTE'; resetOthers(); return render(); }
+    if (k === 'conv') {
+      const m = modal({ title: 'Conversão de contatados', subtitle: 'Mesma base no numerador e no denominador',
+        body: `<p class="v2-hint" style="margin:0 0 10px">Conta: clientes ganhos entre os leads contatados ÷ leads contatados × 100. Base: oportunidades da rotina iniciada em 29/10/2026, incluindo a base inicial identificada. Contatos nunca abordados não entram. Sem contatados, aparece “sem base”.</p>
+        <h3 style="font:800 14px Montserrat;margin:10px 0 6px">Ganhos (${x.wonContacted.length})</h3><div class="v2-list">${x.wonContacted.map((o) => row(`data-o="${E(o.id)}"`, E(o.name), E(srcLabel(o.source)), '<span class="v2-chip ok">Cliente</span>')).join('') || '<div class="v2-empty">Nenhum.</div>'}</div>
+        <h3 style="font:800 14px Montserrat;margin:14px 0 6px">Contatados (${x.contacted.length})</h3><div class="v2-list">${x.contacted.map((o) => row(`data-o="${E(o.id)}"`, E(o.name), `${E(STAGE[o.stage] || 'Serviço contratado')} · ${E(srcLabel(o.source))}`, tempChip(o.temperature))).join('') || '<div class="v2-empty">Nenhum.</div>'}</div>` });
+      m.querySelectorAll('[data-o]').forEach((b) => (b.onclick = () => { const o = D.opportunities.find((y) => y.id === b.dataset.o); m.close(); if (o.stage === 'GANHO' && o.client_id) openClient(D.clients.find((c) => c.id === o.client_id)); else openLead(o); }));
+    }
+  }
+  const resetOthers = () => { $('fStage').value = ''; $('fTemp').value = ''; $('fSource').value = ''; $('q').value = ''; };
+
+  function filtered() {
+    const q = $('q').value.trim().toLowerCase(), t = $('fType').value, s = $('fSource').value, te = $('fTemp').value, st = $('fStage').value;
+    return items.filter((i) => (t === 'TODOS' || (t ? i.type === t : i.type !== 'INATIVO')) && (!s || (i.source || '') === s) && (!te || i.temperature === te) && (!st || i.stage === st)
+      && (!q || [i.name, i.contact_name, i.city_state, i.segment, i.notes, i.next_action].join(' ').toLowerCase().includes(q)))
+      .sort((a, b) => ({ LEAD: 0, INTEGRACAO: 1, CLIENTE: 2, INATIVO: 3 }[a.type] - { LEAD: 0, INTEGRACAO: 1, CLIENTE: 2, INATIVO: 3 }[b.type]) || (a.follow_up || '9999').localeCompare(b.follow_up || '9999') || a.name.localeCompare(b.name, 'pt-BR'));
+  }
+  function render() {
+    kpis();
+    const list = filtered(), t = today();
+    $('meta').textContent = `${list.length} registro(s) neste filtro · todos começam fechados; clique para abrir e editar.`;
+    $('list').innerHTML = list.length ? list.map((i) => {
+      const late = i.follow_up && i.follow_up < t;
+      return `<button type="button" class="crm-row" data-key="${E(i.key)}"><span><b>${E(i.name)}</b><small>${E(i.contact_name || '')}${i.city_state ? ' · ' + E(i.city_state) : ''}${i.kind === 'PRESTACAO_INTERNA' ? ' · prestação interna' : ''}</small></span>
+        <span class="crm-cell"><span class="lbl">Tipo</span>${typeChip(i.type)}</span>
+        <span class="crm-cell"><span class="lbl">Status</span>${i.type === 'LEAD' ? E(STAGE[i.stage] || i.stage) : i.type === 'INTEGRACAO' ? 'Contrato em assinatura' : i.type === 'INATIVO' ? 'Sem atuação no momento' : 'Em atendimento'}</span>
+        <span class="crm-cell"><span class="lbl">Temperatura</span>${i.type === 'LEAD' ? tempChip(i.temperature) : '—'}</span>
+        <span class="crm-cell ${late ? 'crm-late' : ''}"><span class="lbl">Follow-up</span>${i.follow_up ? (late ? 'Atrasado · ' : '') + dateShort(i.follow_up) : '—'}</span>
+        <span class="crm-cell"><span class="lbl">Origem</span>${E(srcLabel(i.source))}</span>
+        <span class="crm-cell"><span class="lbl">Contrato</span>${i.type === 'LEAD' ? (i.proposal_value ? 'Proposta ' + BRL(i.proposal_value) : '—') : E(contractLabel(i))}</span></button>`;
+    }).join('') : '<div class="v2-empty">Nenhum registro neste filtro.</div>';
+    $('list').querySelectorAll('[data-key]').forEach((b) => (b.onclick = () => { const i = items.find((x) => x.key === b.dataset.key); i.type === 'LEAD' ? openLead(i) : openClient(i); }));
+    bySource();
+  }
+  function bySource() {
+    const map = new Map();
+    for (const o of base()) { const k = o.source || ''; if (!map.has(k)) map.set(k, { leads: 0, contacted: 0, prop: 0, won: 0 }); const r = map.get(k); r.leads++; if (o.contacted) r.contacted++; if (o.stage === 'PROPOSTA') r.prop++; if (o.stage === 'GANHO' && o.contacted) r.won++; }
+    for (const c of D.clients) { const k = c.source || ''; if (!map.has(k)) map.set(k, { leads: 0, contacted: 0, prop: 0, won: 0 }); map.get(k).clients = (map.get(k).clients || 0) + (c.kind === 'CLIENTE' ? 1 : 0); }
+    const rows = [...map.entries()].sort((a, b) => b[1].leads - a[1].leads);
+    $('bySource').innerHTML = `<thead><tr><th>Origem</th><th class="num">Oportunidades</th><th class="num">Contatadas</th><th class="num">Em proposta</th><th class="num">Ganhas</th><th class="num">Conversão</th><th class="num">Clientes ativos (carteira toda)</th></tr></thead><tbody>${rows.map(([k, r]) => `<tr class="click" data-src="${E(k)}"><td>${E(srcLabel(k))}</td><td class="num">${r.leads}</td><td class="num">${r.contacted}</td><td class="num">${r.prop}</td><td class="num">${r.won}</td><td class="num">${pct(r.won, r.contacted)}</td><td class="num">${r.clients || 0}</td></tr>`).join('')}</tbody>`;
+    $('bySource').querySelectorAll('[data-src]').forEach((tr) => (tr.onclick = () => { resetOthers(); $('fType').value = ''; $('fSource').value = tr.dataset.src; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }));
+  }
+
+  const originSelect = (cur) => { const known = ORIGINS.includes(cur) || !cur; return `<select class="ym-select" data-f="source_sel">${ORIGINS.map((o) => `<option ${o === cur ? 'selected' : ''}>${E(o)}</option>`).join('')}${!known ? `<option selected value="${E(cur)}">${E(srcLabel(cur))} (atual)</option>` : ''}</select>`; };
+  const field = (f, label, v, type = 'text', ph = '') => `<div><label class="ym-label">${label}</label><input class="ym-input" data-f="${f}" type="${type}" value="${E(v ?? '')}" placeholder="${E(ph)}"></div>`;
+  const linkBtn = (u, l) => (isHttp(u) ? `<a class="ym-btn secondary" href="${E(u)}" target="_blank" rel="noopener">${l} ↗</a>` : '');
+
+  function openLead(o) {
+    const m = modal({ wide: true, title: o.name, subtitle: `Lead · ${E(STAGE[o.stage] || o.stage)} · origem: ${E(srcLabel(o.source))}`,
+      body: `<div class="v2-form">
+        <div><label class="ym-label">Status</label><select class="ym-select" data-f="stage">${OPEN_STAGES.concat(['PERDIDO']).map((s) => `<option value="${s}" ${s === o.stage ? 'selected' : ''}>${E(STAGE[s])}</option>`).join('')}</select></div>
+        <div><label class="ym-label">Temperatura</label><select class="ym-select" data-f="temperature">${opts(TEMP, o.temperature || 'FRIO')}</select></div>
+        <div data-loss style="display:none" class="v2-wide"><label class="ym-label">Motivo da perda</label><select class="ym-select" data-f="loss_reason">${opts(LOSS, o.loss_reason || '', 'Selecione')}</select></div>
+        <div><label class="ym-label">Contato</label><select class="ym-select" data-f="contact_status">${opts(CONTACT, o.contact_status || 'NAO_INICIADO')}</select></div>
+        <div><label class="ym-label">Origem</label>${originSelect(o.source)}</div>
+        <div class="v2-wide"><label class="ym-label">Follow-up · o que fazer</label><input class="ym-input" data-f="next_action" value="${E(o.next_action || '')}"></div>
+        ${field('follow_up', 'Follow-up · quando', o.follow_up || '', 'date')}
+        ${field('proposal_value', 'Valor da proposta (R$)', o.proposal_value ?? '', 'number')}
+        <div class="v2-wide"><label class="ym-label">Observação</label><textarea class="ym-textarea" data-f="notes" rows="4">${E(o.notes || '')}</textarea></div>
+        ${field('proposal_url', 'Link da proposta', o.proposal_url, 'url', 'https://…')}${field('page_url', 'Link da página / pré-análise', o.page_url || o.reading_url, 'url', 'https://…')}
+        ${field('other_url_label', 'Outro link · nome', o.other_url_label, 'text', 'Ex.: apresentação')}${field('other_url', 'Outro link · endereço', o.other_url, 'url', 'https://…')}
+        <div class="v2-wide" style="display:flex;gap:8px;flex-wrap:wrap">${linkBtn(o.proposal_url, 'Abrir proposta')}${linkBtn(o.page_url || o.reading_url, 'Abrir página')}${linkBtn(o.other_url, E(o.other_url_label || 'Abrir link'))}${linkBtn(o.instagram_url, 'Instagram')}${linkBtn(o.website_url, 'Site')}</div>
+        <details class="v2-wide"><summary style="cursor:pointer;font-weight:800;color:#0A2540;font-size:14px">Dados de contato</summary><div class="v2-form" style="margin-top:10px">
+          ${field('business_name', 'Empresa', o.business_name)}${field('contact_name', 'Pessoa', o.contact_name)}${field('phone', 'WhatsApp / telefone', o.phone)}${field('email', 'E-mail', o.email, 'email')}
+          ${field('city_state', 'Cidade / UF', o.city_state)}${field('segment', 'Segmento', o.segment)}${field('instagram_url', 'Instagram', o.instagram_url, 'url')}${field('website_url', 'Site', o.website_url, 'url')}</div></details>
+      </div><p class="v2-hint">A proposta existe quando o status é “Proposta enviada” ou quando há link de proposta. Para virar cliente, use “Marcar como contratado”: o cadastro do cliente é criado e a origem fica preservada.</p>`,
+      actions: `<button class="ym-btn ok" data-won style="margin-right:auto">✓ Marcar como contratado</button><button class="ym-btn secondary" data-x>Cancelar</button><button class="ym-btn" data-save>Salvar</button>` });
+    const g = (f) => m.querySelector(`[data-f="${f}"]`);
+    const toggleLoss = () => { m.querySelector('[data-loss]').style.display = g('stage').value === 'PERDIDO' ? '' : 'none'; };
+    g('stage').onchange = toggleLoss; toggleLoss();
+    m.querySelector('[data-save]').onclick = (e) => YMV2.busy(e.currentTarget, 'Salvando…', async () => {
+      const p = {}; m.querySelectorAll('[data-f]').forEach((el) => (p[el.dataset.f] = el.value)); p.source = p.source_sel; delete p.source_sel;
+      for (const k of ['proposal_url', 'page_url', 'other_url', 'instagram_url', 'website_url']) if (p[k] && !isHttp(p[k])) return toast('Os links precisam começar com https://', true);
+      if (p.stage === 'PERDIDO' && !p.loss_reason) return toast('Escolha o motivo da perda.', true);
+      try { await rpc('central_ym_crm_save_lead', { p_id: o.id, p }); m.close(); toast('Lead atualizado.'); await load(); } catch (err) { toast(err.message, true); }
+    });
+    m.querySelector('[data-won]').onclick = async (e) => {
+      if (!confirm(`Confirmar que ${o.name} contratou um serviço?\n\nO cliente será criado na carteira e a origem (${srcLabel(o.source)}) fica preservada.`)) return;
+      await YMV2.busy(e.currentTarget, 'Convertendo…', async () => {
+        try {
+          const s = await YM.requireSession(location.pathname);
+          const r = await fetch(YM.SUPABASE_URL + '/functions/v1/motor-crm', { method: 'POST', headers: { Authorization: 'Bearer ' + s.access_token, apikey: YM.PUBLISHABLE_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'MOVE_STAGE', opportunity_id: o.id, stage: 'GANHO', reason: 'Serviço contratado (CRM)' }) });
+          const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.detail || j.error || 'Não foi possível converter.');
+          m.close(); toast('Cliente criado. Complete o serviço e o contrato na ficha do cliente.'); await load();
+        } catch (err) { toast(err.message, true); }
+      });
+    };
+  }
+
+  function openClient(c) {
+    if (!c) return;
+    const m = modal({ wide: true, title: c.name, subtitle: `${c.phase === 'INATIVO' ? 'Cliente inativo · sem atuação no momento' : c.phase === 'INTEGRACAO' ? 'Em integração · contrato em assinatura' : 'Cliente ativo'}${c.kind === 'PRESTACAO_INTERNA' ? ' · prestação interna' : ''} · origem: ${E(srcLabel(c.source))}`,
+      body: `<div class="v2-kpis" style="margin-top:0"><div class="v2-kpi" style="cursor:default"><b style="font-size:18px">${E(contractLabel(c))}</b><span>Contrato</span></div><div class="v2-kpi" style="cursor:default"><b style="font-size:18px">${c.contract_status ? E({ ASSINADO: 'Assinado', ENVIADO: 'Em assinatura', RASCUNHO: 'Rascunho', CANCELADO: 'Cancelado', EXPIRADO: 'Expirado' }[c.contract_status] || c.contract_status) : 'Sem contrato'}</b><span>Situação do contrato</span></div><div class="v2-kpi" style="cursor:default"><b style="font-size:18px">${date(c.became_client_at)}</b><span>Cliente desde</span></div></div>
+      <div class="v2-form">
+        <div><label class="ym-label">Origem (preservada após a contratação)</label>${originSelect(c.source)}</div>${field('segment', 'Segmento', c.segment)}
+        ${field('business_name', 'Empresa', c.business_name)}${field('contact_name', 'Pessoa', c.contact_name)}${field('phone', 'WhatsApp / telefone', c.phone)}${field('email', 'E-mail', c.email, 'email')}
+        ${field('city_state', 'Cidade / UF', c.city_state)}<div></div>${field('instagram_url', 'Instagram', c.instagram_url, 'url')}${field('website_url', 'Site', c.website_url, 'url')}
+        <div class="v2-wide"><label class="ym-label">Observação</label><textarea class="ym-textarea" data-f="notes" rows="4">${E(c.notes || '')}</textarea></div>
+        <div class="v2-wide" style="display:flex;gap:8px;flex-wrap:wrap">${linkBtn(c.instagram_url, 'Instagram')}${linkBtn(c.website_url, 'Site')}<a class="ym-btn secondary" href="/homologacao/CENTRAL/?client=${encodeURIComponent(c.id)}">Ficha completa na Central →</a></div>
+      </div>`,
+      actions: `<button class="ym-btn secondary" data-x>Cancelar</button><button class="ym-btn" data-save>Salvar</button>` });
+    m.querySelector('[data-save]').onclick = (e) => YMV2.busy(e.currentTarget, 'Salvando…', async () => {
+      const p = {}; m.querySelectorAll('[data-f]').forEach((el) => (p[el.dataset.f] = el.value)); p.source = p.source_sel; delete p.source_sel;
+      for (const k of ['instagram_url', 'website_url']) if (p[k] && !isHttp(p[k])) return toast('Os links precisam começar com https://', true);
+      try { await rpc('central_ym_crm_save_client', { p_id: c.id, p }); m.close(); toast('Cliente atualizado.'); await load(); } catch (err) { toast(err.message, true); }
+    });
+  }
+
+  function newLead() {
+    const m = modal({ title: 'Novo lead', body: `<div class="v2-form">${field('business_name', 'Empresa')}${field('contact_name', 'Pessoa')}${field('phone', 'WhatsApp / telefone')}${field('email', 'E-mail', '', 'email')}<div><label class="ym-label">Origem</label>${originSelect('Prospecção ativa')}</div><div><label class="ym-label">Temperatura</label><select class="ym-select" data-f="temperature">${opts(TEMP, 'FRIO')}</select></div><div class="v2-wide"><label class="ym-label">Observação</label><textarea class="ym-textarea" data-f="notes" rows="3"></textarea></div></div>`,
+      actions: `<button class="ym-btn secondary" data-x>Cancelar</button><button class="ym-btn" data-save>Criar lead</button>` });
+    m.querySelector('[data-save]').onclick = (e) => YMV2.busy(e.currentTarget, 'Criando…', async () => {
+      const p = {}; m.querySelectorAll('[data-f]').forEach((el) => (p[el.dataset.f] = el.value)); p.source = p.source_sel;
+      if (!p.business_name && !p.contact_name) return toast('Informe a empresa ou a pessoa.', true);
+      try {
+        const s = await YM.requireSession(location.pathname);
+        const r = await fetch(YM.SUPABASE_URL + '/functions/v1/motor-crm', { method: 'POST', headers: { Authorization: 'Bearer ' + s.access_token, apikey: YM.PUBLISHABLE_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'CREATE_LEAD', name: p.contact_name, business_name: p.business_name, email: p.email, phone: p.phone, source: p.source }) });
+        const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.detail || j.error || 'Não foi possível criar o lead.');
+        const id = j.result?.opportunity_id;
+        if (id) await rpc('central_ym_crm_save_lead', { p_id: id, p: { ...p, stage: '', contact_status: 'NAO_INICIADO' } });
+        m.close(); toast('Lead criado.'); await load();
+      } catch (err) { toast(err.message, true); }
+    });
+  }
+
+  async function legacy() {
+    const m = modal({ wide: true, title: 'Histórico comercial (legado)', subtitle: 'Registros anteriores a 29/10/2026. Somente consulta; não entram nos indicadores atuais.', body: '<div class="v2-empty">Carregando…</div>' });
+    try {
+      const L = await rpc('central_ym_crm_legacy');
+      const body = m.querySelector('.v2-body');
+      body.innerHTML = `<input class="ym-input" data-lq placeholder="Buscar no histórico…" style="margin-bottom:10px"><div class="ym-meta" data-lm style="margin-bottom:8px"></div><div class="v2-scroll"><table class="v2-table"><thead><tr><th>Empresa</th><th>Etapa</th><th>Origem</th><th>Cidade</th><th>Arquivado em</th></tr></thead><tbody data-lt></tbody></table></div>`;
+      const draw = () => { const q = body.querySelector('[data-lq]').value.toLowerCase(); const f = L.filter((x) => !q || [x.name, x.segment, x.city_state, x.source].join(' ').toLowerCase().includes(q)); body.querySelector('[data-lm]').textContent = `${f.length} de ${L.length} registros`; body.querySelector('[data-lt]').innerHTML = f.slice(0, 400).map((x) => `<tr><td>${E(x.name)}${x.reading_url && isHttp(x.reading_url) ? ` · <a href="${E(x.reading_url)}" target="_blank" rel="noopener">leitura ↗</a>` : ''}</td><td>${E(STAGE[x.stage] || x.stage)}</td><td>${E(srcLabel(x.source))}</td><td>${E(x.city_state || '—')}</td><td>${date(x.archived_at)}</td></tr>`).join(''); };
+      body.querySelector('[data-lq]').oninput = draw; draw();
+    } catch (err) { toast(err.message, true); }
+  }
+
+  ['q', 'fType', 'fSource', 'fTemp', 'fStage'].forEach((id) => $(id).addEventListener(id === 'q' ? 'input' : 'change', render));
+  { const qp = new URLSearchParams(location.search).get('q'); if (qp) { $('q').value = qp; $('fType').value = 'TODOS'; } }
+  $('btnNew').onclick = newLead; $('btnLegacy').onclick = legacy; clock('clk');
+  ready().then((s) => s && load()).catch((e) => { $('list').innerHTML = `<div class="v2-empty">${E(e.message)}</div>`; });
+})();
+</script></body></html>

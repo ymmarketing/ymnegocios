@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Documentos — Central YM (cópia de teste)</title>
+<link rel="icon" href="/assets/img/ym-app-icon.svg?v=20260829" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="/assets/internal-shell.css?v=20261006-rev"><link rel="stylesheet" href="/assets/internal-mobile-system.css?v=20260901-typography3">
+</head><body>
+<div class="ym-main"><header class="ym-topbar"><div style="display:flex;align-items:center;gap:10px"><button id="ymMenu" class="ym-mobile-toggle">☰</button><div class="ym-topbar-title">DOCUMENTOS</div></div><div class="ym-topbar-meta"><span id="clk" class="ym-meta"></span></div></header>
+<main class="ym-content">
+<div class="ym-header"><div><h1 class="ym-title">Documentos</h1></div><div class="ym-actions"><button id="btnNew" class="ym-btn">＋ Novo documento</button></div></div>
+<div class="v2-toolbar"><input id="q" class="ym-input" placeholder="Buscar título ou descrição…" aria-label="Buscar"><select id="fCat" class="ym-select" aria-label="Categoria"></select><select id="fType" class="ym-select" aria-label="Tipo documental"></select><select id="fClient" class="ym-select" aria-label="Cliente"></select><select id="fAud" class="ym-select" aria-label="Uso"><option value="">Uso interno e externo</option><option value="INTERNO">Uso interno</option><option value="EXTERNO">Uso externo</option></select></div>
+<div class="v2-toolbar" style="grid-template-columns:auto 180px auto 180px 1fr;align-items:center;margin-top:0"><label class="ym-label" for="dFrom" style="margin:0">Atualizado de</label><input id="dFrom" type="date" class="ym-input"><label class="ym-label" for="dTo" style="margin:0">até</label><input id="dTo" type="date" class="ym-input"><span></span></div>
+<div id="meta" class="ym-meta" style="margin:2px 2px 8px"></div>
+<div class="v2-scroll"><table class="v2-table" id="docs"></table></div>
+</main></div>
+<script src="/assets/homolog/shell-v2.js?v=20261030-4"></script>
+<script src="/assets/homolog/ym-v2.js?v=20261030-2"></script>
+<script>
+(() => {
+  const { E, date, opts, modal, rpc, ready, toast, clock, today, isHttp, busy } = YMV2;
+  const $ = (id) => document.getElementById(id);
+  const CAT = { MARCA: 'Identidade visual', INSTITUCIONAL: 'Institucional (MVV)', COMERCIAL: 'Comercial', COMUNICACAO: 'Comunicação', SOCIAL_CONTEUDO: 'Redes e conteúdo', DOCUMENTOS: 'Documentos da empresa', METODO_VOS: 'Método VOS', CONTRATO: 'Contrato', NOTA_FISCAL: 'Nota fiscal', ENTREGAVEL: 'Entregável', ESTRATEGIA: 'Estratégia', CONTEUDO: 'Conteúdo', FINANCEIRO: 'Financeiro', IDENTIDADE: 'Identidade do cliente', OUTRO: 'Outro' };
+  const YM_CATS = ['MARCA', 'INSTITUCIONAL', 'COMERCIAL', 'COMUNICACAO', 'SOCIAL_CONTEUDO', 'DOCUMENTOS', 'METODO_VOS', 'OUTRO'];
+  const CLI_CATS = ['CONTRATO', 'ENTREGAVEL', 'ESTRATEGIA', 'CONTEUDO', 'FINANCEIRO', 'NOTA_FISCAL', 'IDENTIDADE', 'OUTRO'];
+  const TYPES = ['Contrato', 'Proposta', 'Manual de marca', 'MVV', 'Apresentação', 'Relatório', 'Diagnóstico', 'Nota fiscal', 'Planilha', 'Política / termo', 'Roteiro', 'Outro'];
+  const FORMATS = ['PDF', 'Word (DOCX)', 'Planilha (XLSX)', 'Apresentação (PPTX)', 'Imagem', 'Vídeo', 'Página / link', 'Pasta do Drive'];
+  const AUD = { INTERNO: 'Interno', EXTERNO: 'Externo' };
+  let D = null;
+  async function load() { D = await rpc('central_ym_documents_v2'); filters(); render(); }
+  function filters() {
+    const keep = (id, html) => { const v = $(id).value; $(id).innerHTML = html; $(id).value = v; };
+    keep('fCat', '<option value="">Todas as categorias</option>' + [...new Set(D.docs.map((d) => d.category))].map((c) => `<option value="${E(c)}">${E(CAT[c] || c)}</option>`).join(''));
+    keep('fType', '<option value="">Todos os tipos documentais</option>' + [...new Set(D.docs.map((d) => d.doc_type).filter(Boolean))].sort().map((c) => `<option>${E(c)}</option>`).join(''));
+    keep('fClient', '<option value="">Todos (YM e clientes)</option><option value="-">Só da YM</option>' + D.clients.map((c) => `<option value="${E(c.id)}">${E(c.name)}${c.status !== 'ATIVO' ? ' (inativo)' : ''}</option>`).join(''));
+  }
+  function render() {
+    const q = $('q').value.toLowerCase(), c = $('fCat').value, t = $('fType').value, cl = $('fClient').value, a = $('fAud').value, f = $('dFrom').value, to = $('dTo').value;
+    const list = D.docs.filter((d) => (!q || [d.title, d.description, d.client].join(' ').toLowerCase().includes(q)) && (!c || d.category === c) && (!t || d.doc_type === t) && (!cl || (cl === '-' ? !d.client_id : d.client_id === cl)) && (!a || d.audience === a) && (!f || d.updated >= f) && (!to || d.updated <= to));
+    $('meta').textContent = `${list.length} documento(s). A data de filtro é a da última atualização; as versões anteriores ficam dentro de cada documento.`;
+    $('docs').innerHTML = `<thead><tr><th>Documento</th><th>Categoria</th><th>Tipo</th><th>Formato</th><th>Cliente</th><th>Uso</th><th>Atualizado em</th><th></th></tr></thead><tbody>${list.map((d, i) => `<tr class="click" data-i="${i}"><td><b>${E(d.title)}</b>${d.version ? `<br><small>Versão ${E(d.version)}</small>` : ''}${d.source === 'CONTRATO' ? `<br><small>${E({ ASSINADO: 'Assinado', ENVIADO: 'Em assinatura', RASCUNHO: 'Rascunho', CANCELADO: 'Cancelado', EXPIRADO: 'Expirado' }[d.contract_status] || d.contract_status)}${d.signed_at ? ' em ' + date(d.signed_at) : ''}</small>` : ''}</td><td>${E(CAT[d.category] || d.category)}</td><td>${E(d.doc_type || '—')}</td><td>${E(d.file_format || '—')}</td><td>${E(d.client || 'YM')}</td><td>${E(AUD[d.audience] || d.audience)}</td><td>${date(d.updated)}</td><td>${isHttp(d.url) ? `<a href="${E(d.url)}" target="_blank" rel="noopener" data-stop>Abrir ↗</a>` : '<small>sem arquivo</small>'}</td></tr>`).join('') || '<tr><td colspan="8">Nenhum documento neste filtro.</td></tr>'}</tbody>`;
+    $('docs').querySelectorAll('[data-i]').forEach((tr) => (tr.onclick = (e) => { if (e.target.closest('[data-stop]')) return; edit(list[tr.dataset.i]); }));
+  }
+  function edit(d) {
+    const isNew = !d; d = d || { source: 'YM', audience: 'INTERNO', category: 'DOCUMENTOS' };
+    const contract = d.source === 'CONTRATO';
+    const catOpts = (src, cur) => (src === 'CLIENTE' ? CLI_CATS : YM_CATS).map((k) => `<option value="${k}" ${k === cur ? 'selected' : ''}>${E(CAT[k])}</option>`).join('');
+    const listOpts = (arr, cur) => '<option value="">Selecione</option>' + arr.map((x) => `<option ${x === cur ? 'selected' : ''}>${E(x)}</option>`).join('') + (cur && !arr.includes(cur) ? `<option selected>${E(cur)}</option>` : '');
+    const m = modal({ wide: true, title: isNew ? 'Novo documento' : d.title, subtitle: contract ? 'Contrato do cliente · anexe o link do arquivo' : '',
+      body: `<div class="v2-form">
+        ${contract ? '' : `<div><label class="ym-label">De quem é</label><select class="ym-select" data-f="source">${opts({ YM: 'Da YM', CLIENTE: 'De um cliente' }, d.source)}</select></div>`}
+        <div data-cli><label class="ym-label">Cliente</label><select class="ym-select" data-f="client_id" ${contract ? 'disabled' : ''}><option value="">${d.source === 'YM' ? 'Nenhum (documento da YM)' : 'Selecione'}</option>${D.clients.map((c) => `<option value="${E(c.id)}" ${c.id === d.client_id ? 'selected' : ''}>${E(c.name)}</option>`).join('')}</select></div>
+        ${contract ? '' : `<div class="v2-wide"><label class="ym-label">Título</label><input class="ym-input" data-f="title" value="${E(d.title || '')}"></div><div><label class="ym-label">Categoria</label><select class="ym-select" data-f="category">${catOpts(d.source, d.category)}</select></div>`}
+        ${contract ? '' : `<div><label class="ym-label">Tipo documental</label><select class="ym-select" data-f="doc_type">${listOpts(TYPES, d.doc_type)}</select></div>`}
+        <div><label class="ym-label">Formato do arquivo</label><select class="ym-select" data-f="file_format">${listOpts(FORMATS, d.file_format)}</select></div>
+        ${contract ? '' : `<div><label class="ym-label">Uso</label><select class="ym-select" data-f="audience">${opts(AUD, d.audience || 'INTERNO')}</select></div>`}
+        <div class="v2-wide"><label class="ym-label">Link do arquivo (Drive ou página)</label><input class="ym-input" data-f="url" placeholder="https://…" value="${E(d.url || '')}"></div>
+        <div><label class="ym-label">Versão</label><input class="ym-input" data-f="version" value="${E(d.version || '')}" placeholder="Ex.: v2, out/2026"></div>
+        <div><label class="ym-label">Data desta atualização</label><input type="date" class="ym-input" data-f="version_date" value="${today()}"></div>
+        <div class="v2-wide"><label class="ym-label">O que mudou nesta versão (opcional)</label><input class="ym-input" data-f="version_notes"></div>
+        <div class="v2-wide"><label class="ym-label">Descrição</label><textarea class="ym-textarea" data-f="description" rows="3">${E(d.description || '')}</textarea></div>
+        <label class="v2-wide" style="display:flex;gap:8px;align-items:center;font-size:13px"><input type="checkbox" data-nv> Registrar como nova versão mesmo sem trocar o link</label>
+      </div>
+      ${isNew ? '' : `<h3 style="font:800 14px Montserrat;margin:16px 0 8px;color:#0A2540">Versões</h3><div class="v2-list">${(d.versions || []).map((v) => `<div class="v2-row" style="cursor:default"><span><b>${date(v.date)}${v.label ? ' · ' + E(v.label) : ''}</b><small>${E(v.notes || '')}</small></span><span class="v2-right">${isHttp(v.url) ? `<a href="${E(v.url)}" target="_blank" rel="noopener">Abrir ↗</a>` : ''}</span></div>`).join('') || '<div class="v2-empty">Sem versões registradas.</div>'}</div>`}
+      <p class="v2-hint">Uso externo de documento de cliente deixa o arquivo visível na Área do Cliente. Nenhum e-mail é enviado por esta tela.</p>`,
+      actions: `${!isNew && d.source === 'YM' ? '<button class="ym-btn secondary" data-arch style="margin-right:auto">Arquivar</button>' : ''}<button class="ym-btn secondary" data-x>Cancelar</button><button class="ym-btn" data-s>Salvar</button>` });
+    const g = (f) => m.querySelector(`[data-f="${f}"]`);
+    g('source')?.addEventListener('change', () => { g('category').innerHTML = catOpts(g('source').value, ''); });
+    const save = (extra = {}) => async (e) => busy(e.currentTarget, 'Salvando…', async () => {
+      const p = { ...extra }; m.querySelectorAll('[data-f]').forEach((el) => (p[el.dataset.f] = el.value)); p.new_version = m.querySelector('[data-nv]').checked ? 'true' : '';
+      const src = contract ? 'CONTRATO' : p.source;
+      if (p.url && !isHttp(p.url)) return toast('O link precisa começar com https://', true);
+      if (!contract && (!p.title || !p.url)) return toast('Informe título e link.', true);
+      if (src === 'CLIENTE' && !p.client_id) return toast('Escolha o cliente.', true);
+      try { await rpc('central_ym_document_save', { p_source: src, p_id: isNew ? null : d.id, p }); m.close(); toast('Documento salvo.'); await load(); } catch (err) { toast(err.message, true); }
+    });
+    m.querySelector('[data-s]').onclick = save();
+    m.querySelector('[data-arch]')?.addEventListener('click', save({ archive: 'true' }));
+  }
+  ['q', 'fCat', 'fType', 'fClient', 'fAud', 'dFrom', 'dTo'].forEach((id) => $(id).addEventListener(id === 'q' ? 'input' : 'change', render));
+  $('btnNew').onclick = () => edit(null); clock('clk');
+  ready().then((s) => s && load()).catch((e) => toast(e.message, true));
+})();
+</script></body></html>

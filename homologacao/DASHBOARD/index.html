@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Dashboard — Central YM (cópia de teste)</title>
+<link rel="icon" href="/assets/img/ym-app-icon.svg?v=20260829" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="/assets/internal-shell.css?v=20261006-rev"><link rel="stylesheet" href="/assets/internal-mobile-system.css?v=20260901-typography3">
+<style>.db-bar{display:grid;grid-template-columns:minmax(120px,220px) 1fr 60px;gap:10px;align-items:center;padding:7px 4px;border-bottom:1px solid #EDF2F6;cursor:pointer;width:100%;background:none;border-left:0;border-right:0;border-top:0;font:inherit;text-align:left}.db-bar:hover{background:#F7F8FF}.db-bar span{font-size:13px;color:#22394F}.db-track{height:10px;background:#EDF2F6;border-radius:999px;overflow:hidden}.db-track i{display:block;height:100%;background:#484DCF;border-radius:999px}.db-bar b{text-align:right;font-size:13px;font-variant-numeric:tabular-nums}.db-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}</style>
+</head><body>
+<div class="ym-main"><header class="ym-topbar"><div style="display:flex;align-items:center;gap:10px"><button id="ymMenu" class="ym-mobile-toggle">☰</button><div class="ym-topbar-title">DASHBOARD</div></div><div class="ym-topbar-meta"><span id="clk" class="ym-meta"></span></div></header>
+<main class="ym-content">
+<div class="ym-header"><div><h1 class="ym-title">Dashboard comercial</h1></div></div>
+<div class="v2-tabs" role="tablist"><button class="on" data-base="ATUAL">Rotina atual (desde 29/10/2026)</button><button data-base="LEGADO">Histórico (legado)</button></div>
+<p id="baseNote" class="ym-meta" style="margin:6px 2px 0"></p>
+<div id="kpis" class="v2-kpis"></div>
+<div class="db-grid"><section class="v2-section"><h2>Por origem</h2><p>Clique numa barra para ver os registros.</p><div id="bySource"></div></section><section class="v2-section"><h2>Por segmento</h2><p>Clique numa barra para ver os registros.</p><div id="bySegment"></div></section><section class="v2-section" id="tempSec"><h2>Por temperatura</h2><p>Contatos em aberto. Clique para ver.</p><div id="byTemp"></div></section></div>
+</main></div>
+<script src="/assets/homolog/shell-v2.js?v=20261030-4"></script>
+<script src="/assets/homolog/ym-v2.js?v=20261030-2"></script>
+<script>
+(() => {
+  const { E, pct, modal, row, rpc, ready, toast, clock } = YMV2;
+  const $ = (id) => document.getElementById(id);
+  const STAGE = { LEAD_MAPEADO: 'Lead mapeado', LEITURA_EM_PRODUCAO: 'Leitura em produção', LEITURA_ENVIADA: 'Leitura enviada', FOLLOW_UP: 'Follow-up', CONVERSA_AGENDADA: 'Conversa agendada', RAIOX_OFERTADO: 'Raio-X ofertado', RAIOX_PAGO: 'Raio-X pago', RAIOX_ENTREGUE: 'Raio-X entregue', ROTA_RECOMENDADA: 'Recomendação', PROPOSTA: 'Proposta', GANHO: 'Serviço contratado', PERDIDO: 'Perdido', DESQUALIFICADO: 'Desqualificado', IMPLANTACAO: 'Implantação' };
+  const SRC = { SEBRAE: 'Sebrae', PRESENCIAL: 'Presencial', CLIENTE_DIRETO: 'Cliente direto', MANUAL: 'Cadastro manual', PROSPECCAO_PLANILHA: 'Prospecção ativa', RAIO_X_PAGO: 'Raio-X pago (site)', RAIOX: 'Raio-X (site)', TRIAGEM_YM20: 'Avaliação gratuita (site)' };
+  const TEMP = { QUENTE: 'Quente', MORNO: 'Morno', FRIO: 'Frio' };
+  const OPEN = new Set(['LEAD_MAPEADO', 'LEITURA_EM_PRODUCAO', 'LEITURA_ENVIADA', 'FOLLOW_UP', 'CONVERSA_AGENDADA', 'RAIOX_OFERTADO', 'RAIOX_PAGO', 'RAIOX_ENTREGUE', 'PROPOSTA']);
+  let ALL = [], base = 'ATUAL';
+  const set = () => ALL.filter((o) => (base === 'LEGADO' ? o.base === 'LEGADO' : o.base !== 'LEGADO'));
+  function list(title, items) {
+    const m = modal({ title, subtitle: `${items.length} registro(s)`, wide: true, body: `<div class="v2-list">${items.map((o) => row(base === 'LEGADO' ? 'disabled style="cursor:default"' : `data-o="${E(o.id)}"`, E(o.name), `${E(STAGE[o.stage] || o.stage)} · ${E(SRC[o.source] || o.source || 'Origem não informada')}${o.segment ? ' · ' + E(o.segment) : ''}`, o.temperature && base !== 'LEGADO' ? `<span class="v2-chip ${o.temperature === 'QUENTE' ? 'q' : o.temperature === 'MORNO' ? 'm' : 'f'}">${TEMP[o.temperature]}</span>` : '', base === 'LEGADO' ? '' : 'Abrir no CRM →')).join('') || '<div class="v2-empty">Nenhum registro.</div>'}</div>` });
+    m.querySelectorAll('[data-o]').forEach((b) => (b.onclick = () => (location.href = '/homologacao/CRM/?q=' + encodeURIComponent(ALL.find((o) => o.id === b.dataset.o)?.name || ''))));
+  }
+  function bars(el, groups, total) {
+    const max = Math.max(1, ...groups.map((g) => g[1].length));
+    $(el).innerHTML = groups.length ? groups.map(([k, v], i) => `<button type="button" class="db-bar" data-i="${i}"><span>${E(k)}</span><span class="db-track"><i style="width:${(v.length / max) * 100}%"></i></span><b>${v.length}</b></button>`).join('') : '<div class="v2-empty">Sem dados.</div>';
+    $(el).querySelectorAll('[data-i]').forEach((b) => (b.onclick = () => list(groups[b.dataset.i][0], groups[b.dataset.i][1])));
+  }
+  const group = (items, fn) => { const m = new Map(); items.forEach((o) => { const k = fn(o); if (!m.has(k)) m.set(k, []); m.get(k).push(o); }); return [...m.entries()].sort((a, b) => b[1].length - a[1].length); };
+  function render() {
+    const s = set();
+    $('baseNote').textContent = base === 'LEGADO' ? 'Registros anteriores a 29/10/2026, guardados para consulta. Não alteram os indicadores atuais.' : 'Base comercial iniciada em 29/10/2026 (fuso de Brasília), incluindo a base inicial de oportunidades abertas antes do corte, identificada como tal. Datas originais preservadas.';
+    const opp = s, reading = s.filter((o) => o.reading), rx = s.filter((o) => o.raiox), won = s.filter((o) => o.won), contacted = s.filter((o) => o.contacted), wonC = won.filter((o) => o.contacted);
+    const card = (k, n, l, sub) => `<button type="button" class="v2-kpi" data-k="${k}"><b>${n}</b><span>${l}</span><small>${sub}</small><i>Ver registros →</i></button>`;
+    $('kpis').innerHTML = card('opp', opp.length, 'Oportunidades', base === 'ATUAL' ? `${s.filter((o) => o.base === 'BASE_INICIAL').length} da base inicial · ${s.filter((o) => o.base !== 'BASE_INICIAL').length} novas` : 'Registros do legado')
+      + card('read', reading.length, 'Leituras (pré-análises)', `${pct(reading.length, opp.length)} das oportunidades`)
+      + card('rx', rx.length, 'Raio-X pago/entregue', 'Etapa registrada no histórico, sem presumir pagamento')
+      + card('won', won.length, 'Serviços contratados', `Conversão de contatados: ${pct(wonC.length, contacted.length)} (${wonC.length} ÷ ${contacted.length})`);
+    const map = { opp: ['Oportunidades', opp], read: ['Leituras enviadas', reading], rx: ['Raio-X pago/entregue', rx], won: ['Serviços contratados', won] };
+    $('kpis').querySelectorAll('[data-k]').forEach((b) => (b.onclick = () => list(...map[b.dataset.k])));
+    bars('bySource', group(s, (o) => SRC[o.source] || o.source || 'Não informada'));
+    bars('bySegment', group(s, (o) => (o.segment || 'Não informado').split(/[,;·(]/)[0].trim().slice(0, 40) || 'Não informado').slice(0, 15));
+    $('tempSec').style.display = base === 'LEGADO' ? 'none' : '';
+    bars('byTemp', group(s.filter((o) => OPEN.has(o.stage)), (o) => TEMP[o.temperature] || 'Frio'));
+  }
+  document.querySelectorAll('[data-base]').forEach((b) => (b.onclick = () => { base = b.dataset.base; document.querySelectorAll('[data-base]').forEach((x) => x.classList.toggle('on', x === b)); render(); }));
+  clock('clk');
+  ready().then(async (ses) => { if (!ses) return; ALL = await rpc('central_ym_dashboard_v2'); render(); }).catch((e) => toast(e.message, true));
+})();
+</script></body></html>

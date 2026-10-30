@@ -1,7 +1,7 @@
 (()=>{
  const $=id=>document.getElementById(id),E=v=>window.YM?.esc?YM.esc(v):String(v??'').replace(/[&<>"']/g,'');
  const money=v=>v===null||v===undefined||v===''?'—':Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
- const date=v=>{if(!v)return '—';try{return new Date(v).toLocaleDateString('pt-BR')}catch{return '—'}};
+ const date=v=>{if(!v)return '—';if(/^\d{4}-\d{2}-\d{2}$/.test(String(v))){const [y,m,d]=String(v).split('-');return `${d}/${m}/${y}`}try{return new Date(v).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'})}catch{return '—'}};
  const datetime=v=>{if(!v)return '—';try{return new Date(v).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}catch{return '—'}};
  const statusLabel={ATIVO:'Ativo',INATIVO:'Inativo',CONTRATADO:'Contratado',EM_EXECUCAO:'Em execução',CONCLUIDO:'Concluído',PAUSADO:'Pausado',CANCELADO:'Cancelado',PLANEJADO:'Planejado',EM_ANDAMENTO:'Em andamento',AGUARDANDO_CLIENTE:'Aguardando cliente',AGUARDANDO_APROVACAO:'Aguardando aprovação',AJUSTE_SOLICITADO:'Ajuste solicitado',APROVADO:'Aprovado',PUBLICADO:'Publicado',EM_PRODUCAO:'Em produção',PAGO:'Pago',PREVISTO:'Previsto'};
  let overview={clients:[],calendar:[],kpis:{}},calCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1),selectedKey=dayKey(new Date()),currentClient=null;

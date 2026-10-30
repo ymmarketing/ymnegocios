@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Performance Clientes — Central YM (cópia de teste)</title>
+<link rel="icon" href="/assets/img/ym-app-icon.svg?v=20260829" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="/assets/internal-shell.css?v=20261006-rev"><link rel="stylesheet" href="/assets/internal-mobile-system.css?v=20260901-typography3">
+</head><body>
+<div class="ym-main"><header class="ym-topbar"><div style="display:flex;align-items:center;gap:10px"><button id="ymMenu" class="ym-mobile-toggle">☰</button><div class="ym-topbar-title">PERFORMANCE CLIENTES</div></div><div class="ym-topbar-meta"><span id="clk" class="ym-meta"></span></div></header>
+<main class="ym-content">
+<div class="ym-header"><div><h1 class="ym-title">Acompanhamento de performance Clientes</h1></div></div>
+<div class="v2-toolbar" style="grid-template-columns:minmax(220px,1.4fr) 170px 170px auto auto;align-items:end"><div><label class="ym-label" for="fClient">Cliente</label><select id="fClient" class="ym-select"></select></div><div><label class="ym-label" for="dFrom">De</label><input id="dFrom" type="date" class="ym-input"></div><div><label class="ym-label" for="dTo">Até</label><input id="dTo" type="date" class="ym-input"></div><button id="btnSync" class="ym-btn secondary">Atualizar do Reportei</button><button id="btnAdd" class="ym-btn">＋ Indicador</button></div>
+<div id="root"><div class="v2-empty">Escolha um cliente.</div></div>
+<p class="v2-hint">Resultados do cliente e receita da YM aparecem separados. Quando uma fonte não tem dado no período, aparece “dado indisponível”, nunca zero. Vendas não são atribuídas a posts sem rastreamento que comprove o vínculo.</p>
+</main></div>
+<script src="/assets/homolog/shell-v2.js?v=20261030-4"></script>
+<script src="/assets/homolog/ym-v2.js?v=20261030-2"></script>
+<script>
+(() => {
+  const { E, BRL, date, dateTime, opts, modal, rpc, ready, toast, clock, today, busy } = YMV2;
+  const $ = (id) => document.getElementById(id);
+  const UNIT = { QUANTIDADE: '', NUMERO: '', PERCENTUAL: '%', MOEDA: 'R$', INDICE: '', NOTA: '' };
+  const CAT = { NEGOCIO: 'Negócio', COMERCIAL: 'Comercial', MARKETING: 'Marketing', CONTEUDO: 'Conteúdo', SITE: 'Site', REDES_SOCIAIS: 'Redes sociais', ATENDIMENTO: 'Atendimento', FINANCEIRO: 'Financeiro', OPERACAO: 'Operação', OUTRO: 'Outro' };
+  const SRC = { REPORTEI: 'Reportei', CRM: 'CRM da Central', MANUAL: 'Manual', SUPABASE: 'Central', OUTRO: 'Outra' };
+  const SLUG = { instagram_business: 'Instagram', linkedin_personal: 'LinkedIn (perfil)', linkedin: 'LinkedIn', facebook_ads: 'Meta Ads', youtube: 'YouTube', tiktok: 'TikTok', google_analytics_4: 'Google Analytics' };
+  let P = null;
+  const fmt = (k, v) => (v === null || v === undefined ? null : k.unit === 'MOEDA' ? BRL(v) : k.unit === 'PERCENTUAL' ? `${Number(v).toLocaleString('pt-BR', { maximumFractionDigits: 2 })}%` : Number(v).toLocaleString('pt-BR', { maximumFractionDigits: 2 }));
+  const agg = (k) => { const v = (k.measurements || []).map((m) => Number(m.value)); if (!v.length) return null; if (k.aggregation === 'SOMA') return v.reduce((a, b) => a + b, 0); if (k.aggregation === 'MEDIA') return v.reduce((a, b) => a + b, 0) / v.length; if (k.aggregation === 'MAXIMO') return Math.max(...v); if (k.aggregation === 'MINIMO') return Math.min(...v); return v[0]; };
+  async function load() {
+    P = await rpc('central_ym_performance_v2', { p_client: $('fClient').value || null, p_from: $('dFrom').value, p_to: $('dTo').value });
+    const sel = $('fClient'), cur = sel.value; sel.innerHTML = '<option value="">Escolha um cliente</option>' + P.clients.map((c) => `<option value="${E(c.id)}">${E(c.name)}${c.kind !== 'CLIENTE' ? ' (prestação interna)' : ''}</option>`).join(''); sel.value = cur;
+    render();
+  }
+  function render() {
+    if (!$('fClient').value) { $('root').innerHTML = '<div class="v2-empty">Escolha um cliente e o período para ver os resultados.</div>'; return; }
+    const rep = P.sources.find((s) => s.provider === 'REPORTEI'), ints = rep?.integrations || [];
+    const srcHtml = rep ? `<b>Reportei</b> · projeto ${E(rep.project_id || '—')} · ${ints.length ? ints.map((i) => E(SLUG[i.slug] || i.slug) + ' (' + E(i.name) + ')').join(', ') : '<span style="color:#A52A2A">nenhuma rede conectada</span>'}${rep.last_synced_at ? ` · última atualização ${dateTime(rep.last_synced_at)}` : ' · ainda não sincronizado'}${rep.last_error ? `<br><small style="color:#A52A2A">Último erro: ${E(rep.last_error)}</small>` : ''}` : '<span style="color:#A52A2A">Sem projeto no Reportei vinculado.</span>';
+    const pending = rep && !ints.length ? `<div class="v2-empty" style="margin-top:8px">Para trazer dados deste cliente: no Reportei (app.reportei.com), abra o projeto do cliente e conecte o Instagram (e outras redes) em “Integrações”. Depois volte aqui e use “＋ Indicador”.</div>` : '';
+    const kpis = P.kpis.map((k) => ({ ...k, value: agg(k) }));
+    const rows = kpis.map((k) => `<tr><td><b>${E(k.name)}</b><br><small>${E(CAT[k.category] || k.category)}${k.integration ? ' · ' + E(SLUG[k.integration] || k.integration) : ''}</small></td><td>${E(SRC[k.source_type] || k.source_type)}${k.source_type === 'REPORTEI' && !k.mapped ? '<br><small style="color:#A52A2A">sem métrica ligada</small>' : ''}</td><td class="num">${k.value === null ? '<span style="color:#8A5300">dado indisponível</span>' : fmt(k, k.value)}</td><td class="num">${k.baseline !== null && k.baseline !== undefined ? fmt(k, k.baseline) : '—'}</td><td class="num">${k.target !== null && k.target !== undefined ? fmt(k, k.target) : '—'}</td><td>${k.measurements.length ? `${k.measurements.length} medição(ões) · ${k.aggregation === 'SOMA' ? 'soma' : k.aggregation === 'MEDIA' ? 'média' : 'último valor'}` : k.last ? `Último dado: ${date(k.last.start)} a ${date(k.last.end)}` : 'Nunca medido'}</td></tr>`).join('');
+    $('root').innerHTML = `<section class="v2-section"><h2>Fontes</h2><p>${srcHtml}</p>${pending}</section>
+      <div class="v2-kpis"><div class="v2-kpi" style="cursor:default"><b>${P.content?.planned ?? 0}</b><span>Posts programados no período</span><small>${P.content?.published ?? 0} marcados como publicados (Conteúdos da Central)</small></div><div class="v2-kpi" style="cursor:default"><b>${kpis.filter((k) => k.value !== null).length}/${kpis.length}</b><span>Indicadores com dado no período</span><small>Os demais aparecem como “dado indisponível”</small></div><div class="v2-kpi" style="cursor:default"><b>${BRL(P.ym_revenue)}</b><span>Receita da YM com este cliente</span><small>Pagamentos com baixa no período. Não é a receita do cliente.</small></div></div>
+      <section class="v2-section"><h2>Resultados do cliente</h2><p>Período: ${date($('dFrom').value)} a ${date($('dTo').value)}. Cada indicador mostra a origem e a regra de cálculo. A mesma métrica não é somada de duas fontes.</p><div class="v2-scroll"><table class="v2-table"><thead><tr><th>Indicador</th><th>Fonte</th><th class="num">No período</th><th class="num">Linha de base</th><th class="num">Meta</th><th>Base do cálculo</th></tr></thead><tbody>${rows || '<tr><td colspan="6">Nenhum indicador cadastrado para este cliente.</td></tr>'}</tbody></table></div></section>`;
+  }
+  async function syncAll(btn) {
+    const k = (P?.kpis || []).filter((x) => x.source_type === 'REPORTEI' && x.mapped); if (!k.length) return toast('Nenhum indicador ligado ao Reportei para este cliente.', true);
+    await busy(btn, 'Atualizando…', async () => {
+      const s = await YM.requireSession(location.pathname); let ok = 0, fail = 0, last = '';
+      for (const x of k) { try { const r = await fetch(YM.SUPABASE_URL + '/functions/v1/reportei-admin', { method: 'POST', headers: { Authorization: 'Bearer ' + s.access_token, apikey: YM.PUBLISHABLE_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'SYNC_KPI', client_id: $('fClient').value, kpi_id: x.id, start: $('dFrom').value, end: $('dTo').value }) }); const j = await r.json().catch(() => ({})); if (!r.ok) { fail++; last = j.detail || j.error || ''; } else ok++; } catch (e) { fail++; last = e.message; } }
+      toast(`${ok} indicador(es) atualizado(s)${fail ? `, ${fail} com falha: ${last}` : ''}.`, !!fail); await load();
+    });
+  }
+  async function addKpi() {
+    const rep = P?.sources?.find((s) => s.provider === 'REPORTEI'), ints = rep?.integrations || [];
+    if (!$('fClient').value) return toast('Escolha um cliente.', true);
+    if (!ints.length) return toast('Este cliente ainda não tem redes conectadas no Reportei.', true);
+    const m = modal({ title: 'Novo indicador do Reportei', body: `<div class="v2-form"><div class="v2-wide"><label class="ym-label">Rede</label><select class="ym-select" data-int>${ints.map((i) => `<option value="${E(i.id)}|${E(i.slug)}">${E(SLUG[i.slug] || i.slug)} · ${E(i.name)}</option>`).join('')}</select></div><div class="v2-wide"><label class="ym-label">Métrica</label><select class="ym-select" data-met><option>Carregando…</option></select></div><div class="v2-wide"><label class="ym-label">Nome do indicador</label><input class="ym-input" data-name></div><div><label class="ym-label">Como somar no período</label><select class="ym-select" data-agg>${opts({ SOMA: 'Soma', MEDIA: 'Média', ULTIMO_VALOR: 'Último valor' }, 'SOMA')}</select></div><div><label class="ym-label">Unidade</label><select class="ym-select" data-unit>${opts({ QUANTIDADE: 'Quantidade', PERCENTUAL: 'Percentual', MOEDA: 'Reais' }, 'QUANTIDADE')}</select></div></div>`, actions: '<button class="ym-btn secondary" data-x>Cancelar</button><button class="ym-btn" data-s>Criar e ligar</button>' });
+    const s = await YM.requireSession(location.pathname);
+    const call = async (body) => { const r = await fetch(YM.SUPABASE_URL + '/functions/v1/reportei-admin', { method: 'POST', headers: { Authorization: 'Bearer ' + s.access_token, apikey: YM.PUBLISHABLE_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.detail || j.error || 'Falha no Reportei'); return j; };
+    let mets = [];
+    const loadMets = async () => { const [, slug] = m.querySelector('[data-int]').value.split('|'); m.querySelector('[data-met]').innerHTML = '<option>Carregando…</option>'; try { mets = (await call({ action: 'METRICS', integration_slug: slug })).metrics || []; m.querySelector('[data-met]').innerHTML = mets.map((x, i) => `<option value="${i}">${E(x.label)}</option>`).join('') || '<option value="">Nenhuma métrica numérica</option>'; m.querySelector('[data-name]').value = mets[0]?.label || ''; } catch (e) { m.querySelector('[data-met]').innerHTML = `<option value="">${E(e.message)}</option>`; } };
+    m.querySelector('[data-int]').onchange = loadMets; m.querySelector('[data-met]').onchange = () => { m.querySelector('[data-name]').value = mets[m.querySelector('[data-met]').value]?.label || ''; }; loadMets();
+    m.querySelector('[data-s]').onclick = (e) => busy(e.currentTarget, 'Criando…', async () => {
+      const met = mets[m.querySelector('[data-met]').value]; if (!met) return toast('Escolha uma métrica.', true);
+      const [iid, slug] = m.querySelector('[data-int]').value.split('|');
+      try { const k = await rpc('central_ym_kpi_create', { p_client: $('fClient').value, p: { name: m.querySelector('[data-name]').value, aggregation: m.querySelector('[data-agg]').value, unit: m.querySelector('[data-unit]').value, metric: met.reference_key } });
+        await call({ action: 'MAP_KPI', client_id: $('fClient').value, kpi_id: k.id, integration_id: Number(iid), integration_slug: slug, external_metric_key: met.reference_key });
+        m.close(); toast('Indicador criado e ligado ao Reportei. Use “Atualizar do Reportei” para trazer os dados.'); await load(); } catch (err) { toast(err.message, true); }
+    });
+  }
+  const t = today(); $('dTo').value = t; $('dFrom').value = t.slice(0, 8) + '01';
+  ['fClient', 'dFrom', 'dTo'].forEach((id) => $(id).addEventListener('change', load));
+  $('btnSync').onclick = (e) => syncAll(e.currentTarget); $('btnAdd').onclick = addKpi; clock('clk');
+  ready().then((s) => s && load()).catch((e) => toast(e.message, true));
+})();
+</script></body></html>
