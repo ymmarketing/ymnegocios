@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Links úteis — Central YM (cópia de teste)</title>
+<link rel="icon" href="/assets/img/ym-app-icon.svg?v=20260829" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="/assets/internal-shell.css?v=20261006-rev"><link rel="stylesheet" href="/assets/internal-mobile-system.css?v=20260901-typography3">
+<style>
+.lu-toolbar{display:grid;grid-template-columns:minmax(220px,1fr) 220px auto;gap:9px;margin:12px 0 16px}
+.lu-group{margin-bottom:18px}.lu-group h2{font:800 16px Montserrat,sans-serif;color:var(--ym-navy,#0A2540);margin:0 0 8px}
+.lu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.lu-card{background:#fff;border:1px solid var(--ym-line,#DCE5F0);border-radius:14px;padding:12px 14px}
+.lu-card h3{font-size:14px;color:#0A2540;margin:0 0 8px}
+.lu-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-top:1px solid #EDF2F6}
+.lu-row:first-of-type{border-top:0}.lu-row a{font-size:13.5px;font-weight:700;color:#484DCF;text-decoration:none;word-break:break-word}
+.lu-row small{display:block;font-size:12px;color:#7A8B9B}.lu-row button{border:0;background:#EEF3F9;color:#47627B;border-radius:8px;font-size:12px;font-weight:700;padding:6px 9px;cursor:pointer;white-space:nowrap}
+.lu-empty{padding:13px;border:1px dashed #CFD9E4;border-radius:11px;background:#F8FAFC;color:#637487;font-size:13px}
+.lu-back{position:fixed;inset:0;z-index:400;background:rgba(4,22,38,.6);display:grid;place-items:center;padding:16px}
+.lu-modal{width:min(520px,100%);background:#fff;border-radius:16px;padding:18px;display:grid;gap:9px}
+.lu-modal h2{font:800 16px Montserrat,sans-serif;margin:0;color:#0A2540}.lu-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}
+.lu-note{font-size:12.5px;color:#7A8B9B;line-height:1.5}
+@media(max-width:760px){.lu-toolbar{grid-template-columns:1fr}}
+</style></head><body>
+<div class="ym-main"><header class="ym-topbar"><div style="display:flex;align-items:center;gap:10px"><button id="ymMenu" class="ym-mobile-toggle">☰</button><div class="ym-topbar-title">LINKS ÚTEIS</div></div><div class="ym-topbar-meta"><span id="luClock" class="ym-meta"></span></div></header>
+<main class="ym-content"><div class="ym-header"><div><h1 class="ym-title">Links úteis</h1></div><div class="ym-actions"><button id="luNew" class="ym-btn">＋ Novo link</button></div></div>
+<div class="lu-toolbar"><input id="luSearch" class="ym-input" placeholder="Buscar link, cliente ou ferramenta…"><select id="luFilter" class="ym-select"><option value="">Todos os grupos</option><option value="CLIENTE">Clientes</option><option value="YM">YM</option><option value="FERRAMENTA">Ferramentas</option></select><span></span></div>
+<p class="lu-note">Use somente links de acesso. Senhas não devem ser guardadas aqui.</p>
+<div id="luRoot"><div class="lu-empty">Carregando links…</div></div>
+</main></div>
+<script src="/assets/homolog/shell-v2.js?v=20261030-1"></script>
+<script>
+(() => {
+  const E = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const $ = (id) => document.getElementById(id);
+  let links = [], clients = [];
+  const GROUP = { CLIENTE: 'Clientes', YM: 'YM Marketing & Negócios', FERRAMENTA: 'Ferramentas' };
+  const clientName = (id) => clients.find((c) => c.id === id)?.name || 'Cliente';
+  async function load() {
+    const sb = YM.sb;
+    const [lq, oq] = await Promise.all([sb.from('central_ym_links').select('*').eq('active', true).order('sort_order').order('label'), sb.rpc('central_ym_overview_v2')]);
+    if (lq.error) throw lq.error; if (oq.error) throw oq.error;
+    links = lq.data || []; clients = (oq.data?.clients || []).filter((c) => c.kind === 'CLIENTE');
+    render();
+  }
+  function rowHtml(l) { let host = ''; try { host = new URL(l.url).hostname.replace(/^www\./, ''); } catch {} return `<div class="lu-row"><div><a href="${E(l.url)}" target="_blank" rel="noopener">${E(l.label)} ↗</a><small>${E(l.note || host)}</small></div><button data-edit="${E(l.id)}">Editar</button></div>`; }
+  function render() {
+    const q = $('luSearch').value.trim().toLowerCase(), g = $('luFilter').value;
+    const match = (l) => (!g || l.group_type === g) && (!q || [l.label, l.url, l.note, l.client_id ? clientName(l.client_id) : ''].join(' ').toLowerCase().includes(q));
+    const list = links.filter(match);
+    let html = '';
+    const cl = list.filter((l) => l.group_type === 'CLIENTE');
+    if (!g || g === 'CLIENTE') {
+      const by = new Map(); cl.forEach((l) => { const k = l.client_id || '-'; if (!by.has(k)) by.set(k, []); by.get(k).push(l); });
+      const cards = [...by.entries()].sort((a, b) => clientName(a[0]).localeCompare(clientName(b[0]), 'pt-BR'));
+      html += `<section class="lu-group"><h2>${GROUP.CLIENTE}</h2>${cards.length ? `<div class="lu-grid">${cards.map(([id, ls]) => `<article class="lu-card"><h3>${E(clientName(id))}</h3>${ls.map(rowHtml).join('')}</article>`).join('')}</div>` : '<div class="lu-empty">Nenhum link de cliente neste filtro.</div>'}</section>`;
+    }
+    for (const k of ['YM', 'FERRAMENTA']) {
+      if (g && g !== k) continue;
+      const ls = list.filter((l) => l.group_type === k);
+      html += `<section class="lu-group"><h2>${GROUP[k]}</h2>${ls.length ? `<div class="lu-grid"><article class="lu-card">${ls.map(rowHtml).join('')}</article></div>` : '<div class="lu-empty">Nenhum link neste filtro.</div>'}</section>`;
+    }
+    $('luRoot').innerHTML = html;
+    $('luRoot').querySelectorAll('[data-edit]').forEach((b) => (b.onclick = () => edit(links.find((l) => l.id === b.dataset.edit))));
+  }
+  function edit(l) {
+    l = l || { group_type: 'CLIENTE' };
+    const back = document.createElement('div'); back.className = 'lu-back';
+    back.innerHTML = `<section class="lu-modal"><h2>${l.id ? 'Editar link' : 'Novo link'}</h2>
+      <label class="ym-label">Grupo</label><select id="lfGroup" class="ym-select">${Object.entries(GROUP).map(([k, v]) => `<option value="${k}" ${l.group_type === k ? 'selected' : ''}>${v}</option>`).join('')}</select>
+      <div id="lfClientBox"><label class="ym-label">Cliente</label><select id="lfClient" class="ym-select"><option value="">Selecione</option>${clients.map((c) => `<option value="${E(c.id)}" ${l.client_id === c.id ? 'selected' : ''}>${E(c.name)}</option>`).join('')}</select></div>
+      <label class="ym-label">Nome do link</label><input id="lfLabel" class="ym-input" value="${E(l.label || '')}" placeholder="Ex.: Instagram, loja, página de vendas">
+      <label class="ym-label">Endereço</label><input id="lfUrl" class="ym-input" value="${E(l.url || '')}" placeholder="https://…">
+      <label class="ym-label">Observação (opcional)</label><input id="lfNote" class="ym-input" value="${E(l.note || '')}">
+      <div class="lu-actions">${l.id ? '<button id="lfArchive" class="ym-btn secondary">Retirar da lista</button>' : ''}<button id="lfCancel" class="ym-btn secondary">Cancelar</button><button id="lfSave" class="ym-btn">Salvar</button></div></section>`;
+    document.body.append(back);
+    const toggle = () => { back.querySelector('#lfClientBox').style.display = back.querySelector('#lfGroup').value === 'CLIENTE' ? '' : 'none'; };
+    toggle(); back.querySelector('#lfGroup').onchange = toggle;
+    back.onclick = (e) => { if (e.target === back) back.remove(); };
+    back.querySelector('#lfCancel').onclick = () => back.remove();
+    back.querySelector('#lfSave').onclick = async () => {
+      const row = { group_type: back.querySelector('#lfGroup').value, client_id: null, label: back.querySelector('#lfLabel').value.trim(), url: back.querySelector('#lfUrl').value.trim(), note: back.querySelector('#lfNote').value.trim() || null, updated_at: new Date().toISOString(), updated_by: 'CENTRAL_LINKS' };
+      if (row.group_type === 'CLIENTE') row.client_id = back.querySelector('#lfClient').value || null;
+      if (!row.label) return YM.toast('Informe o nome do link.', true);
+      if (!/^https?:\/\//i.test(row.url)) return YM.toast('O endereço precisa começar com https://', true);
+      if (row.group_type === 'CLIENTE' && !row.client_id) return YM.toast('Selecione o cliente.', true);
+      const q = l.id ? await YM.sb.from('central_ym_links').update(row).eq('id', l.id) : await YM.sb.from('central_ym_links').insert(row);
+      if (q.error) return YM.toast(q.error.message, true);
+      back.remove(); YM.toast('Link salvo.'); load();
+    };
+    back.querySelector('#lfArchive')?.addEventListener('click', async () => {
+      const q = await YM.sb.from('central_ym_links').update({ active: false, updated_at: new Date().toISOString(), updated_by: 'CENTRAL_LINKS' }).eq('id', l.id);
+      if (q.error) return YM.toast(q.error.message, true);
+      back.remove(); YM.toast('Link retirado da lista (registro preservado).'); load();
+    });
+  }
+  $('luSearch').addEventListener('input', render); $('luFilter').addEventListener('change', render); $('luNew').onclick = () => edit();
+  const tick = () => { $('luClock').textContent = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }); }; tick(); setInterval(tick, 30000);
+  const start = async () => { if (!window.YM?.sb) return setTimeout(start, 120); try { const s = await YM.requireSession(location.pathname); if (s) await load(); } catch (e) { $('luRoot').innerHTML = `<div class="lu-empty">${E(e.message)}</div>`; } };
+  start();
+})();
+</script></body></html>

@@ -14,6 +14,7 @@ Disallow: /desafio-do-casal-android/
 Disallow: /docs/
 Disallow: /scripts/
 Disallow: /supabase/
+Disallow: /homologacao/
 
 # Buscadores e assistentes de IA são bem-vindos nas páginas públicas
 User-agent: Googlebot
