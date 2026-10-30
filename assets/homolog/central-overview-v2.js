@@ -31,6 +31,7 @@
   .ov2-tcard ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
   .ov2-tcard li{font-size:13px;color:#33495E;line-height:1.45}.ov2-tcard li small{display:block;color:#7A8B9B;font-size:12px}
   .ov2-tcard li.late small{color:#A52A2A;font-weight:700}
+  .ov2-li{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.ov2-done{flex:none;border:1px solid #CFE6DA;background:#F0FAF5;color:#137A5B;border-radius:8px;font-size:12px;font-weight:800;padding:5px 8px;cursor:pointer}.ov2-done:hover{background:#DFF3E8}.ov2-done:disabled{opacity:.6;cursor:wait}
   .ov2-empty{padding:13px;border:1px dashed #CFD9E4;border-radius:11px;background:#F8FAFC;color:#637487;font-size:13px}
   @media(max-width:900px){.ov2-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media(max-width:520px){.ov2-kpis{grid-template-columns:1fr}}`;
@@ -84,9 +85,18 @@
     const cards = [...groups.values()].sort((a, b) => (a.id ? 0 : 1) - (b.id ? 0 : 1) || a.name.localeCompare(b.name, 'pt-BR'));
     root.innerHTML = `<h2>Pendências</h2>${cards.length ? `<div class="ov2-tgrid">${cards.map((g) => {
       const late = g.items.some((i) => i.due_at && new Date(i.due_at).getTime() < now);
-      return `<article class="ov2-tcard ${late ? 'late' : ''}"><header><b>${E(g.name)}</b><span>${g.items.length} pendência${g.items.length > 1 ? 's' : ''}</span></header><ul>${g.items.map((i) => { const l = i.due_at && new Date(i.due_at).getTime() < now; return `<li class="${l ? 'late' : ''}">${E(i.title)}<small>${i.due_at ? (l ? 'Atrasada · ' : 'Prazo · ') + dShort(i.due_at) : 'Sem prazo'}${i.priority === 'ALTA' ? ' · prioridade alta' : ''}</small></li>`; }).join('')}</ul>${g.id ? `<button class="ym-btn secondary" style="margin-top:9px" data-open-client="${E(g.id)}">Abrir cliente</button>` : ''}</article>`;
+      return `<article class="ov2-tcard ${late ? 'late' : ''}"><header><b>${E(g.name)}</b><span>${g.items.length} pendência${g.items.length > 1 ? 's' : ''}</span></header><ul>${g.items.map((i) => { const l = i.due_at && new Date(i.due_at).getTime() < now; return `<li class="${l ? 'late' : ''}"><div class="ov2-li"><span>${E(i.title)}</span><button class="ov2-done" data-done="${E(i.id)}" title="Dar baixa">✓ Concluir</button></div><small>${i.due_at ? (l ? 'Atrasada · ' : 'Prazo · ') + dShort(i.due_at) : 'Sem prazo'}${i.priority === 'ALTA' ? ' · prioridade alta' : ''}</small></li>`; }).join('')}</ul>${g.id ? `<button class="ym-btn secondary" style="margin-top:9px" data-open-client="${E(g.id)}">Abrir cliente</button>` : ''}</article>`;
     }).join('')}</div>` : '<div class="ov2-empty">Nenhuma pendência aberta.</div>'}`;
     root.querySelectorAll('[data-open-client]').forEach((b) => { b.onclick = () => window.CentralYMConsole?.openClient(b.dataset.openClient); });
+    root.querySelectorAll('[data-done]').forEach((b) => { b.onclick = async () => {
+      const task = (data.tasks || []).find((t) => t.id === b.dataset.done);
+      const note = prompt(`Dar baixa em "${task?.title || 'pendência'}".\n\nObservação (opcional):`);
+      if (note === null) return;
+      b.disabled = true; b.textContent = 'Salvando…';
+      const { error } = await window.YM.sb.rpc('central_ym_set_task_status', { p_task_id: b.dataset.done, p_status: 'CONCLUIDA', p_note: note || null });
+      if (error) { b.disabled = false; b.textContent = '✓ Concluir'; return window.YM.toast?.(error.message, true); }
+      window.YM.toast?.('Pendência concluída. Ela continua guardada no histórico.'); load();
+    }; });
   }
 
   window.CentralOverviewV2 = { load, render, get data() { return data; } };
