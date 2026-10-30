@@ -216,6 +216,18 @@ footer a{color:var(--muted)}
 .ev{display:inline-block;margin-top:10px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:99px;background:var(--green-bg);color:var(--green)}
 .ev.gap{background:var(--orange-bg);color:#B45309}
 @media(min-width:720px){.flow{grid-template-columns:repeat(3,1fr)}}
+.scn{display:grid;gap:14px}
+.scn .card{padding:22px;border-top:5px solid var(--c)}
+.scn .l{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--c)}
+.scn h3{font-size:20px;margin:6px 0 6px}
+.scn .sub{font-size:14.5px;color:var(--muted);margin-bottom:10px}
+.scn dl{display:grid;gap:9px;font-size:14px}
+.scn dt{font-weight:800;color:var(--navy);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.scn dd{margin:0 0 2px}
+.sA{--c:var(--orange)}.sB{--c:var(--blue)}.sC{--c:var(--green)}
+.qs{margin-top:16px;background:#fff;border:1px dashed var(--indigo);border-radius:14px;padding:16px 18px;font-size:14.5px}
+.qs ul{margin:8px 0 0 18px}.qs li{margin-bottom:4px}
+@media(min-width:720px){.scn{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
@@ -279,7 +291,49 @@ footer a{color:var(--muted)}
   </div>
 </section>
 
-<section id="termometro" style="background:#fff;border-block:1px solid var(--line)">
+<section id="foco" style="background:#fff;border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="kicker">A pergunta que organiza o resto</div>
+    <h2>Qual linha vem primeiro: eventos, mentoria ou as duas em ordem?</h2>
+    <p class="sec-lead">Hoje o perfil conversa com dois públicos: quem encomenda bem-casados e brownies para eventos e confeiteiras que podem se interessar pela mentoria. Se as duas linhas já funcionam juntas, o caminho segue. Se o objetivo for crescer, a resposta a esta pergunta muda o que a bio, o link, o site e os anúncios dizem. Só vocês sabem qual linha traz mais resultado hoje e qual deve ser maior no próximo ano. Por isso, três cenários para conversar.</p>
+    <div class="scn">
+      <div class="card sA"><div class="l">Cenário A</div><h3>Foco em bem-casados e brownies para eventos</h3><p class="sub">O produto é o centro; a mentoria segue como um caminho secundário.</p>
+        <dl>
+          <dt>Quem escuta</dt><dd>Noivas, famílias, cerimonialistas, decoradores, buffets e empresas.</dd>
+          <dt>Bio, link e site</dt><dd>Produto e prova (5,0 no Google e no casamentos.com.br) logo no início, degustação como convite principal, cardápio e "como encomendar" no site.</dd>
+          <dt>Conteúdo</dt><dd>Produto, "A Rainha Responde", eventos reais e parceiros. A mentoria fica em um botão do link da bio.</dd>
+          <dt>O que acompanhar</dt><dd>Orçamentos, degustações agendadas, pedidos fechados e a origem de cada um (bio, Google, casamentos.com.br).</dd>
+          <dt>Cuidado</dt><dd>Prazos de encomenda e datas de maior procura precisam estar claros (a listagem do casamentos.com.br informa 30 dias; a confirmar).</dd>
+        </dl></div>
+      <div class="card sB"><div class="l">Cenário B</div><h3>Foco na mentoria "Do Doce ao Negócio"</h3><p class="sub">A experiência da Cláudia vira o centro; o produto é a prova do método.</p>
+        <dl>
+          <dt>Quem escuta</dt><dd>Confeiteiras que querem transformar talento em negócio.</dd>
+          <dt>Bio, link e site</dt><dd>Quem é a Cláudia, para quem é a mentoria e como conversar, em uma página própria. Autoridade (TV, 7.340 seguidores) a validar com ela.</dd>
+          <dt>Conteúdo</dt><dd>Bastidores do negócio, preço, "a conta não fecha" e primeiros passos de quem começa. Os bem-casados entram como caso real.</dd>
+          <dt>O que acompanhar</dt><dd>Conversas iniciadas pelo botão da mentoria, vagas preenchidas e relatos de alunas, com autorização.</dd>
+          <dt>Cuidado</dt><dd>Promessas de renda ou de "liberdade" pedem revisão; e o conteúdo para confeiteiras pode se misturar ao de quem só quer encomendar.</dd>
+        </dl></div>
+      <div class="card sC"><div class="l">Cenário C</div><h3>As duas linhas, cada uma no seu espaço</h3><p class="sub">Uma ordem de prioridade e um lugar claro para cada público.</p>
+        <dl>
+          <dt>Quem escuta</dt><dd>As duas audiências, sem misturar as conversas.</dd>
+          <dt>Bio, link e site</dt><dd>O link da bio já separa cada intenção (o que funciona). O site ganha duas portas: eventos e mentoria.</dd>
+          <dt>Conteúdo</dt><dd>Pilares fixos (produto, "A Rainha Responde", eventos reais e mentoria), com um dia ou um formato para cada, e uma regra de qual linha recebe os anúncios.</dd>
+          <dt>O que acompanhar</dt><dd>Os números das duas linhas, separados, para decidir com dados onde investir tempo.</dd>
+          <dt>Cuidado</dt><dd>Tempo e energia: as duas linhas disputam a agenda da Cláudia.</dd>
+        </dl></div>
+    </div>
+    <div class="qs"><b>Perguntas para a conversa:</b>
+      <ul>
+        <li>Qual linha traz hoje mais resultado, e qual você quer que seja maior em 12 meses?</li>
+        <li>As duas linhas se ajudam ou disputam sua agenda?</li>
+        <li>Em quem você quer ser lembrada: quem faz o bem-casado ou quem ensina a fazer?</li>
+      </ul>
+    </div>
+    <div class="note"><svg class="i"><use href="#info"/></svg><span>Os cenários são hipóteses de trabalho, feitas só com o que é público. Nenhum deles é o "certo": a escolha é da Cláudia, e o restante desta leitura vale para qualquer um.</span></div>
+  </div>
+</section>
+
+<section id="termometro" style="border-block:1px solid var(--line)">
   <div class="wrap">
     <div class="kicker">Termômetro preliminar</div>
     <h2>Os 7 pilares do Raio-X, vistos de fora</h2>
@@ -292,7 +346,7 @@ footer a{color:var(--muted)}
       <div class="card row"><div class="ic"><svg class="i"><use href="#star"/></svg></div><div><h4>Prova social</h4><small>Destaque "Feedbacks" no perfil, nota 5,0 em 73 avaliações no Google e 5,0 em 65 no casamentos.com.br. Dá para reunir tudo em um só lugar, perto de quem decide.</small></div><div class="rt"><div class="lvl b s3"><i></i><i></i><i></i><i></i></div><div class="tagl">Boa base</div></div></div>
       <div class="card row"><div class="ic"><svg class="i"><use href="#cursor"/></svg></div><div><h4>Conversão</h4><small>Cinco botões de WhatsApp com mensagem pronta, um para cada intenção, mais o destaque de Contato.</small></div><div class="rt"><div class="lvl g s4"><i></i><i></i><i></i><i></i></div><div class="tagl">Ponto forte</div></div></div>
       <div class="card row"><div class="ic"><svg class="i"><use href="#route"/></svg></div><div><h4>Consistência</h4><small>468 publicações, com grade coerente entre artes, fotos e vídeos. Um calendário de datas pode dar ainda mais ritmo.</small></div><div class="rt"><div class="lvl g s4"><i></i><i></i><i></i><i></i></div><div class="tagl">Ponto forte</div></div></div>
-      <div class="card row" style="background:var(--navy);border-color:var(--navy)"><div class="ic" style="background:rgba(255,255,255,.12);color:var(--orange2)"><svg class="i"><use href="#spark"/></svg></div><div><h4 style="color:#fff">Maior oportunidade (hipótese)</h4><small style="color:#c4d2e8">Reunir a prova social em um site com cardápio: se os pedidos de hoje já chegam pelo Instagram e pela indicação, o caminho segue. Se o objetivo for ser encontrada por quem ainda não conhece a marca, é o ponto com mais espaço.</small></div></div>
+      <div class="card row" style="background:var(--navy);border-color:var(--navy)"><div class="ic" style="background:rgba(255,255,255,.12);color:var(--orange2)"><svg class="i"><use href="#spark"/></svg></div><div><h4 style="color:#fff">Maior oportunidade (hipótese)</h4><small style="color:#c4d2e8">Definir o foco (eventos, mentoria ou as duas em ordem) e, depois, reunir a prova social em um site com cardápio: se os pedidos de hoje já chegam pelo Instagram e pela indicação, o caminho segue. Se o objetivo for ser encontrada por quem ainda não conhece a marca, é o ponto com mais espaço.</small></div></div>
     </div>
     <div class="note"><svg class="i"><use href="#info"/></svg><span>Níveis indicativos, sem nota numérica. Não substituem a medição do Motor YM no Raio-X completo.</span></div>
   </div>
@@ -340,7 +394,7 @@ footer a{color:var(--muted)}
         <figure class="shot antes"><div class="lab"><svg class="i"><use href="#img"/></svg>Hoje <small>grade do feed (recorte)</small></div><img src="img/grid.webp" alt="Print da grade do Instagram com fotos de bem-casados, brownie, mesa de evento, arte Qual é o seu, arte Quantos bem-casados eu preciso e campanha até 31/10" width="750" height="668" loading="lazy"></figure>
         <figure class="shot antes"><div class="lab"><svg class="i"><use href="#img"/></svg>Hoje <small>posts fixados (recorte)</small></div><img src="img/fixados.webp" alt="Recorte da fileira de posts fixados, com artes sobre contas que não fecham e sobre o maior erro de quem começa a vender doces em casa" width="750" height="198" loading="lazy"><div class="cap">Fixados falam com confeiteiras (mentoria). O restante da grade fala com noivas, cerimonialistas e empresas.</div></figure>
       </div>
-      <div class="read"><svg class="i"><use href="#eye"/></svg><span><b>Para pensar:</b> se os dois públicos já se entendem no mesmo perfil, o caminho segue. Se o objetivo for crescer cada linha com mais clareza, os destaques e o link da bio já ajudam a separar, e uma rotina de pilares (produto, "Rainha Responde", eventos reais, mentoria) deixaria cada assunto fácil de achar.</span></div>
+      <div class="read"><svg class="i"><use href="#eye"/></svg><span><b>Para pensar:</b> se os dois públicos já se entendem no mesmo perfil, o caminho segue. Se o objetivo for crescer, vale decidir antes qual linha vem primeiro (veja os cenários no início desta leitura). Para organizar, os destaques e o link da bio já ajudam a separar, e uma rotina de pilares (produto, "Rainha Responde", eventos reais, mentoria) deixaria cada assunto fácil de achar.</span></div>
     </div>
 
     <div class="find">
@@ -431,7 +485,7 @@ footer a{color:var(--muted)}
     <h2>Um caminho de 90 dias no Método VOS</h2>
     <p class="sec-lead">Um exemplo de sequência, a ajustar depois de conversarmos sobre os objetivos de vocês. O que já funciona entra como base e é preservado.</p>
     <div class="plan">
-      <div class="card b1"><div class="hd"><svg class="i"><use href="#eye"/></svg>VER · dias 1 a 30<span>Base</span></div><ul><li>Conversar sobre objetivos e prioridades, e entender o que já converte e deve ser preservado</li><li>Confirmar a listagem de avaliações e os dados da empresa</li><li>Ficha no Google em dia (endereços, horário e link de pedido)</li><li><b>Prioridade:</b> reunir relatos e fotos reais de eventos, com autorização</li></ul></div>
+      <div class="card b1"><div class="hd"><svg class="i"><use href="#eye"/></svg>VER · dias 1 a 30<span>Base</span></div><ul><li>Conversar sobre objetivos, começando pelo foco: eventos, mentoria ou as duas em ordem (cenários A, B ou C)</li><li>Entender o que já converte e deve ser preservado</li><li>Confirmar a listagem de avaliações e os dados da empresa</li><li>Ficha no Google em dia (endereços, horário e link de pedido)</li><li><b>Prioridade:</b> reunir relatos e fotos reais de eventos, com autorização</li></ul></div>
       <div class="card b2"><div class="hd"><svg class="i"><use href="#grid"/></svg>ORDENAR · dias 31 a 60<span>Estrutura</span></div><ul><li>Site com cardápio, como encomendar e avaliações</li><li>Faixa de prova e sabores no link da bio</li><li>Linha de prova na bio (Google e casamentos.com.br)</li><li>Pilares de conteúdo: produto, Rainha Responde, eventos reais e mentoria</li></ul></div>
       <div class="card b3"><div class="hd"><svg class="i"><use href="#shield"/></svg>SUSTENTAR · dias 61 a 90<span>Tração</span></div><ul><li>Calendário de datas e campanhas</li><li>Pedido de avaliação após cada evento</li><li>Relato de cliente em destaque todo mês</li><li>Medição de origem dos pedidos</li><li>Teste de anúncio em pequena escala, com medição</li><li>Leitura mensal: o que gerou conversa</li></ul></div>
     </div>
@@ -443,7 +497,7 @@ footer a{color:var(--muted)}
     <div class="lim">
       <h4 style="font-size:17px;display:flex;gap:10px;align-items:center"><svg class="i" style="color:var(--indigo)"><use href="#info"/></svg>Limites desta leitura</h4>
       <ul>
-        <li>Ainda não conversamos com a Cláudia Regina Confeitaria. Não sabemos quais são as prioridades nem o que já gera resultado, então tudo aqui são possibilidades. O que já funciona deve ser preservado.</li>
+        <li>Ainda não conversamos com a Cláudia Regina Confeitaria. Não sabemos quais são as prioridades, qual linha (eventos ou mentoria) traz mais resultado nem o que já gera resultado, então tudo aqui são possibilidades. O que já funciona deve ser preservado.</li>
         <li>Baseada só em informações públicas, em prints do Instagram, do link da bio e do site feitos em 30/10/2026, e em buscas na internet. Não temos acesso a métricas internas, vendas ou investimentos anteriores.</li>
         <li>Não analisamos métricas de curtidas e alcance dos posts: elas ficam com a confeitaria.</li>
         <li>A listagem do casamentos.com.br tem o mesmo nome e os mesmos sabores, e ainda precisa ser confirmada com a Cláudia. Não localizamos Reclame Aqui; isso não indica problema, indica que não o alcançamos nas buscas feitas.</li>
