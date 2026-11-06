@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#173b2d">
+  <meta name="description" content="Menos Bucho — 30 dias de desafios simples e personalizados para construir novos hábitos.">
+  <title>Menos Bucho — Novos Hábitos</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="stylesheet" href="./assets/product.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-wrap"><div class="brand-mark">MB</div><div><strong>MENOS BUCHO</strong><small>NOVOS HÁBITOS</small></div></div>
+    <a class="ghost-link" href="./acesso.html">Já tenho acesso</a>
+  </header>
+
+  <main class="app-shell storefront">
+    <section id="checkoutStatus" class="status-banner" hidden></section>
+
+    <section class="sales-hero">
+      <div class="sales-copy">
+        <span class="eyebrow">Desafio de 30 dias</span>
+        <h1>Menos cobrança.<br>Mais hábito que cabe na vida real.</h1>
+        <p>Uma jornada individual com desafios diários simples, registro de progresso e adaptação de ritmo conforme a sua constância.</p>
+        <div class="trust-row"><span>✓ Sem dieta pronta</span><span>✓ Sem promessa milagrosa</span><span>✓ No seu ritmo</span></div>
+      </div>
+      <aside class="price-card">
+        <span class="eyebrow">Acesso por 30 dias</span>
+        <div class="price"><small>R$</small><strong>19,90</strong></div>
+        <p>Você compra o ciclo, cria sua conta com o mesmo e-mail e começa o diagnóstico inicial.</p>
+        <a href="#comprar" class="primary-link">Começar minha jornada</a>
+      </aside>
+    </section>
+
+    <section class="feature-grid">
+      <article class="feature-card"><span>01</span><h2>Você conta seu momento</h2><p>Objetivo, focos, tempo disponível e ritmo desejado ajudam a definir o ponto de partida.</p></article>
+      <article class="feature-card"><span>02</span><h2>O app monta o dia</h2><p>Três desafios são escolhidos de uma biblioteca aprovada, sem a IA inventar orientações livremente.</p></article>
+      <article class="feature-card"><span>03</span><h2>A jornada se ajusta</h2><p>Se a execução cair, o ritmo simplifica. Se a constância subir, os próximos desafios evoluem gradualmente.</p></article>
+    </section>
+
+    <section id="comprar" class="panel checkout-panel">
+      <div class="checkout-intro">
+        <span class="eyebrow">Começar agora</span>
+        <h2>Escolha como quer continuar depois dos 30 dias</h2>
+        <p>O valor do primeiro ciclo é o mesmo nas duas opções. Você pode começar sem renovação automática ou já deixar a continuidade ativada.</p>
+      </div>
+
+      <form id="purchaseForm" class="purchase-form">
+        <label>Seu e-mail
+          <input id="purchaseEmail" name="email" type="email" autocomplete="email" maxlength="254" required placeholder="voce@email.com">
+          <small>Use este mesmo e-mail para criar sua conta depois do pagamento.</small>
+        </label>
+
+        <div class="purchase-options" role="radiogroup" aria-label="Forma de renovação">
+          <label class="purchase-option">
+            <input type="radio" name="renewalMode" value="one_time" checked>
+            <span class="purchase-option-body"><b>30 dias sem renovação automática</b><small>R$ 19,90 · Pix ou cartão</small><em>Você decide no final se quer renovar.</em></span>
+          </label>
+          <label class="purchase-option">
+            <input type="radio" name="renewalMode" value="automatic">
+            <span class="purchase-option-body"><b>Renovação automática mensal</b><small>R$ 19,90/mês · cartão</small><em>Ideal se quiser manter a jornada sem precisar recomprar todo mês.</em></span>
+          </label>
+        </div>
+
+        <div class="info-box">O pagamento é finalizado no ambiente seguro do Asaas. O acesso só é liberado após a confirmação financeira recebida pelo sistema.</div>
+        <button id="purchaseButton" class="primary-btn" type="submit">Ir para o pagamento seguro</button>
+        <p id="purchaseMessage" class="form-message" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="panel legal-note">
+      <strong>Sobre o desafio</strong>
+      <p>O Menos Bucho é uma ferramenta de construção de hábitos gerais de rotina e bem-estar. Não substitui avaliação, diagnóstico ou acompanhamento médico, nutricional, psicológico ou de educação física individualizada.</p>
+    </section>
+  </main>
+
+  <footer class="footer"><span>Desenvolvido pela YM Marketing & Negócios</span><span>•</span><span>Marketing certo, na ordem certa.</span></footer>
+
+  <script src="./config.js"></script>
+  <script src="./assets/purchase.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+  </script>
+</body>
+</html>

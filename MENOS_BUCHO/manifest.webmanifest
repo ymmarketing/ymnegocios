@@ -1,0 +1,11 @@
+{
+  "name": "Menos Bucho — Novos Hábitos",
+  "short_name": "Menos Bucho",
+  "description": "Jornada de 30 dias para construir novos hábitos com desafios simples e personalizados.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f1e8",
+  "theme_color": "#173b2d",
+  "lang": "pt-BR"
+}

@@ -1,0 +1,55 @@
+name: Menos Bucho CI
+
+on:
+  push:
+    branches:
+      - feat/menos-bucho-mvp
+    paths:
+      - 'MENOS_BUCHO/**'
+      - '.github/workflows/menos-bucho-ci.yml'
+  pull_request:
+    paths:
+      - 'MENOS_BUCHO/**'
+      - '.github/workflows/menos-bucho-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check browser JavaScript syntax
+        run: |
+          node --check MENOS_BUCHO/config.js
+          node --check MENOS_BUCHO/assets/app.js
+          node --check MENOS_BUCHO/assets/challenges.js
+          node --check MENOS_BUCHO/assets/purchase.js
+          node --check MENOS_BUCHO/assets/access.js
+          node --check MENOS_BUCHO/assets/journey.js
+          node --check MENOS_BUCHO/assets/cancel-renewal.js
+          node --check MENOS_BUCHO/sw.js
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Check Edge Function TypeScript
+        run: |
+          deno check MENOS_BUCHO/supabase/functions/create-checkout/index.ts
+          deno check MENOS_BUCHO/supabase/functions/asaas-webhook/index.ts
+          deno check MENOS_BUCHO/supabase/functions/dispatch-emails/index.ts
+          deno check MENOS_BUCHO/supabase/functions/cancel-subscription/index.ts
+
+      - name: Ensure runtime config contains no committed credentials
+        shell: bash
+        run: |
+          if grep -E "(eyJ[a-zA-Z0-9_-]{20,}|\$2[ayb]\$|sk_[a-zA-Z0-9]{16,}|asaas_[a-zA-Z0-9]{12,})" MENOS_BUCHO/config.js; then
+            echo 'Potential credential found in public config.js'
+            exit 1
+          fi
