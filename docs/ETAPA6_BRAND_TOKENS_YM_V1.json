@@ -1,0 +1,40 @@
+{
+  "contract_version": "YM_BRAND_TOKENS_1.0",
+  "status": "DERIVADO_DO_ECOSSISTEMA_OFICIAL_MARCA_V1_0_AGOSTO_2026",
+  "governance": {
+    "canonical_source": "ECOSSISTEMA OFICIAL DE MARCA — YM MARKETING & NEGÓCIOS — Versão 1.0 — Agosto/2026",
+    "rule": "Este arquivo é uma tradução técnica para interfaces. Em conflito, prevalece o Ecossistema Oficial de Marca.",
+    "brand_is_blue": true
+  },
+  "brand": {
+    "name": "YM Marketing & Negócios",
+    "signature": "O marketing certo, na ordem certa.",
+    "essence": "Colocar o marketing digital na ordem certa do negócio.",
+    "positioning": "A YM coloca o marketing digital na ordem certa do negócio.",
+    "value_proposition": "Transformar confusão em clareza acionável.",
+    "promise": "Em até 45 dias, a YM organiza e implanta a estrutura essencial de marketing digital para conectar posicionamento, marketing e vendas à realidade do pequeno negócio de serviços.",
+    "manifesto": ["Ver para compreender.", "Ordenar para avançar.", "Sustentar para crescer."],
+    "logic": ["Entender antes de fazer.", "Priorizar antes de investir.", "Estruturar para conseguir sustentar."]
+  },
+  "colors": {
+    "navy": "#0A2540",
+    "blue": "#0066FF",
+    "blue_secondary": "#3D47C4",
+    "background": "#F7F9FC",
+    "line": "#E4EAF2",
+    "muted": "#6B7A99",
+    "positive": "#047857",
+    "attention": "#B45309",
+    "critical": "#B91C1C"
+  },
+  "typography": {
+    "headlines": "Montserrat 800",
+    "subheadings": "Montserrat 600-700",
+    "body": "Inter 400-500",
+    "body_emphasis": "Inter 600-700"
+  },
+  "visual_language": ["clean", "premium", "editorial", "moderna", "estratégica", "corporativa", "didática", "organizada"],
+  "avoid": ["agência genérica de social media", "guru digital", "infoproduto agressivo", "perfil motivacional", "estética predominantemente roxa", "composição poluída", "template genérico sem hierarquia"],
+  "semantic_rule": "Cores semânticas informam status e score; não substituem a paleta institucional.",
+  "logo_rule": "A logo oficial existente deve ser preservada e aplicada no fechamento visual dos ativos públicos. Nenhum símbolo alternativo deve ser apresentado como nova logo sem aprovação."
+}

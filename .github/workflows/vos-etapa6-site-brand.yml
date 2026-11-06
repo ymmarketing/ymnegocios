@@ -1,0 +1,23 @@
+name: VOS Etapa 6 - Guardrails Site e Marca
+
+on:
+  push:
+    branches:
+      - vos-etapa6-site-canais-2026-08-08
+  pull_request:
+    paths:
+      - 'site-v2-preview.html'
+      - 'docs/ETAPA6_BRAND_TOKENS_YM_V1.json'
+      - 'docs/ETAPA6_MATRIZ_MENSAGENS_CANAIS_YM_V1.md'
+      - 'testes/etapa6-site-brand-guardrails.mjs'
+
+jobs:
+  brand-guardrails:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Guardrails de marca e comunicação
+        run: node testes/etapa6-site-brand-guardrails.mjs
