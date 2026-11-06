@@ -1,0 +1,23 @@
+name: Raio-X Digital 2.0 Check
+on:
+  push:
+    branches: [feat/raiox-digital-2-0]
+    paths:
+      - 'assets/js/raiox-digital-v2-*.js'
+      - 'tests/raiox-v2-engine.test.mjs'
+      - '.github/workflows/raiox-digital-v2-check.yml'
+  pull_request:
+    paths:
+      - 'assets/js/raiox-digital-v2-*.js'
+      - 'tests/raiox-v2-engine.test.mjs'
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate RX_DIGITAL_2.0 contracts
+        run: node tests/raiox-v2-engine.test.mjs
