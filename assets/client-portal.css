@@ -11,3 +11,23 @@
   .cp-calendar-wrap{display:block}.cp-calendar{overflow-x:auto;-webkit-overflow-scrolling:touch}.cp-week,.cp-days{min-width:720px}.cp-day{min-height:110px}.cp-event{font-size:11.5px}.cp-overlay{padding:0}.cp-onboarding{width:100%;max-height:100vh;border-radius:0;overflow:auto}.cp-onboarding-top{padding:24px 20px}.cp-onboarding-top h2{font-size:25px}.cp-onboarding-body{padding:20px}
 }
 @media(max-width:430px){.cp-kpis{grid-template-columns:1fr}.cp-topbar{padding-inline:10px}.cp-chip{display:none}}
+/* Aprovações com imagens (nov/2026) */
+.cp-ap-gal{display:flex;gap:8px;overflow-x:auto;padding:4px 0 2px;margin-top:12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.cp-ap-th{position:relative;flex:0 0 auto;width:112px;aspect-ratio:4/5;border:1px solid var(--line);border-radius:10px;padding:0;overflow:hidden;background:#f3f3f3;cursor:zoom-in;scroll-snap-align:start}
+.cp-ap-th img{width:100%;height:100%;object-fit:cover;display:block}
+.cp-ap-th span{position:absolute;left:6px;bottom:6px;background:rgba(10,37,64,.78);color:#fff;font-size:11px;font-weight:700;border-radius:8px;padding:1px 7px}
+.cp-ap-hint{font-size:12px;color:#5b6b7c;margin:6px 0 0}
+.cp-ap-det{margin-top:10px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fafcff}
+.cp-ap-det summary{cursor:pointer;font-weight:700;font-size:14px;min-height:28px;display:flex;align-items:center}
+.cp-ap-pre{white-space:pre-wrap;font-size:14px;line-height:1.55;margin-top:8px;color:#1b2a3a}
+.cp-ap-form{margin-top:14px}
+.cp-ap-form .cp-textarea{min-height:120px;font-size:16px}
+.cp-ap-form .cp-approval-actions{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
+.cp-ap-form .cp-btn{min-height:44px}
+.cp-ap-zoom{position:fixed;inset:0;z-index:9999;background:#050c14;display:flex;align-items:center;justify-content:center}
+.cp-ap-zoom[hidden]{display:none}
+.cp-ap-zoom img{max-width:100vw;max-height:86vh;object-fit:contain;display:block}
+.cp-ap-zoom button{position:absolute;background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:999px;width:48px;height:48px;font-size:30px;line-height:1;cursor:pointer}
+.cp-ap-zx{top:14px;right:14px}.cp-ap-zp{left:10px;top:50%;transform:translateY(-50%)}.cp-ap-zn{right:10px;top:50%;transform:translateY(-50%)}
+.cp-ap-zoom button[hidden]{display:none}
+.cp-ap-zc{position:absolute;bottom:18px;left:0;right:0;text-align:center;color:#fff;font-size:14px}
