@@ -8,6 +8,8 @@ import { Image } from "https://deno.land/x/imagescript@1.3.0/mod.ts";
    PREPARE_REVISION {approval_id, patch, change_summary, responds_to_action_id?, actor?}
                                                 → cria a próxima versão como RASCUNHO interno (cliente não vê)
    COMPOSE {src_path, overlay_url, x, y, dest_path} → aplica um recorte (PNG do repositório) sobre uma arte e salva como arquivo NOVO
+   TRANSFORM {src_path, dest_path, crop:{x,y,w,h}, out_w, out_h} → recorta e reenquadra (preenche out_w×out_h, corte centralizado) em arquivo NOVO
+   PROFILE {src_path, x, y, w, h, thr?}          → mapa de tinta (linhas/colunas com texto) para alinhar ajustes com precisão
    SEND_REVISION {version_id, actor?}           → aplica a versão ao conteúdo e libera para o cliente
    As versões anteriores ficam guardadas em client_approval_versions.content_snapshot. */
 const BUCKET='client-content';
@@ -53,6 +55,35 @@ Deno.serve(async(req:Request)=>{
       const out=await base.encodeJPEG(92);
       const up=await sb.storage.from(BUCKET).upload(dest,out,{contentType:'image/jpeg',upsert:false});if(up.error)throw up.error;
       return json(200,{ok:true,dest,size:out.length,width:base.width,height:base.height});
+    }
+    if(action==='TRANSFORM'){
+      const src=String(b.src_path||''),dest=String(b.dest_path||'');
+      const okPath=(p:string)=>/^[0-9a-f-]{36}\/[\w\-./]+\.(jpg|jpeg)$/i.test(p)&&!p.includes('..');
+      if(!okPath(src)||!okPath(dest)||src===dest)return json(400,{ok:false,error:'invalid_params'});
+      const dl=await sb.storage.from(BUCKET).download(src);if(dl.error)throw dl.error;
+      const img=await Image.decode(new Uint8Array(await dl.data.arrayBuffer()));
+      const c=b.crop||{};const cx=Math.max(0,Math.round(c.x||0)),cy=Math.max(0,Math.round(c.y||0));
+      const cw=Math.min(img.width-cx,Math.round(c.w||img.width)),ch=Math.min(img.height-cy,Math.round(c.h||img.height));
+      img.crop(cx,cy,cw,ch);
+      const ow=Math.round(Number(b.out_w)||img.width),oh=Math.round(Number(b.out_h)||img.height);
+      const sc=Math.max(ow/img.width,oh/img.height);img.resize(Math.ceil(img.width*sc),Math.ceil(img.height*sc));
+      img.crop(Math.floor((img.width-ow)/2),Math.floor((img.height-oh)/2),ow,oh);
+      const out=await img.encodeJPEG(92);
+      const up=await sb.storage.from(BUCKET).upload(dest,out,{contentType:'image/jpeg',upsert:false});if(up.error)throw up.error;
+      return json(200,{ok:true,dest,size:out.length,width:img.width,height:img.height});
+    }
+    if(action==='PROFILE'){
+      const src=String(b.src_path||'');if(!/^[0-9a-f-]{36}\/[\w\-./]+\.(jpg|jpeg)$/i.test(src))return json(400,{ok:false,error:'invalid_params'});
+      const dl=await sb.storage.from(BUCKET).download(src);if(dl.error)throw dl.error;
+      const img=await Image.decode(new Uint8Array(await dl.data.arrayBuffer()));const W=img.width,H=img.height,bm=img.bitmap;
+      const x0=Math.max(0,Math.round(b.x||0)),y0=Math.max(0,Math.round(b.y||0)),w=Math.min(W-x0,Math.round(b.w||W)),h=Math.min(H-y0,Math.round(b.h||H));
+      const lum=(x:number,y:number)=>{const i=(y*W+x)*4;return 0.299*bm[i]+0.587*bm[i+1]+0.114*bm[i+2];};
+      const bi=(y0*W+x0)*4;const bg=[bm[bi],bm[bi+1],bm[bi+2]];const bgl=lum(x0,y0);const thr=Number(b.thr)||60;
+      const rows:any[]=[];const cols=new Array(w).fill(0);
+      const core=[0,0,0,0];for(let y=y0;y<y0+h;y++){let mn=-1,mx=-1,n=0;for(let x=x0;x<x0+w;x++){const d=bgl-lum(x,y);if(d>thr){if(mn<0)mn=x;mx=x;n++;cols[x-x0]++;}if(d>thr*2.2){const i=(y*W+x)*4;core[0]+=bm[i];core[1]+=bm[i+1];core[2]+=bm[i+2];core[3]++;}}if(n)rows.push([y,mn,mx,n]);}
+      const ink=core[3]?[Math.round(core[0]/core[3]),Math.round(core[1]/core[3]),Math.round(core[2]/core[3]),core[3]]:null;
+      const runs:any[]=[];let st=-1;for(let i=0;i<=w;i++){const on=i<w&&cols[i]>0;if(on&&st<0)st=i;if(!on&&st>=0){runs.push([x0+st,x0+i-1]);st=-1;}}
+      return json(200,{ok:true,width:W,height:H,bg,ink,rows:b.no_rows?[]:rows,col_runs:runs});
     }
     if(action==='PREPARE_REVISION'){
       if(!uuid(b.approval_id))return json(400,{ok:false,error:'approval_id_required'});
