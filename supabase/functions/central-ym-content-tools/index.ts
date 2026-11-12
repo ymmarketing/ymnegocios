@@ -1,11 +1,13 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { Image } from "https://deno.land/x/imagescript@1.3.0/mod.ts";
 
 /* Central YM · ferramentas internas de arte e versões (chave x-ym-cron-key = ym_team_alert_key)
    SIGN {paths[], ttl?}                         → links assinados temporários (bucket client-content)
    IMPORT {items:[{url,path}]}                  → copia artes novas do repositório ymmarketing para o bucket (nunca sobrescreve)
    PREPARE_REVISION {approval_id, patch, change_summary, responds_to_action_id?, actor?}
                                                 → cria a próxima versão como RASCUNHO interno (cliente não vê)
+   COMPOSE {src_path, overlay_url, x, y, dest_path} → aplica um recorte (PNG do repositório) sobre uma arte e salva como arquivo NOVO
    SEND_REVISION {version_id, actor?}           → aplica a versão ao conteúdo e libera para o cliente
    As versões anteriores ficam guardadas em client_approval_versions.content_snapshot. */
 const BUCKET='client-content';
@@ -38,6 +40,19 @@ Deno.serve(async(req:Request)=>{
         out.push({path,size:bytes.length,error:up.error?.message||null});
       }
       return json(200,{ok:true,items:out});
+    }
+    if(action==='COMPOSE'){
+      const src=String(b.src_path||''),dest=String(b.dest_path||''),ov=String(b.overlay_url||'');
+      const okPath=(p:string)=>/^[0-9a-f-]{36}\/[\w\-./]+\.(jpg|jpeg)$/i.test(p)&&!p.includes('..');
+      if(!okPath(src)||!okPath(dest)||src===dest||!/^https:\/\/raw\.githubusercontent\.com\/ymmarketing\//.test(ov))return json(400,{ok:false,error:'invalid_params'});
+      const dl=await sb.storage.from(BUCKET).download(src);if(dl.error)throw dl.error;
+      const base=await Image.decode(new Uint8Array(await dl.data.arrayBuffer()));
+      const r=await fetch(ov);if(!r.ok)return json(400,{ok:false,error:'overlay_fetch_'+r.status});
+      const over=await Image.decode(new Uint8Array(await r.arrayBuffer()));
+      base.composite(over,Math.round(Number(b.x)||0),Math.round(Number(b.y)||0));
+      const out=await base.encodeJPEG(92);
+      const up=await sb.storage.from(BUCKET).upload(dest,out,{contentType:'image/jpeg',upsert:false});if(up.error)throw up.error;
+      return json(200,{ok:true,dest,size:out.length,width:base.width,height:base.height});
     }
     if(action==='PREPARE_REVISION'){
       if(!uuid(b.approval_id))return json(400,{ok:false,error:'approval_id_required'});
