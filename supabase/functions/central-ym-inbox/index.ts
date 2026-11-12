@@ -7,6 +7,10 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
    MARK_ALL_READ             → marca todas como vistas
    SEND_REVISION {version_id}→ libera a nova versão para o cliente (a anterior fica guardada)
    DISCARD_REVISION {version_id} → descarta um rascunho que ainda não foi enviado
+   POSTS {from,to}           → peças com publicação no intervalo (todos os clientes) + aprovadas atrasadas, na versão que o cliente vê,
+                               com links de visualização e de download em alta qualidade (12/11/2026)
+   POST {approval_id}        → uma peça só, no mesmo formato (abre direto do aviso ou da aba do cliente)
+   MARK_PUBLISHED {approval_id} → marca uma peça aprovada como publicada (não notifica o cliente)
    Tabela central_ym_inbox é preenchida pelo gatilho trg_central_ym_client_approval_alert. */
 const PROD='https://ymnegocios.com.br';
 const ORIGINS=new Set([PROD,'https://www.ymnegocios.com.br','http://localhost:3000','http://localhost:5173']);
@@ -72,7 +76,63 @@ Deno.serve(async(req:Request)=>{
     return {clients:(c.data||[]).map((x:any)=>({...x,client_name:names.get(x.client_id)||'Cliente'})),items:i.data||[]};
   }
 
+  const slug=(v:unknown)=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'peca';
+  async function posts(filter:(q:any)=>any){
+    const iq=await filter(sb.from('client_approval_items').select('id,client_id,title,content_type,description,status,due_at,scheduled_at,content_id,client:crm_clients(contact:crm_contacts(name,business_name))')).limit(80);
+    if(iq.error)throw iq.error;
+    const items=iq.data||[];if(!items.length)return [];
+    const ids=items.map((x:any)=>x.id);
+    const [vq,aq]=await Promise.all([
+      sb.from('client_approval_versions').select('id,approval_id,version_number,content_snapshot,change_summary,notes,sent_at,created_at,visible_to_client').in('approval_id',ids).eq('visible_to_client',true),
+      sb.from('client_approval_actions').select('approval_id,version_id,action,comment,created_at,actor_type,actor_email').in('approval_id',ids).order('created_at',{ascending:false})
+    ]);
+    if(vq.error)throw vq.error;if(aq.error)throw aq.error;
+    const out=items.map((it:any)=>{
+      const vs=(vq.data||[]).filter((v:any)=>v.approval_id===it.id).sort((a:any,b:any)=>b.version_number-a.version_number);
+      const v:any=vs[0]||null,s:any=v?.content_snapshot||{};
+      const ct=one(one(it.client)?.contact);const client_name=ct?.business_name||ct?.name||'Cliente';
+      const paths=(s.asset_images?.instagram||[]).filter((p:unknown)=>typeof p==='string');
+      const vnum=new Map(vs.map((x:any)=>[x.id,x.version_number]));
+      const seen=new Set<string>();
+      const history=(aq.data||[]).filter((a:any)=>a.approval_id===it.id).filter((a:any)=>{const k=[a.version_id,a.action,a.comment||''].join('|');if(seen.has(k))return false;seen.add(k);return true}).map((a:any)=>({action:a.action,comment:a.comment,created_at:a.created_at,actor_type:a.actor_type,version_number:vnum.get(a.version_id)||null}));
+      return {approval_id:it.id,client_id:it.client_id,client_name,title:it.title,content_type:it.content_type,description:it.description,status:it.status,due_at:it.due_at,scheduled_at:it.scheduled_at,
+        version_number:v?.version_number||null,version_count:vs.length,change_summary:v?.change_summary||null,sent_at:v?.sent_at||null,
+        caption:s.caption_instagram||'',hook:s.hook||'',cta_text:s.cta_text||'',hashtags:Array.isArray(s.hashtags)?s.hashtags:[],client_notes:s.client_notes||'',recording_notes:s.recording_notes||'',reel_script:Array.isArray(s.reel_script)?s.reel_script:[],
+        images:paths.map((p:string,i:number)=>({path:p,name:`${slug(client_name)}-${slug(it.title)}-${String(i+1).padStart(2,'0')}.${(p.split('.').pop()||'jpg').toLowerCase()}`})),
+        history};
+    });
+    const all=[...new Set(out.flatMap((r:any)=>r.images.map((x:any)=>x.path)))];
+    const signed=new Map<string,string>();
+    if(all.length){const s=await sb.storage.from(BUCKET).createSignedUrls(all,60*60*12);if(!s.error)for(const x of s.data||[])if(x.path&&x.signedUrl)signed.set(x.path,x.signedUrl);}
+    for(const r of out as any[])for(const im of r.images){const u=signed.get(im.path)||'';im.url=u;im.download_url=u?u+(u.includes('?')?'&':'?')+'download='+encodeURIComponent(im.name):'';}
+    return out;
+  }
+
   try{
+    if(action==='POSTS'){
+      const from=new Date(String(b.from||'')),to=new Date(String(b.to||''));
+      if(isNaN(+from)||isNaN(+to)||+to<=+from||+to-+from>40*86400000)return reply(400,{ok:false,error:'invalid_range'},origin);
+      const late=new Date(+from-21*86400000);
+      const [day,overdue]=await Promise.all([
+        posts((q:any)=>q.gte('scheduled_at',from.toISOString()).lt('scheduled_at',to.toISOString()).neq('status','CANCELADO').order('scheduled_at',{ascending:true})),
+        posts((q:any)=>q.eq('status','APROVADO').gte('scheduled_at',late.toISOString()).lt('scheduled_at',from.toISOString()).order('scheduled_at',{ascending:true}))
+      ]);
+      return reply(200,{ok:true,posts:day,overdue},origin);
+    }
+    if(action==='POST'){
+      if(!uuid(b.approval_id))return reply(400,{ok:false,error:'approval_id_required'},origin);
+      const r=await posts((q:any)=>q.eq('id',b.approval_id));
+      if(!r.length)return reply(404,{ok:false,error:'not_found'},origin);
+      return reply(200,{ok:true,post:r[0]},origin);
+    }
+    if(action==='MARK_PUBLISHED'){
+      if(!uuid(b.approval_id))return reply(400,{ok:false,error:'approval_id_required'},origin);
+      const q=await sb.from('client_approval_items').update({status:'PUBLICADO',updated_by:email}).eq('id',b.approval_id).eq('status','APROVADO').select('id');
+      if(q.error)throw q.error;if(!(q.data||[]).length)return reply(409,{ok:false,error:'not_approved',detail:'Só peças aprovadas podem ser marcadas como publicadas.'},origin);
+      await sb.from('vos_access_audit').insert({email,role:ia.data.role,event:'CENTRAL_YM_POST_PUBLISHED',metadata:{approval_id:b.approval_id}});
+      const r=await posts((q:any)=>q.eq('id',b.approval_id));
+      return reply(200,{ok:true,post:r[0]||null},origin);
+    }
     if(action==='MARK_READ'){
       if(!uuid(b.id))return reply(400,{ok:false,error:'id_required'},origin);
       const q=await sb.from('central_ym_inbox').update({read_at:new Date().toISOString(),read_by:email}).eq('id',b.id).is('read_at',null);if(q.error)throw q.error;

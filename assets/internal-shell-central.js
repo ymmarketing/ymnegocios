@@ -9,7 +9,7 @@
   const datePt=v=>{if(!v)return '—';try{return new Date(v).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}catch{return '—'}};
   const toast=(msg,err=false)=>{let el=document.getElementById('ymToast')||document.getElementById('caToast');if(!el){el=document.createElement('div');el.id='ymToast';document.body.append(el)}el.textContent=msg;el.className='ym-toast'+(err?' err':'');el.style.display='block';clearTimeout(window.__ymtoast);window.__ymtoast=setTimeout(()=>el.style.display='none',4200)};
   const safeNext=v=>/^\/(CENTRAL|CRM|DASHBOARD|FINANCEIRO|Identidade|Conteudos|RAIOX)(?:[/?#]|$)/.test(v||'')?v:'/CENTRAL';
-  async function requireSession(next=location.pathname+location.search){const {data:{session}}=await sb.auth.getSession();if(!session){location.replace('/interno?next='+encodeURIComponent(safeNext(next)));return null}return session}
+  async function requireSession(next=location.pathname+location.search){let {data:{session}}=await sb.auth.getSession();if(session&&(!session.expires_at||session.expires_at*1000-Date.now()<90000)){try{const r=await sb.auth.refreshSession();if(r.data?.session)session=r.data.session;else if(r.error&&session.expires_at&&session.expires_at*1000<Date.now()&&!/fetch|network/i.test(r.error.message||''))session=null}catch{}}/* 12/11/2026: renova a sessão vencida (celular que ficou em segundo plano) em vez de enviar token expirado e mostrar invalid_session */if(!session){location.replace('/interno?next='+encodeURIComponent(safeNext(next)));return null}return session}
   async function signOut(){await sb.auth.signOut();location.replace('/interno')}
   function shell(user){
     const existing=document.getElementById('ymSidebar');if(existing)return existing;

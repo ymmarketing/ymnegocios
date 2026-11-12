@@ -63,7 +63,8 @@
 
   async function api(action='LIST',extra={}){
     const s=await YM.requireSession('/CENTRAL');if(!s)throw new Error('Sessão necessária.');
-    const r=await fetch(YM.SUPABASE_URL+'/functions/v1/central-ym-inbox',{method:'POST',headers:{Authorization:'Bearer '+s.access_token,apikey:YM.PUBLISHABLE_KEY,'Content-Type':'application/json'},body:JSON.stringify({action,...extra})});
+    let r=await fetch(YM.SUPABASE_URL+'/functions/v1/central-ym-inbox',{method:'POST',headers:{Authorization:'Bearer '+s.access_token,apikey:YM.PUBLISHABLE_KEY,'Content-Type':'application/json'},body:JSON.stringify({action,...extra})});
+    if(r.status===401){try{const n=(await YM.sb.auth.refreshSession()).data?.session;if(n)r=await fetch(YM.SUPABASE_URL+'/functions/v1/central-ym-inbox',{method:'POST',headers:{Authorization:'Bearer '+n.access_token,apikey:YM.PUBLISHABLE_KEY,'Content-Type':'application/json'},body:JSON.stringify({action,...extra})})}catch{}}
     const j=await r.json().catch(()=>({}));if(!r.ok||!j.ok)throw new Error(j.detail||j.error||'Não foi possível carregar as respostas dos clientes.');return j;
   }
 
@@ -107,15 +108,17 @@
   function render(){
     const root=document.getElementById('caView_approvals');if(!root)return;
     const items=(data.items||[]).filter(x=>filter==='all'||(filter==='unread'?!x.read_at:x.kind===filter));
-    root.innerHTML=`<div class="cyi-head"><div><h2>Aprovações dos clientes</h2><p>Tudo o que os clientes aprovaram, pediram de ajuste ou comentaram na Área do Cliente.</p></div>${data.unread?'<button class="ym-btn secondary" type="button" id="cyiAll">Marcar todas como vistas</button>':''}</div>
-      ${metricsHtml()}${revisionsHtml()}<div class="cyi-sec">Respostas dos clientes</div>
+    root.innerHTML=`<div id="cypSlot"></div><div class="cyi-head"><div><h2>Aprovações dos clientes</h2><p>Tudo o que os clientes aprovaram, pediram de ajuste ou comentaram na Área do Cliente.</p></div>${data.unread?'<button class="ym-btn secondary" type="button" id="cyiAll">Marcar todas como vistas</button>':''}</div>
+      ${revisionsHtml()}<div class="cyi-sec">Respostas dos clientes</div>
       <div class="cyi-filters" style="margin-bottom:12px">${[['unread',`Novas (${data.unread||0})`],['AJUSTE_SOLICITADO','Ajustes'],['APROVADO','Aprovados'],['all','Todas']].map(f=>`<button type="button" data-f="${f[0]}" class="${filter===f[0]?'on':''}">${f[1]}</button>`).join('')}</div>
-      <div class="cyi-list">${items.length?items.map(card).join(''):`<div class="cyi-empty">${filter==='unread'?'Nenhuma resposta nova. Tudo visto por aqui.':'Nenhuma resposta neste filtro.'}</div>`}</div>`;
+      <div class="cyi-list">${items.length?items.map(card).join(''):`<div class="cyi-empty">${filter==='unread'?'Nenhuma resposta nova. Tudo visto por aqui.':'Nenhuma resposta neste filtro.'}</div>`}</div>${metricsHtml()}`;
+    window.CentralYMPosting?.attach(root.querySelector('#cypSlot'));
     root.querySelectorAll('[data-send]').forEach(b=>b.onclick=()=>{const r=(data.revisions||[]).find(x=>x.version_id===b.dataset.send);if(!r)return;if(!confirm(`Enviar a versão ${r.version_number} de "${r.title}" para ${r.client_name}?\n\nA versão ${r.previous_version||1} continua guardada no histórico.`))return;b.disabled=true;act('SEND_REVISION',{version_id:r.version_id}).then(()=>YM.toast?.('Nova versão enviada. O cliente já vê o que mudou.'))});
     root.querySelectorAll('[data-discard]').forEach(b=>b.onclick=()=>{if(!confirm('Descartar este rascunho? O cliente nunca viu esta versão.'))return;act('DISCARD_REVISION',{version_id:b.dataset.discard})});
     root.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{filter=b.dataset.f;render()});
     root.querySelector('#cyiAll')?.addEventListener('click',()=>act('MARK_ALL_READ'));
     root.querySelectorAll('[data-read]').forEach(b=>b.onclick=()=>act('MARK_READ',{id:b.dataset.read}));
+    root.querySelectorAll('[data-post]').forEach(b=>b.onclick=()=>{const it=(data.items||[]).find(x=>x.id===b.dataset.id);if(it&&!it.read_at)act('MARK_READ',{id:it.id});window.CentralYMPosting?.open(b.dataset.post)});
     root.querySelectorAll('[data-client]').forEach(b=>b.onclick=async()=>{const it=(data.items||[]).find(x=>x.id===b.dataset.id);if(it&&!it.read_at)act('MARK_READ',{id:it.id});if(window.CentralYMConsole?.openClient)await CentralYMConsole.openClient(b.dataset.client,'aprovacoes');else location.assign('/CENTRAL/?client='+encodeURIComponent(b.dataset.client))});
   }
   function metricsHtml(){
@@ -145,7 +148,7 @@
     return `<article class="cyi-card ${k[1]} ${x.read_at?'':'new'}"><div class="cyi-top"><span class="cyi-kind ${k[1]}">${k[0]}</span><b style="color:#0A2540">${E(x.client_name)}</b><span>· ${E(when(x.created_at))}</span>${x.read_at?'':'<span class="cyi-new">● nova</span>'}${x.has_draft?'<span class="cyi-kind info">versão nova pronta</span>':''}</div>
     <h3>${E(x.title)}</h3><div class="cyi-meta">${pub?`Publicação prevista: ${E(pub)} · `:''}Situação atual: ${E(STATUS[x.item_status]||x.item_status||'—')}</div>
     ${x.message?`<div class="cyi-msg">${E(x.message)}</div>`:''}
-    <div class="cyi-actions"><button class="ym-btn" type="button" data-client="${E(x.client_id)}" data-id="${E(x.id)}">Abrir no cliente</button>${x.read_at?'':`<button class="ym-btn secondary" type="button" data-read="${E(x.id)}">Marcar como vista</button>`}</div></article>`}
+    <div class="cyi-actions">${x.approval_id&&window.CentralYMPosting?`<button class="ym-btn" type="button" data-post="${E(x.approval_id)}" data-id="${E(x.id)}">Ver peça</button>`:`<button class="ym-btn" type="button" data-client="${E(x.client_id)}" data-id="${E(x.id)}">Abrir no cliente</button>`}${x.read_at?'':`<button class="ym-btn secondary" type="button" data-read="${E(x.id)}">Marcar como vista</button>`}</div></article>`}
 
   async function act(action,extra){try{data=await api(action,extra);badges();render()}catch(e){YM.toast?.(e.message,true)}}
   async function load(){if(busy)return;busy=true;try{data=await api('LIST');badges();if(document.getElementById('caView_approvals')?.classList.contains('on'))render()}catch(e){console.warn('Central YM inbox',e)}finally{busy=false}}
