@@ -14,7 +14,7 @@ function field(label,id,value='',type='text',wide=false,help=''){return `<div cl
 function select(label,id,value,opts,wide=false){return `<div class="${wide?'wide':''}"><label class="ym-label">${E(label)}</label><select id="${id}" class="ym-select">${opts.map(o=>{const [v,l]=Array.isArray(o)?o:[o,pretty(o)];return `<option value="${E(v)}" ${v===value?'selected':''}>${E(l)}</option>`}).join('')}</select></div>`}
 async function boot(){try{const s=await window.YM.requireSession('/Conteudos');if(!s)return;await load();wire()}catch(e){console.error(e);toast(e.message||'Falha ao carregar Conteúdos',true)}}
 async function load(){const db=sb();const [c,p,i,l,dir]=await Promise.all([
- db.from('central_ym_content_items').select('*').order('publish_date',{ascending:true}),
+ db.from('central_ym_content_items').select('*').or('reuse_decision.is.null,reuse_decision.neq.ARQUIVADO').order('publish_date',{ascending:true}),
  db.from('central_ym_proofs').select('*').order('created_at',{ascending:false}),
  db.from('central_ym_icp_versions').select('*').order('effective_date',{ascending:false}),
  db.from('central_ym_icp_learnings').select('*').order('created_at',{ascending:false}),
