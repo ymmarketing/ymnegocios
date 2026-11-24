@@ -22,7 +22,7 @@
     const db=sb(); if(!db)return;
     const [dir,cont,strat]=await Promise.all([
       db.rpc('central_ym_list_clients'),
-      db.from('central_ym_content_items').select('*').not('client_id','is',null).order('publish_date',{ascending:true}),
+      db.from('central_ym_content_items').select('*').not('client_id','is',null).or('reuse_decision.is.null,reuse_decision.neq.ARQUIVADO').order('publish_date',{ascending:true}),
       db.from('client_content_strategies').select('*').order('effective_date',{ascending:false})
     ]);
     const er=dir.error||cont.error||strat.error;if(er){toast(er.message||'Falha ao carregar calendários de clientes',true);return}
