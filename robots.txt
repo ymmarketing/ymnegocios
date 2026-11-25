@@ -15,6 +15,7 @@ Disallow: /docs/
 Disallow: /scripts/
 Disallow: /supabase/
 Disallow: /homologacao/
+Disallow: /mapa/
 
 # Buscadores e assistentes de IA são bem-vindos nas páginas públicas
 User-agent: Googlebot
