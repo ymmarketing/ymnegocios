@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa Digital · YM Marketing &amp; Negócios</title>
+<meta name="description" content="Mapa Digital da YM Marketing &amp; Negócios, preparado pela YM Marketing &amp; Negócios.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0A2540">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/assets/img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0A2540;--navy2:#0D1B35;--indigo:#484DCF;--blue:#345BDB;--blue-bg:#E8EEFC;
+  --orange:#FF7A00;--orange2:#FFB35C;--orange-bg:#FFF1E3;
+  --green:#047857;--green-bg:#D1FAE5;
+  --bg:#F7F9FC;--line:#E4EAF2;--muted:#66758f;--text:#24344c;--white:#fff;--red:#C2410C;
+  --r:18px;--sh:0 10px 30px rgba(10,37,64,.07)
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Montserrat',sans-serif;color:var(--navy);line-height:1.15;letter-spacing:-.02em}
+img{max-width:100%;display:block}
+a{color:var(--blue)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 18px}
+svg.i{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* top */
+.top{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.top img{height:30px;width:auto}
+.top .tagp{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:right}
+
+/* hero */
+.hero{background:linear-gradient(180deg,#fff 0%,var(--bg) 100%);padding:44px 0 34px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(72,77,207,.13),transparent 68%)}
+.hero::after{content:"";position:absolute;left:-140px;bottom:-160px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(255,122,0,.12),transparent 68%)}
+.hero .wrap{position:relative;z-index:1}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--indigo);background:var(--blue-bg);padding:7px 13px;border-radius:99px}
+.hero h1{font-size:clamp(30px,7.4vw,52px);font-weight:800;margin:18px 0 14px;max-width:820px}
+.hero h1 em{font-style:normal;color:var(--orange)}
+.hero .lead{font-size:clamp(16px,2.2vw,19px);color:var(--text);max-width:700px}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.meta span{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 13px;font-size:13px;font-weight:600;color:var(--navy)}
+.meta .i{color:var(--indigo)}
+
+/* sections */
+section{padding:42px 0}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.kicker::before{content:"";width:22px;height:3px;border-radius:3px;background:var(--orange)}
+h2{font-size:clamp(25px,5.2vw,38px);font-weight:800;margin-bottom:12px}
+.sec-lead{font-size:16.5px;color:var(--text);max-width:720px;margin-bottom:26px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+.pad{padding:20px}
+
+/* resumo */
+.vos3{display:grid;gap:14px}
+.vos3 .card{padding:22px;border-top:5px solid var(--c)}
+.vos3 .ic{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:var(--bg2);color:var(--c);margin-bottom:12px}
+.vos3 .ic svg{width:24px;height:24px}
+.vos3 .l{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--c)}
+.vos3 h3{font-size:20px;margin:6px 0 8px}
+.vos3 p{font-size:15px}
+.v1{--c:var(--blue);--bg2:var(--blue-bg)}.v2{--c:var(--orange);--bg2:var(--orange-bg)}.v3{--c:var(--green);--bg2:var(--green-bg)}
+.thesis{margin-top:18px;background:var(--navy);color:#fff;border-radius:var(--r);padding:24px;display:flex;gap:16px;align-items:flex-start}
+.thesis .i{width:30px;height:30px;color:var(--orange2);margin-top:2px}
+.thesis p{font-size:17px;color:#e6edf8}
+.thesis b{color:#fff}
+.thesis em{font-style:normal;color:var(--orange2);font-weight:700}
+
+/* termometro */
+.pil{display:grid;gap:10px}
+.pil .row{display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;padding:14px 16px}
+.pil .row .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--blue-bg);color:var(--blue)}
+.pil .row .ic svg{width:20px;height:20px}
+.pil h4{font-size:15px;margin-bottom:2px}
+.pil small{display:block;color:var(--muted);font-size:13px;line-height:1.4}
+.lvl{display:flex;gap:4px;align-items:center}
+.lvl i{width:20px;height:8px;border-radius:4px;background:var(--line)}
+.lvl.s1 i:nth-child(-n+1),.lvl.s2 i:nth-child(-n+2),.lvl.s3 i:nth-child(-n+3),.lvl.s4 i:nth-child(-n+4){background:var(--c)}
+.lvl.a{--c:var(--orange)}.lvl.b{--c:var(--blue)}.lvl.g{--c:var(--green)}
+.pil .tagl{font-size:11px;font-weight:700;color:var(--muted);text-align:right;margin-top:4px}
+.note{font-size:13px;color:var(--muted);margin-top:14px;display:flex;gap:8px;align-items:flex-start}
+.note .i{margin-top:3px;color:var(--indigo)}
+
+/* strengths */
+.str{display:grid;gap:12px}
+.str .card{padding:18px;display:flex;gap:14px;align-items:flex-start;border-left:5px solid var(--green)}
+.str .ic{width:38px;height:38px;border-radius:11px;background:var(--green-bg);color:var(--green);display:grid;place-items:center;flex:none}
+.str h4{font-size:16px;margin-bottom:3px}
+.str p{font-size:14.5px}
+
+/* findings */
+.find{margin-bottom:34px}
+.fh{display:flex;gap:14px;align-items:flex-start;margin-bottom:16px}
+.num{flex:none;width:42px;height:42px;border-radius:50%;background:var(--orange);color:#fff;font:800 18px 'Montserrat',sans-serif;display:grid;place-items:center;box-shadow:0 6px 16px rgba(255,122,0,.35)}
+.fh h3{font-size:clamp(20px,4.4vw,27px)}
+.fh p{font-size:15.5px;margin-top:6px;max-width:720px}
+.pair{display:grid;gap:16px}
+.shot{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.shot .lab{display:flex;align-items:center;gap:8px;padding:10px 14px;font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.shot.antes .lab{background:var(--blue-bg);color:var(--indigo)}
+.shot.depois .lab{background:var(--green-bg);color:var(--green)}
+.shot .lab small{margin-left:auto;font-weight:600;letter-spacing:0;text-transform:none;opacity:.85;font-size:11.5px}
+.shot img{width:100%;height:auto;background:#10131a}
+.shot.light img{background:#fff}
+.shot img.c1{aspect-ratio:800/470;object-fit:cover;object-position:top}
+.shot img.c2{aspect-ratio:800/640;object-fit:cover;object-position:bottom}
+.shot img.c3{aspect-ratio:800/620;object-fit:cover;object-position:top}
+.cap{padding:12px 14px;font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
+.legend{margin-top:16px;display:grid;gap:10px}
+.legend li{list-style:none;display:flex;gap:11px;align-items:flex-start;font-size:14.5px}
+.legend b.p{flex:none;width:24px;height:24px;border-radius:50%;background:var(--orange);color:#fff;font:800 12px 'Montserrat',sans-serif;display:grid;place-items:center;margin-top:1px}
+.read{margin-top:16px;background:var(--orange-bg);border:1px solid #FFD9B0;border-radius:14px;padding:14px 16px;font-size:15px;display:flex;gap:12px}
+.read .i{color:var(--orange);margin-top:3px;width:20px;height:20px}
+.read b{color:var(--navy)}
+.sugg{margin-top:12px;background:var(--blue-bg);border-radius:14px;padding:14px 16px;font-size:15px;display:flex;gap:12px}
+.sugg .i{color:var(--blue);margin-top:3px;width:20px;height:20px}
+
+/* eng bars */
+.bars{display:grid;gap:14px;margin-top:6px}
+.bar{display:grid;grid-template-columns:150px 1fr 44px;gap:10px;align-items:center;font-size:13.5px}
+.bar .t{height:26px;background:var(--bg);border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.bar .t i{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,var(--indigo),var(--blue))}
+.bar.lo .t i{background:linear-gradient(90deg,var(--orange),var(--orange2))}
+.bar b{font-family:'Montserrat',sans-serif;color:var(--navy);text-align:right}
+.three{display:grid;gap:14px}
+.mini{padding:18px}
+.mini .big{font:800 34px 'Montserrat',sans-serif;color:var(--indigo);line-height:1}
+.mini .big small{font-size:14px;color:var(--muted);font-weight:600}
+.mini p{font-size:14px;margin-top:8px;color:var(--text)}
+
+/* table */
+.tw{overflow-x:auto;border-radius:var(--r);border:1px solid var(--line);box-shadow:var(--sh);background:#fff}
+table{width:100%;border-collapse:collapse;min-width:760px;font-size:14px}
+th{background:var(--navy);color:#fff;text-align:left;font-size:12px;letter-spacing:.07em;text-transform:uppercase;padding:12px 14px}
+td{padding:13px 14px;border-top:1px solid var(--line);vertical-align:top}
+td:first-child{font-weight:700;color:var(--navy);width:19%}
+.pill{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.pill.ok{background:var(--green-bg);color:var(--green)}
+.pill.at{background:var(--orange-bg);color:#B45309}
+.pill.nl{background:var(--blue-bg);color:var(--blue)}
+.src{font-size:12.5px;color:var(--muted)}
+.swipe{font-size:12px;color:var(--muted);margin-top:8px;display:flex;gap:6px;align-items:center}
+
+/* path */
+.path{display:grid;gap:14px;counter-reset:s}
+.path .card{padding:20px;position:relative}
+.path .card::before{counter-increment:s;content:counter(s);position:absolute;right:18px;top:12px;font:800 44px 'Montserrat',sans-serif;color:var(--line)}
+.path h4{font-size:18px;margin:8px 0}
+.path ul{margin:8px 0 0 18px;font-size:14.5px}
+.path li{margin-bottom:4px}
+.path .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center}
+.warn{margin-top:18px;border:1px dashed var(--indigo);background:#fff;border-radius:14px;padding:16px;font-size:14.5px;display:flex;gap:12px}
+.warn .i{color:var(--indigo);margin-top:3px;width:20px;height:20px}
+
+/* plan */
+.plan{display:grid;gap:14px}
+.plan .card{overflow:hidden}
+.plan .hd{padding:14px 18px;color:#fff;display:flex;align-items:center;gap:10px;font:800 14px 'Montserrat',sans-serif;letter-spacing:.04em}
+.plan .hd .i{width:20px;height:20px}
+.plan .hd span{margin-left:auto;font:600 12px 'Inter';opacity:.9}
+.plan .b1 .hd{background:var(--blue)}.plan .b2 .hd{background:var(--orange)}.plan .b3 .hd{background:var(--green)}
+.plan ul{padding:16px 18px 18px 36px;font-size:14.5px}
+.plan li{margin-bottom:6px}
+
+/* limits */
+.lim{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.lim ul{margin:10px 0 0 18px;font-size:14px;color:var(--text)}
+.lim li{margin-bottom:6px}
+
+/* cta */
+.cta{background:linear-gradient(135deg,var(--navy) 0%,#17305a 100%);color:#fff;border-radius:26px;padding:34px 22px;text-align:center;position:relative;overflow:hidden}
+.cta::after{content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,122,0,.35),transparent 70%)}
+.cta h2{color:#fff;position:relative;z-index:1}
+.cta p{color:#d7e2f3;max-width:560px;margin:0 auto 22px;position:relative;z-index:1;font-size:16.5px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--orange);color:#fff;font:800 16.5px 'Montserrat',sans-serif;padding:17px 30px;border-radius:14px;text-decoration:none;box-shadow:0 12px 28px rgba(255,122,0,.4);position:relative;z-index:1;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn svg{width:22px;height:22px;fill:currentColor}
+.cta small{display:block;margin-top:14px;font-size:12.5px;color:#aebbd1;position:relative;z-index:1}
+
+footer{padding:28px 0 46px;font-size:12.5px;color:var(--muted)}
+footer .wrap{display:grid;gap:10px}
+footer a{color:var(--muted)}
+.srcs li{margin-left:18px;margin-bottom:4px;word-break:break-word}
+
+:focus-visible{outline:3px solid var(--indigo);outline-offset:3px;border-radius:6px}
+@media(min-width:720px){
+  .wrap{padding:0 28px}
+  .vos3{grid-template-columns:repeat(3,1fr)}
+  .pair{grid-template-columns:1fr 1fr;align-items:start}
+  .pair.wide{grid-template-columns:1fr}
+  .three{grid-template-columns:repeat(3,1fr)}
+  .str{grid-template-columns:1fr 1fr}
+  .pil{grid-template-columns:1fr 1fr}
+  .path,.plan{grid-template-columns:repeat(3,1fr)}
+  .cta{padding:48px 40px}
+  .hero{padding:68px 0 50px}
+  section{padding:56px 0}
+}
+@media(max-width:420px){
+  .pil .row{grid-template-columns:36px 1fr}
+  .pil .row .rt{grid-column:2}
+  .bar{grid-template-columns:1fr 36px}.bar span{grid-column:1/-1}.bar .t{grid-column:1}
+  .top .tagp{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+.flow{display:grid;gap:12px;margin-bottom:12px}
+.fc{padding:18px;position:relative}
+.fc b{display:block;font:800 16px 'Montserrat',sans-serif;color:var(--navy);margin:10px 0 4px}
+.fc p{font-size:14px}
+.fc .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center}
+.ev{display:inline-block;margin-top:10px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:99px;background:var(--green-bg);color:var(--green)}
+.ev.gap{background:var(--orange-bg);color:#B45309}
+@media(min-width:720px){.flow{grid-template-columns:repeat(3,1fr)}}
+.scn{display:grid;gap:14px}
+.scn .card{padding:22px;border-top:5px solid var(--c)}
+.scn .l{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--c)}
+.scn h3{font-size:20px;margin:6px 0 6px}
+.scn .sub{font-size:14.5px;color:var(--muted);margin-bottom:10px}
+.scn dl{display:grid;gap:9px;font-size:14px}
+.scn dt{font-weight:800;color:var(--navy);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.scn dd{margin:0 0 2px}
+.sA{--c:var(--orange)}.sB{--c:var(--blue)}.sC{--c:var(--green)}
+.qs{margin-top:16px;background:#fff;border:1px dashed var(--indigo);border-radius:14px;padding:16px 18px;font-size:14.5px}
+.qs ul{margin:8px 0 0 18px}.qs li{margin-bottom:4px}
+@media(min-width:720px){.scn{grid-template-columns:repeat(3,1fr)}}
+.gshots{display:grid;gap:14px}
+.gpair{display:grid;gap:18px;margin-top:22px;align-items:start}
+.whys h3{font-size:21px;margin-bottom:10px}
+.why{background:var(--green-bg);border-radius:14px;padding:13px 15px;font-size:14.5px;margin-bottom:10px}
+.why b{display:block;color:var(--navy);margin-bottom:2px}
+.pill.op{background:#EEEFFF;color:var(--indigo)}
+.dec{display:grid;gap:12px}
+.dec .card{padding:18px}
+.dec .big{font:800 30px 'Montserrat',sans-serif;color:var(--indigo);line-height:1;margin-bottom:8px}
+.dec p{font-size:14px}
+.ops{display:grid;gap:12px}
+.ops .card{padding:18px}
+.ops h4{font-size:16px;margin:8px 0 4px}
+.ops p{font-size:14px}
+.whyl{margin-top:12px;background:var(--green-bg);border-radius:14px;padding:14px 16px;font-size:15px;display:flex;gap:12px}
+.whyl .i{color:var(--green);margin-top:3px;width:20px;height:20px}
+@media(min-width:720px){.gshots{grid-template-columns:repeat(3,1fr)}.gpair{grid-template-columns:1fr 1.15fr}.dec{grid-template-columns:repeat(4,1fr)}.ops{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- SVG sprite (ícones inline) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.4 8.2-8 9-4.6-.8-8-4-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5L15.5 10"/></symbol>
+  <symbol id="target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></symbol>
+  <symbol id="chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></symbol>
+  <symbol id="tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8L3 12z"/><circle cx="7.5" cy="8.5" r="1.2"/></symbol>
+  <symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></symbol>
+  <symbol id="star" viewBox="0 0 24 24"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.2 6.4 20.2l1.1-6.2L3 9.6l6.2-.9L12 3z"/></symbol>
+  <symbol id="cursor" viewBox="0 0 24 24"><path d="M5 3l14 7-6 2-2 6L5 3z"/></symbol>
+  <symbol id="cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2L12 3z"/><path d="M12 10v5M12 18v.01"/></symbol>
+  <symbol id="spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18"/></symbol>
+  <symbol id="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/></symbol>
+  <symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M17 14.2c2.4.3 4 2.2 4 4.8"/></symbol>
+  <symbol id="route" viewBox="0 0 24 24"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.5"/></symbol>
+  <symbol id="img" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></symbol>
+  <symbol id="gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8c-1.5-3-5-4-5.5-1.8C6 8 9 8 12 8zm0 0c1.5-3 5-4 5.5-1.8C18 8 15 8 12 8z"/></symbol>
+  <symbol id="bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 13H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></symbol>
+  <symbol id="music" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></symbol>
+  <symbol id="pen" viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16l-1 4z"/><path d="M14 6l3 3"/></symbol>
+  <symbol id="tooth" viewBox="0 0 24 24"><path d="M7 3c-2.5 0-4 2-4 4.5 0 3 1.5 4.5 2 7 .5 3 1 6.5 2.5 6.5S9.5 17 12 17s2.5 4 4.5 4 2-3.5 2.5-6.5c.5-2.5 2-4 2-7C21 5 19.5 3 17 3c-2 0-3 1-5 1S9 3 7 3z"/></symbol>
+  <symbol id="cap" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5L2 9z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></symbol>
+  <symbol id="upload" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></symbol>
+  <symbol id="pin" viewBox="0 0 24 24"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a href="/" aria-label="YM Marketing &amp; Negócios"><img src="/assets/img/logo-ym-horizontal.webp" alt="YM Marketing &amp; Negócios" width="150" height="30"></a>
+    <div class="tagp">Mapa Digital</div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="chip"><svg class="i"><use href="#eye"/></svg> Mapa Digital YM</span>
+    <h1>A YM Marketing &amp; Negócios já tem método com nome, site com prova e um Instagram que publica todo dia. <em>Veja onde dá para ir ainda mais longe.</em></h1>
+    <p class="lead">Olhamos, de fora, o que a YM mostra hoje no Instagram, no site ymnegocios.com.br e no Google, e como outras consultorias e agências de Belo Horizonte aparecem nas mesmas buscas. Esta leitura reconhece o que <b>já funciona</b> e aponta <b>possibilidades</b>, para usar conforme os objetivos de vocês.</p>
+    <div class="meta">
+      <span><svg class="i"><use href="#cal"/></svg> Preparado para a YM Marketing &amp; Negócios em 26/11/2026</span>
+      <span><svg class="i"><use href="#globe"/></svg> Belo Horizonte · consultoria de marketing</span>
+      <span><svg class="i"><use href="#info"/></svg> Leitura de fora: só sinais públicos</span>
+    </div>
+  </div>
+</div>
+
+<section id="resumo">
+  <div class="wrap">
+    <div class="kicker">Resumo</div>
+    <h2>A leitura em 30 segundos</h2>
+    <p class="sec-lead">Usamos o caminho do Método VOS: <b>Ver</b> com clareza, <b>Ordenar</b> o que existe e <b>Sustentar</b> com constância. Em cada etapa, o que já funciona e uma possibilidade.</p>
+    <div class="vos3">
+      <div class="card v1"><div class="ic"><svg class="i"><use href="#eye"/></svg></div><div class="l">Ver</div><h3>Uma ideia que se reconhece de longe</h3><p>"Marketing que se sustenta começa pelo terreno" no site, "Descubra o que fazer e em qual ordem" na bio e a Casa do Marketing explicada andar por andar. <b>Possibilidade:</b> fazer o Google mostrar essa clareza também a quem ainda não conhece a YM, na busca pela categoria.</p></div>
+      <div class="card v2"><div class="ic"><svg class="i"><use href="#grid"/></svg></div><div class="l">Ordenar</div><h3>Um caminho de entrada desenhado</h3><p>Avaliação gratuita de 4 minutos, três formas de contratar e WhatsApp com o código do país. <b>Possibilidade:</b> alinhar o site e os destaques ao novo produto, o Mapa Digital, que hoje ainda aparece como Raio-X Digital.</p></div>
+      <div class="card v3"><div class="ic"><svg class="i"><use href="#shield"/></svg></div><div class="l">Sustentar</div><h3>Ritmo de publicação raro de ver</h3><p>106 posts, uma série de Black Friday com post quase diário e quatro clientes contando a experiência em vídeo no site. <b>Possibilidade:</b> levar essa prova para o Google, onde a YM tem 2 avaliações e os concorrentes do mapa, de 60 a 103.</p></div>
+    </div>
+    <div class="thesis">
+      <svg class="i"><use href="#target"/></svg>
+      <p><b>Se um caminho já traz conversão, ele não precisa mudar.</b> A YM tem marca, método, oferta com preço de entrada e constância. Se os clientes de hoje chegam bem por indicação e Instagram, isso é base. <em>O que segue são possibilidades</em>, para usar quando fizerem sentido.</p>
+    </div>
+  </div>
+</section>
+
+<section id="google" style="background:#fff;border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="kicker">Onde a indicação é conferida</div>
+    <h2>Google: a YM aparece pelo nome, e pode aparecer pela categoria</h2>
+    <p class="sec-lead">Quem pesquisa o nome encontra a YM bem: o site em primeiro, uma visão geral do Google que resume o trabalho com fidelidade e o Perfil da Empresa com nota 5,0. Na busca por "consultoria de marketing belo horizonte", o quadro de empresas mostra quatro agências com 5 a 103 avaliações, e a YM não apareceu na primeira página da nossa busca. É o ponto com mais espaço, e o perfil já existe para começar.</p>
+
+    <div class="gshots">
+      <figure class="shot antes light"><div class="lab"><svg class="i"><use href="#img"/></svg>Hoje <small>busca pelo nome</small></div><img src="img/google_marca.webp" alt="Print da busca no Google por YM Marketing e Negócios Belo Horizonte: o site em primeiro, a visão geral criada por IA e o Perfil da Empresa com nota 5,0, 2 avaliações, categoria Consultoria em Marketing e horário Aberto 24 horas" width="488" height="1055" loading="lazy"><div class="cap">Busca por "YM Marketing &amp; Negócios Belo Horizonte". O site com título e descrição próprios (1), o perfil com 5,0 e 2 avaliações (2) e o horário "Aberto 24 horas" (3). O selo coberto só aparece para quem administra o perfil.</div></figure>
+      <figure class="shot antes"><div class="lab"><svg class="i"><use href="#img"/></svg>Hoje <small>busca pela categoria</small></div><img src="img/google_categoria.webp" alt="Print da busca por consultoria de marketing belo horizonte no quadro Empresas: Cybersell patrocinado com 5,0 e 5 avaliações, Empatize com 5,0 e 96, Real Origami com 4,9 e 103 e LD Agency com 5,0 e 60" width="780" height="1328" loading="lazy"><div class="cap">Busca por "consultoria de marketing belo horizonte". Um anúncio (1) e três agências com mais de 5 anos no mercado: Empatize, 96 avaliações (2), Real Origami, 103 (3), e LD Agency, 60 (4).</div></figure>
+      <figure class="shot antes light"><div class="lab"><svg class="i"><use href="#img"/></svg>Hoje <small>Google Maps</small></div><img src="img/google_maps.webp" alt="Print do Google Maps na busca pelo nome da YM: dois anúncios de agências antes do resultado YM Marketing e Negócios, com 5,0, 2 avaliações e Aberto 24 horas" width="488" height="1055" loading="lazy"><div class="cap">No Maps, mesmo buscando pelo nome, dois anúncios de agências (1 e 2) vêm antes da YM (3). O perfil aparece, com nota 5,0 e telefone.</div></figure>
+    </div>
+    <div class="note"><svg class="i"><use href="#info"/></svg><span>Buscas feitas em 26/11/2026, no celular, em Belo Horizonte, com a conta da YM conectada ao Google. O Google personaliza resultados por pessoa e local, então outra busca pode mostrar outra ordem.</span></div>
+
+    <div class="gpair">
+      <figure class="shot depois light"><div class="lab"><svg class="i"><use href="#spark"/></svg>Possibilidade <small>ilustrativa</small></div><img src="img/mk_google.webp" alt="Mockup do Perfil da Empresa da YM no Google com fotos recentes, nota 5,0, horário real entre colchetes, botões Ligar, WhatsApp e Site, área de atendimento em BH e online, serviços como Mapa Digital e Plano mensal, uma atualização semanal e uma pergunta respondida" width="840" height="1168" loading="lazy"><div class="cap">O mesmo perfil, completo: fotos recentes, horário real, área de atendimento, serviços com os nomes do site, uma atualização por semana e perguntas respondidas. Dados entre colchetes: só com informação real.</div></figure>
+      <div class="whys">
+        <h3>Por que isso importa</h3>
+        <div class="why"><b>O mapa escolhe por relevância, distância e destaque.</b> É assim que o Google descreve os resultados locais. Avaliações, serviços, fotos e posts alimentam o destaque. Com 2 avaliações, a YM disputa com perfis que têm 60, 96 e 103.</div>
+        <div class="why"><b>Perfil completo transmite confiança.</b> Segundo o Google, clientes têm 2,7 vezes mais chance de considerar respeitável uma empresa com Perfil completo na Pesquisa e no Maps. É um dado geral do Google, não específico de consultorias.</div>
+        <div class="why"><b>Quase todo mundo lê avaliações.</b> Na pesquisa da BrightLocal de 2025, com 1.026 consumidores dos Estados Unidos, só 4% disseram nunca ler avaliações de empresas, e 74% usam dois ou mais sites de avaliação antes de decidir.</div>
+        <div class="why"><b>O horário diz algo sobre o atendimento.</b> "Aberto 24 horas" pode levar alguém a esperar resposta de madrugada. Se o atendimento tem horário, mostrá-lo alinha a expectativa; se o WhatsApp responde a qualquer hora, o perfil já diz isso.</div>
+      </div>
+    </div>
+
+    <div class="qs"><b>O que pode entrar no Perfil da Empresa da YM:</b>
+      <ul>
+        <li>Horário real de atendimento e área atendida (Belo Horizonte e online)</li>
+        <li>Fotos novas: o próprio Google avisa à administradora que as últimas são de 195 dias atrás</li>
+        <li>Os serviços com os nomes do site: Mapa Digital, avaliação gratuita, plano mensal, jobs e projetos</li>
+        <li>Uma atualização por semana, reaproveitando o post do Instagram</li>
+        <li>O link de avaliação enviado aos clientes que já gravaram depoimento (evidência 5)</li>
+        <li>Respostas às avaliações e a perguntas frequentes ("atende fora de BH?")</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="foco">
+  <div class="wrap">
+    <div class="kicker">A pergunta que organiza o resto</div>
+    <h2>Qual cliente a YM quer atrair primeiro?</h2>
+    <p class="sec-lead">No pedido, o objetivo informado foi testar o fluxo do Mapa Digital, então não partimos de uma meta de negócio. O site fala com sete segmentos e com empresas de portes diferentes, do MEI à empresa acima de R$ 200 mil por mês. Se esse arranjo já traz os clientes certos, ele segue. Se o objetivo for crescer, escolher quem vem primeiro muda a bio, a primeira tela e o que o Google mostra.</p>
+    <div class="scn">
+      <div class="card sA"><div class="l">Cenário A</div><h3>Volume de entrada</h3><p class="sub">Mapa Digital e avaliação gratuita como porta.</p>
+        <dl>
+          <dt>Quem escuta</dt><dd>Donos de negócio que ainda não sabem por onde começar.</dd>
+          <dt>Bio, link e site</dt><dd>Mapa Digital em destaque, com preço e prazo de entrega.</dd>
+          <dt>Conteúdo</dt><dd>Checklists, "terreno" e leituras públicas como exemplo.</dd>
+          <dt>O que acompanhar</dt><dd>Mapas vendidos por semana e quantos viram conversa.</dd>
+        </dl></div>
+      <div class="card sB"><div class="l">Cenário B</div><h3>Plano mensal</h3><p class="sub">Recorrência com acompanhamento.</p>
+        <dl>
+          <dt>Quem escuta</dt><dd>Negócios que já investem e querem método e relatório.</dd>
+          <dt>Bio, link e site</dt><dd>A Central YM e a Área do Cliente como diferencial.</dd>
+          <dt>Conteúdo</dt><dd>Casos reais, bastidores da Central e resultados com autorização.</dd>
+          <dt>O que acompanhar</dt><dd>Propostas enviadas e contratos mensais por mês.</dd>
+        </dl></div>
+      <div class="card sC"><div class="l">Cenário C</div><h3>Projetos e sistemas</h3><p class="sub">Sites, lojas, CRM e ERP sob medida.</p>
+        <dl>
+          <dt>Quem escuta</dt><dd>Empresas com operação maior e processos a organizar.</dd>
+          <dt>Bio, link e site</dt><dd>Projetos entregues, com contexto, desafio e solução.</dd>
+          <dt>Conteúdo</dt><dd>Telas reais, antes de implantar e depois de rodar.</dd>
+          <dt>O que acompanhar</dt><dd>Orçamentos pedidos e ticket por projeto.</dd>
+        </dl></div>
+    </div>
+    <div class="qs"><b>Perguntas para a conversa:</b>
+      <ul>
+        <li>Hoje, de onde vêm os clientes novos: indicação, Instagram, Google ou eventos?</li>
+        <li>Qual serviço vocês gostariam de vender mais nos próximos 90 dias?</li>
+        <li>A avaliação gratuita e o Mapa Digital levam à mesma conversa, ou a públicos diferentes?</li>
+        <li>Quantos clientes mensais cabem na operação sem perder a entrega direta da Yasmin?</li>
+        <li>Vale atender mais fora de BH, já que o atendimento é online?</li>
+      </ul>
+    </div>
+    <div class="note"><svg class="i"><use href="#info"/></svg><span>Os cenários são hipóteses de trabalho, feitas só com o que é público. A escolha é da YM, e o restante desta leitura vale para qualquer um.</span></div>
+  </div>
+</section>
+
+<section id="termometro" style="background:#fff;border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="kicker">Termômetro</div>
+    <h2>Os 7 pilares, vistos de fora</h2>
+    <p class="sec-lead">Leitura qualitativa, baseada no que é público. Só vocês sabem o que já traz resultado.</p>
+    <div class="pil">
+      <div class="card row"><div class="ic"><svg class="i"><use href="#target"/></svg></div><div><h4>Posicionamento</h4><small>"Começa pelo terreno", "o que fazer e em qual ordem" e a Casa do Marketing contam a mesma ideia no site, na bio e na grade.</small></div><div class="rt"><div class="lvl g s4"><i></i><i></i><i></i><i></i></div><div class="tagl">Ponto forte</div></div></div>
+      <div class="card row"><div class="ic"><svg class="i"><use href="#chat"/></svg></div><div><h4>Comunicação</h4><small>Títulos curtos e diretos nos posts, rosto da fundadora e linguagem de quem fala com o dono do negócio.</small></div><div class="rt"><div class="lvl g s4"><i></i><i></i><i></i><i></i></div><div class="tagl">Ponto forte</div></div></div>
+      <div class="card row"><div class="ic"><svg class="i"><use href="#tag"/></svg></div><div><h4>Oferta</h4><small>Mensal a partir de R$ 500, jobs e projetos, com preço de entrada e formas de pagamento. O site ainda apresenta o Raio-X Digital, que deu lugar ao Mapa Digital.</small></div><div class="rt"><div class="lvl b s3"><i></i><i></i><i></i><i></i></div><div class="tagl">Boa base</div></div></div>
+      <div class="card row"><div class="ic"><svg class="i"><use href="#globe"/></svg></div><div><h4>Presença digital</h4><small>Site completo, Instagram verificado e Perfil da Empresa no Google. Na busca pela categoria em BH, a YM não apareceu na primeira página.</small></div><div class="rt"><div class="lvl b s3"><i></i><i></i><i></i><i></i></div><div class="tagl">Boa base</div></div></div>
+      <div class="card row"><div class="ic"><svg class="i"><use href="#star"/></svg></div><div><h4>Prova social</h4><small>Quatro depoimentos em vídeo e quatro projetos no site, destaque "Depoimentos" no Instagram. No Google, 2 avaliações.</small></div><div class="rt"><div class="lvl a s2"><i></i><i></i><i></i><i></i></div><div class="tagl">Pode evoluir</div></div></div>
+      <div class="card row"><div class="ic"><svg class="i"><use href="#cursor"/></svg></div><div><h4>Conversão</h4><small>Botão principal na primeira tela, avaliação gratuita de 4 minutos e WhatsApp com 55. Medição de visitas presente no site.</small></div><div class="rt"><div class="lvl g s4"><i></i><i></i><i></i><i></i></div><div class="tagl">Ponto forte</div></div></div>
+      <div class="card row"><div class="ic"><svg class="i"><use href="#route"/></svg></div><div><h4>Consistência</h4><small>106 posts e uma série de Black Friday com publicação quase diária em novembro, no mesmo padrão visual.</small></div><div class="rt"><div class="lvl g s4"><i></i><i></i><i></i><i></i></div><div class="tagl">Ponto forte</div></div></div>
+      <div class="card row" style="background:var(--navy);border-color:var(--navy)"><div class="ic" style="background:rgba(255,255,255,.12);color:var(--orange2)"><svg class="i"><use href="#spark"/></svg></div><div><h4 style="color:#fff">Maior oportunidade (hipótese)</h4><small style="color:#c4d2e8">Transformar a prova que já existe no site em avaliações no Google, e o perfil em um canal com fotos, serviços e posts. Se os clientes chegam bem por indicação, isso é reforço; se o objetivo for ser encontrada por quem ainda não conhece a YM, é o ponto com mais espaço.</small></div></div>
+    </div>
+    <div class="note"><svg class="i"><use href="#info"/></svg><span>Níveis indicativos, sem nota numérica.</span></div>
+  </div>
+</section>
+
+<section id="fortes">
+  <div class="wrap">
+    <div class="kicker">Ponto de partida</div>
+    <h2>O que já funciona (e não deve ser perdido)</h2>
+    <p class="sec-lead">Antes de mudar qualquer coisa, vale proteger o que já gera confiança.</p>
+    <div class="str">
+      <div class="card"><div class="ic"><svg class="i"><use href="#layers"/></svg></div><div><h4>Um método com imagem própria</h4><p>A Casa do Marketing, do terreno à manutenção, explica o trabalho sem jargão e aparece no site, na bio e nos posts.</p></div></div>
+      <div class="card"><div class="ic"><svg class="i"><use href="#users"/></svg></div><div><h4>A fundadora à frente</h4><p>Rosto da Yasmin na grade, "você fala diretamente comigo" no site e quase 20 anos de experiência apresentados com números.</p></div></div>
+      <div class="card"><div class="ic"><svg class="i"><use href="#cursor"/></svg></div><div><h4>Primeiro passo sem atrito</h4><p>Avaliação gratuita de cerca de 4 minutos, logo na primeira tela, e WhatsApp em formato internacional.</p></div></div>
+      <div class="card"><div class="ic"><svg class="i"><use href="#star"/></svg></div><div><h4>Clientes falando por vídeo</h4><p>Fisioterapia, oráculos, consultoria de RH e outra fundadora contam a experiência no site, com nome e empresa.</p></div></div>
+      <div class="card"><div class="ic"><svg class="i"><use href="#route"/></svg></div><div><h4>Constância de publicação</h4><p>Uma série temática de Black Friday, com checklists e datas, mostra planejamento editorial na prática.</p></div></div>
+      <div class="card"><div class="ic"><svg class="i"><use href="#shield"/></svg></div><div><h4>Base técnica em ordem</h4><p>Título e descrição do site aparecem certos no Google, as 25 imagens da página inicial têm texto alternativo e há medição de visitas com aviso de cookies.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="evidencias" style="background:#fff;border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="kicker">Evidências e possibilidades</div>
+    <h2>O que vimos, com prints e algumas possibilidades visuais</h2>
+    <p class="sec-lead">À esquerda, <b>como está hoje</b> (print real, de 26/11/2026). À direita, uma <b>possibilidade ilustrativa</b> na identidade da YM. É um exemplo de caminho, não a arte final.</p>
+
+    <div class="find">
+      <div class="fh"><div class="num">1</div><div><h3>A bio já diz o que a YM faz, e pode dizer onde atende e qual o primeiro passo</h3><p>Nome com a categoria, três linhas de promessa, link para o site, selo de verificação e cinco destaques.</p></div></div>
+      <div class="pair">
+        <figure class="shot antes"><div class="lab"><svg class="i"><use href="#img"/></svg>Hoje <small>print do Instagram</small></div><img src="img/ig_perfil.webp" alt="Print do perfil @ym_marketingenegocios com 106 posts, 453 seguidores, bio Marketing para pequenos negócios, link ymnegocios.com.br, destaques Raio-X, Bastidores, O que fazemos, Depoimentos e Dúvidas e três posts fixados" width="750" height="1480" loading="lazy"><div class="cap">A faixa coberta mostra botões e números que só a dona da conta vê.</div></figure>
+        <figure class="shot depois"><div class="lab"><svg class="i"><use href="#spark"/></svg>Possibilidade <small>ilustrativa</small></div><img src="img/mk_perfil.webp" alt="Mockup do perfil da YM com nome Consultoria de marketing em BH, linha BH e atendimento em todo o Brasil, convite para a avaliação gratuita, botões Fale comigo e Mapa Digital e destaques Comece aqui, Mapa Digital, Depoimentos, O que fazemos e Dúvidas" width="840" height="960" loading="lazy"><div class="cap">A mesma bio, com cidade, atendimento online e um convite. O link de destino fica entre colchetes para vocês validarem.</div></figure>
+      </div>
+      <ul class="legend">
+        <li><b class="p">1</b><span><b>Bio.</b> "Marketing para pequenos negócios", "Descubra o que fazer e em qual ordem", "Diagnóstico + estratégia + execução" e "Conheça nossos serviços".</span></li>
+        <li><b class="p">2</b><span><b>Link.</b> ymnegocios.com.br, a página inicial.</span></li>
+        <li><b class="p">3</b><span><b>Destaques.</b> Raio-X, Bastidores, O que fazemos, Depoimentos e Dúvidas. Não abrimos os destaques.</span></li>
+        <li><b class="p">4</b><span><b>Fixados.</b> Três posts com a tese da marca: "Marketing é como uma casa", "mais marketing ou mais clareza?" e "a agência que você precisava".</span></li>
+      </ul>
+      <div class="sugg"><svg class="i"><use href="#spark"/></svg><span><b>Possibilidade:</b> o campo de nome entra na busca do Instagram, então "Consultoria de marketing em BH" pode ajudar quem procura pelo serviço. Se o destaque "Raio-X" já fala do Mapa Digital por dentro, a capa pode acompanhar o novo nome.</span></div>
+      <div class="whyl"><svg class="i"><use href="#check"/></svg><span><b>Por que importa:</b> no Brasil, o Instagram aparece em 60% das respostas de pequenos negócios sobre os canais digitais que usam para vender, atrás só do WhatsApp (Sebrae). O dono de negócio que chega pelo perfil decide em segundos se a YM é para ele e o que fazer em seguida.</span></div>
+    </div>
+
+    <div class="find">
+      <div class="fh"><div class="num">2</div><div><h3>A grade tem padrão visual e ritmo, e as séries podem ganhar nome</h3><p>Cards com título curto, rosto da Yasmin e cores da marca; em novembro, uma sequência de Black Friday com checklist, WhatsApp e stories.</p></div></div>
+      <div class="pair">
+        <figure class="shot antes"><div class="lab"><svg class="i"><use href="#img"/></svg>Hoje <small>grade do Instagram</small></div><img src="img/ig_grade.webp" alt="Print da grade do Instagram da YM com três posts fixados e a série de Black Friday: checklist da véspera, Cyber Monday e 13º, WhatsApp pronto, catálogo e o que postar nos stories" width="488" height="872" loading="lazy"></figure>
+        <figure class="shot depois"><div class="lab"><svg class="i"><use href="#spark"/></svg>Possibilidade <small>ilustrativa</small></div><img src="img/mk_serie.webp" alt="Mockup de grade com selos de série Terreno, Checklist, Caso real e Bastidor no topo de cada card e um card final Próximo passo" width="840" height="1228" loading="lazy"><div class="cap">O mesmo visual, com um selo de série no topo e um card de "próximo passo" no fim de cada carrossel.</div></figure>
+      </div>
+      <ul class="legend">
+        <li><b class="p">1</b><span><b>Fixados.</b> A tese da marca no topo do perfil.</span></li>
+        <li><b class="p">2</b><span><b>Série de Black Friday.</b> Um tema por dia, no mesmo padrão. O post de 26/11 é o último checklist antes da data.</span></li>
+        <li><b class="p">3</b><span><b>Bastidores.</b> Vídeos em visita a clientes; o reel de 25/11 tinha 29 curtidas e 3 comentários na nossa leitura.</span></li>
+      </ul>
+      <div class="read"><svg class="i"><use href="#eye"/></svg><span><b>Para pensar:</b> quem chega pela primeira vez vê muitos temas lado a lado. Se o objetivo for que a pessoa reconheça o que acompanhar, um selo de série ("Terreno", "Checklist", "Caso real") organiza a grade sem mudar o estilo.</span></div>
+      <div class="whyl"><svg class="i"><use href="#check"/></svg><span><b>Por que importa:</b> séries com nome viram hábito para quem segue e dão um motivo para voltar. O card final de "próximo passo" transforma o alcance do post em visitas à avaliação ou ao Mapa Digital.</span></div>
+    </div>
+
+    <div class="find">
+      <div class="fh"><div class="num">3</div><div><h3>A primeira tela do site já convida, e pode mostrar a prova logo abaixo do botão</h3><p>Título com a tese, subtítulo que explica o método e um botão laranja para a avaliação gratuita.</p></div></div>
+      <div class="pair">
+        <figure class="shot antes"><div class="lab"><svg class="i"><use href="#img"/></svg>Hoje <small>ymnegocios.com.br no celular</small></div><img src="img/site_hero.webp" alt="Print da primeira tela do site da YM no celular com o título Marketing que se sustenta começa pelo terreno, subtítulo, botão Descobrir meu ponto de partida e a linha Avaliação inicial gratuita, cerca de 4 minutos" width="780" height="1688" loading="lazy"><div class="cap">Print feito com o aviso de cookies fechado.</div></figure>
+        <figure class="shot depois"><div class="lab"><svg class="i"><use href="#spark"/></svg>Possibilidade <small>ilustrativa</small></div><img src="img/mk_hero.webp" alt="Mockup da primeira tela do site da YM com o mesmo título e botão e uma faixa de prova com nota no Google, 80 diagnósticos e leituras e 4 clientes contando em vídeo" width="840" height="898" loading="lazy"><div class="cap">A mesma tela, com três provas que já estão no site e no Google. A quantidade de avaliações fica entre colchetes.</div></figure>
+      </div>
+      <ul class="legend">
+        <li><b class="p">1</b><span><b>Título.</b> "Marketing que se sustenta começa pelo terreno."</span></li>
+        <li><b class="p">2</b><span><b>Subtítulo.</b> Tráfego, conteúdo e campanha como telhado, e a YM organizando o que vem antes.</span></li>
+        <li><b class="p">3</b><span><b>Botão.</b> "Descobrir meu ponto de partida", com a avaliação de cerca de 4 minutos.</span></li>
+      </ul>
+      <div class="sugg"><svg class="i"><use href="#spark"/></svg><span><b>Possibilidade:</b> os números "80 diagnósticos e leituras" e os depoimentos em vídeo estão mais abaixo na página. Se o objetivo for converter mais na primeira visita, uma faixa curta de prova perto do botão responde "quem já fez isso com a YM?" antes da rolagem.</span></div>
+      <div class="whyl"><svg class="i"><use href="#check"/></svg><span><b>Por que importa:</b> quem vem do Instagram ou do Google decide na primeira tela se continua. Prova ao lado do convite reduz a dúvida no momento do clique.</span></div>
+    </div>
+
+    <div class="find">
+      <div class="fh"><div class="num">4</div><div><h3>A escada de produtos está clara, e pode trazer o Mapa Digital no lugar do Raio-X Digital</h3><p>"Não sabe por onde começar? Comece pelo terreno", com três degraus de profundidade e uma regra de abatimento.</p></div></div>
+      <div class="pair">
+        <figure class="shot antes"><div class="lab"><svg class="i"><use href="#img"/></svg>Hoje <small>seção "Como contratar"</small></div><img src="img/site_oferta.webp" alt="Print da seção do site Não sabe por onde começar, com Avaliação inicial gratuita, Raio-X Digital com relatório e reunião de 30 minutos, aviso de abatimento e Raio-X Estratégico" width="780" height="1520" loading="lazy"></figure>
+        <figure class="shot depois"><div class="lab"><svg class="i"><use href="#spark"/></svg>Possibilidade <small>ilustrativa</small></div><img src="img/mk_oferta.webp" alt="Mockup da mesma seção com Avaliação inicial gratuita, Mapa Digital marcado como novo, com três itens e botão Quero meu Mapa Digital com valor entre colchetes, e Raio-X Estratégico" width="840" height="988" loading="lazy"><div class="cap">O Mapa Digital no degrau do meio, com o que entra e o prazo. O valor fica entre colchetes.</div></figure>
+      </div>
+      <ul class="legend">
+        <li><b class="p">1</b><span><b>Avaliação inicial gratuita.</b> Cerca de 4 minutos, sem custo.</span></li>
+        <li><b class="p">2</b><span><b>Raio-X Digital.</b> Relatório e reunião de 30 minutos; também aparece no rodapé.</span></li>
+        <li><b class="p">3</b><span><b>Abatimento.</b> O valor do Raio-X Digital é abatido se o cliente contratar em até 30 dias.</span></li>
+      </ul>
+      <div class="read"><svg class="i"><use href="#alert"/></svg><span><b>Vale conferir:</b> o Mapa Digital substituiu o Raio-X Digital. Se o link "Conhecer o Raio-X" já leva ao novo produto, o caminho funciona; ainda assim, o nome, o destaque do Instagram e a regra de abatimento podem acompanhar a mudança, para que o cliente reconheça o que comprou.</span></div>
+      <div class="whyl"><svg class="i"><use href="#check"/></svg><span><b>Por que importa:</b> o produto de entrada é a ponte entre o conteúdo gratuito e o plano mensal. Nome, preço e prazo iguais em todo lugar evitam a pergunta "é a mesma coisa?" na hora de pagar.</span></div>
+    </div>
+
+    <div class="find" style="margin-bottom:0">
+      <div class="fh"><div class="num">5</div><div><h3>Os depoimentos já estão gravados, e podem virar avaliações no Google</h3><p>Quatro clientes, com nome e empresa, contam em vídeo como foi trabalhar com a YM, e há uma página com todos os depoimentos.</p></div></div>
+      <div class="pair">
+        <figure class="shot antes"><div class="lab"><svg class="i"><use href="#img"/></svg>Hoje <small>seção de depoimentos</small></div><img src="img/site_depo.webp" alt="Print da seção Quem já passou pela YM com quatro vídeos de clientes: Nayara Cortez, Rose Menezes, Karina Capozzi e Janaina Gomes, e o link Ver todos os depoimentos" width="780" height="1300" loading="lazy"></figure>
+        <figure class="shot depois"><div class="lab"><svg class="i"><use href="#spark"/></svg>Possibilidade <small>ilustrativa</small></div><img src="img/mk_avaliacoes.webp" alt="Mockup de mensagem de WhatsApp pedindo avaliação no Google a um cliente que já gravou depoimento e de avaliações no Google com textos entre colchetes e uma resposta do proprietário" width="840" height="926" loading="lazy"><div class="cap">Uma mensagem curta para quem já gravou, com o link direto de avaliação, e a resposta da YM a cada uma. Textos entre colchetes: só com autorização.</div></figure>
+      </div>
+      <ul class="legend">
+        <li><b class="p">1</b><span><b>Título.</b> "Quem já passou pela YM", com clientes contando "com as próprias palavras".</span></li>
+        <li><b class="p">2</b><span><b>Vídeos.</b> Fisioterapia, oráculos, uma sócia de empresa e consultoria de RH.</span></li>
+        <li><b class="p">3</b><span><b>Página completa.</b> "Ver todos os depoimentos".</span></li>
+      </ul>
+      <div class="read"><svg class="i"><use href="#eye"/></svg><span><b>Para pensar:</b> no site, a prova é forte; no Google, onde muitos conferem antes de chamar, são 2 avaliações. Quem já gravou um vídeo tende a topar escrever duas linhas, e cada avaliação nova fica visível para quem busca.</span></div>
+      <div class="whyl"><svg class="i"><use href="#check"/></svg><span><b>Por que importa:</b> na pesquisa da BrightLocal de 2025 (EUA), só 7% dos consumidores disseram não esperar resposta do dono às avaliações. Responder cada uma mostra o atendimento antes da primeira conversa.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="varredura">
+  <div class="wrap">
+    <div class="kicker">Varredura pública</div>
+    <h2>O que encontramos sobre a YM</h2>
+    <p class="sec-lead">Consultamos o Instagram, o site e buscas públicas. Registramos também o que <b>não</b> encontramos: cada ausência aparece como <b>oportunidade de criação</b>, e pode indicar algo que existe e não alcançamos.</p>
+    <div class="tw" role="region" aria-label="Tabela da varredura pública" tabindex="0">
+      <table>
+        <thead><tr><th>Item</th><th>O que encontramos</th><th>Fonte</th><th>Leitura</th></tr></thead>
+        <tbody>
+          <tr><td>Instagram</td><td>@ym_marketingenegocios, verificado, com 106 posts, 453 seguidores e 227 seguindo. Bio com promessa em três linhas e link para o site.</td><td class="src">Instagram (26/11/2026)</td><td><span class="pill ok">Ponto forte</span></td></tr>
+          <tr><td>Destaques</td><td>Raio-X, Bastidores, O que fazemos, Depoimentos e Dúvidas, com capas no padrão da marca.</td><td class="src">Instagram (26/11/2026)</td><td><span class="pill nl">Conferir</span></td></tr>
+          <tr><td>Posts</td><td>Série de Black Friday em novembro, com post quase diário; reel de 25/11 com 29 curtidas e 3 comentários. Amostra pequena; não analisamos alcance, que é métrica interna.</td><td class="src">Instagram (26/11/2026)</td><td><span class="pill ok">Ponto forte</span></td></tr>
+          <tr><td>Site</td><td>ymnegocios.com.br: tese na primeira tela, Casa do Marketing, três formas de contratar com preço de entrada, Central YM, quatro projetos, quatro depoimentos em vídeo, sobre a fundadora e CNPJ no rodapé.</td><td class="src">ymnegocios.com.br (26/11/2026)</td><td><span class="pill ok">Ponto forte</span></td></tr>
+          <tr><td>WhatsApp do site</td><td>wa.me/5531975073862, com o código do país.</td><td class="src">Código da página (26/11/2026)</td><td><span class="pill ok">Ponto forte</span></td></tr>
+          <tr><td>Busca e medição</td><td>Título e descrição próprios, um título principal (H1), 25 imagens com texto alternativo e script de medição de visitas com aviso de cookies.</td><td class="src">Código da página inicial (26/11/2026)</td><td><span class="pill ok">Ponto forte</span></td></tr>
+          <tr><td>Produto de entrada</td><td>O site apresenta o Raio-X Digital na seção "Como contratar" e no rodapé; o produto atual é o Mapa Digital.</td><td class="src">ymnegocios.com.br (26/11/2026)</td><td><span class="pill nl">Conferir</span></td></tr>
+          <tr><td>Google, busca pelo nome</td><td>Site em primeiro, visão geral criada por IA fiel ao trabalho e Perfil da Empresa: 5,0, 2 avaliações, Consultoria em Marketing, 8 ou mais fotos.</td><td class="src">Google (26/11/2026)</td><td><span class="pill ok">Ponto forte</span></td></tr>
+          <tr><td>Horário no Google</td><td>"Aberto 24 horas".</td><td class="src">Google e Maps (26/11/2026)</td><td><span class="pill nl">Conferir</span></td></tr>
+          <tr><td>Google, busca pela categoria</td><td>Em "consultoria de marketing belo horizonte", a YM não apareceu no quadro de empresas nem nos resultados da primeira página.</td><td class="src">Google (26/11/2026)</td><td><span class="pill op">Oportunidade de criação</span></td></tr>
+          <tr><td>Google Maps</td><td>Na busca pelo nome, dois anúncios de agências aparecem antes do perfil da YM.</td><td class="src">Google Maps (26/11/2026)</td><td><span class="pill at">Possibilidade</span></td></tr>
+          <tr><td>Fotos e posts no Google</td><td>O Google avisa à administradora que as últimas fotos são de 195 dias atrás e sugere completar o perfil.</td><td class="src">Google, visão de administradora (26/11/2026)</td><td><span class="pill at">Possibilidade</span></td></tr>
+          <tr><td>Reclame Aqui e imprensa</td><td>Não localizamos página própria nem menções na imprensa nas buscas feitas.</td><td class="src">Buscas públicas (26/11/2026)</td><td><span class="pill op">Oportunidade de criação</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="swipe"><svg class="i"><use href="#route"/></svg>No celular, deslize a tabela para o lado.</div>
+  </div>
+</section>
+
+<section id="mercado" style="background:#fff;border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="kicker">Pesquisa de mercado</div>
+    <h2>Como as consultorias de BH aparecem, e como o dono de negócio decide</h2>
+    <p class="sec-lead">Primeiro, o que vimos nas buscas de 26/11/2026 por consultoria e agência de marketing em Belo Horizonte. Depois, o que pesquisas dizem sobre como pequenos negócios usam o digital e leem avaliações. É uma leitura de vitrine: não sabemos o volume, os preços nem a carteira de ninguém.</p>
+
+    <div class="tw" role="region" aria-label="Tabela de consultorias e agências observadas" tabindex="0">
+      <table>
+        <thead><tr><th>Empresa</th><th>No Google</th><th>Site e redes</th><th>Como se apresenta</th></tr></thead>
+        <tbody>
+          <tr><td>Real Origami</td><td>No mapa: 4,9, com 103 avaliações</td><td>Site</td><td>Agência de marketing, mais de 10 anos, serviço de consultoria de estratégia de marketing.</td></tr>
+          <tr><td>Empatize</td><td>No mapa: 5,0, com 96 avaliações</td><td>Site</td><td>Agência de marketing digital em BH, mais de 10 anos, serviço de consultoria de marketing.</td></tr>
+          <tr><td>LD Agency</td><td>No mapa: 5,0, com 60 avaliações</td><td>Instagram com cerca de 3,5 mil seguidores</td><td>Assessoria de marketing em BH, mais de 5 anos, consultoria de estratégia.</td></tr>
+          <tr><td>INGAGE</td><td>Anúncio: 4,5, com 36 avaliações</td><td>Site</td><td>Agência de marketing digital, parceira de plataforma de automação.</td></tr>
+          <tr><td>GAM SEO</td><td>Anúncio no Maps: 5,0, com 28 avaliações</td><td>Não verificado</td><td>Agência de SEO em BH.</td></tr>
+          <tr><td>Cybersell</td><td>Anúncio: 5,0, com 5 avaliações</td><td>Site</td><td>Agência de marketing digital e redes sociais, mais de 3 anos.</td></tr>
+          <tr><td>Nautilos</td><td>Resultado da web</td><td>Site</td><td>"Consultoria de marketing digital" com marca, comunicação e vendas.</td></tr>
+          <tr style="background:#F5F6FF"><td>YM Marketing &amp; Negócios</td><td>Perfil: 5,0, com 2 avaliações; não apareceu na busca pela categoria</td><td>Site e Instagram com 453 seguidores</td><td>Consultoria de marketing e negócios, Método VOS, Casa do Marketing, sistemas próprios.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="swipe"><svg class="i"><use href="#route"/></svg>Fonte: buscas no Google e no Google Maps, em 26/11/2026. Deslize a tabela no celular.</div>
+
+    <h3 style="font-size:21px;margin:30px 0 12px">Onde os concorrentes vendem</h3>
+    <div class="flow">
+      <div class="card fc"><div class="ic" style="background:var(--blue-bg);color:var(--blue)"><svg class="i"><use href="#pin"/></svg></div><b>Google e Maps</b><p>Dezenas de avaliações, serviços cadastrados e anúncios que aparecem até na busca pelo nome de outra empresa.</p><span class="ev gap">YM: a ampliar</span></div>
+      <div class="card fc"><div class="ic" style="background:var(--orange-bg);color:var(--orange)"><svg class="i"><use href="#chat"/></svg></div><b>Instagram</b><p>Perfis de agência com milhares de seguidores e portfólio. A YM se diferencia pelo rosto da fundadora e pelo método.</p><span class="ev">YM: já existe</span></div>
+      <div class="card fc"><div class="ic" style="background:var(--green-bg);color:var(--green)"><svg class="i"><use href="#tag"/></svg></div><b>Oferta de entrada</b><p>Diagnóstico, plano de 90 dias e "contrato sem fidelidade" aparecem em anúncios de concorrentes nacionais.</p><span class="ev">YM: avaliação e Mapa Digital</span></div>
+    </div>
+
+    <h3 style="font-size:21px;margin:30px 0 12px">Como o dono de negócio decide</h3>
+    <div class="dec">
+      <div class="card"><div class="big">60%</div><p>dos pequenos negócios citam o Instagram entre os canais digitais que usam para vender; o WhatsApp chega a 81% (Sebrae, Pulso dos Pequenos Negócios, fim de 2024).</p></div>
+      <div class="card"><div class="big">48%</div><p>dos pequenos negócios já pagaram por propaganda em redes sociais ou na internet, na mesma pesquisa do Sebrae.</p></div>
+      <div class="card"><div class="big">59%</div><p>dos pequenos negócios que vendem online concentram a operação digital em uma só pessoa; entre os MEI, 76% (Sebrae e E-Commerce Brasil, 2026, 3.081 empresários).</p></div>
+      <div class="card"><div class="big">4%</div><p>dos consumidores dizem nunca ler avaliações de empresas online, e 74% usam dois ou mais sites de avaliação (BrightLocal, 2025, EUA).</p></div>
+    </div>
+    <div class="note"><svg class="i"><use href="#info"/></svg><span>Os dados do Sebrae são do Brasil. A pesquisa da BrightLocal é dos Estados Unidos e trata de consumidores em geral, não de empresas contratando consultoria; serve como referência, não como retrato de BH. Não localizamos pesquisa brasileira pública sobre como pequenos negócios escolhem consultoria de marketing.</span></div>
+
+    <div class="thesis" style="margin-top:20px">
+      <svg class="i"><use href="#target"/></svg>
+      <p><b>Para a YM, isso aponta três mensagens:</b> o dono que faz tudo sozinho precisa saber "o que fazer e em qual ordem" (a tese de vocês), a prova precisa estar onde ele confere (Google), e o primeiro passo precisa caber no tempo dele (avaliação de 4 minutos e Mapa Digital). <em>A YM já tem as três; o passo é deixá-las visíveis no mesmo lugar.</em></p>
+    </div>
+  </div>
+</section>
+
+<section id="oportunidades">
+  <div class="wrap">
+    <div class="kicker">Oportunidades de criação</div>
+    <h2>O que não encontramos vira o que dá para criar</h2>
+    <p class="sec-lead">Na varredura, alguns dados não apareceram. Isso não indica problema: é espaço livre, e cada item vira um ativo que trabalha para a YM todos os dias.</p>
+    <div class="ops">
+      <div class="card"><span class="pill op">Oportunidade de criação</span><h4>Presença na busca pela categoria</h4><p><b>Não localizado:</b> a YM em "consultoria de marketing belo horizonte". <b>Criar:</b> perfil completo, serviços e avaliações, e uma página do site para essa busca.</p></div>
+      <div class="card"><span class="pill op">Oportunidade de criação</span><h4>Avaliações no Google</h4><p><b>Não localizado:</b> os depoimentos do site no Google. <b>Criar:</b> pedido com link direto aos clientes que já gravaram.</p></div>
+      <div class="card"><span class="pill op">Oportunidade de criação</span><h4>Página do Mapa Digital</h4><p><b>Não localizado:</b> o Mapa Digital no site e nos destaques. <b>Criar:</b> uma página com o que entra, prazo e um exemplo.</p></div>
+      <div class="card"><span class="pill op">Oportunidade de criação</span><h4>Posts no Google</h4><p><b>Não localizado:</b> atualizações recentes no perfil. <b>Criar:</b> um post por semana a partir da série do Instagram.</p></div>
+      <div class="card"><span class="pill op">Oportunidade de criação</span><h4>Imprensa e reputação</h4><p><b>Não localizado:</b> menções na imprensa e página no Reclame Aqui. <b>Criar:</b> pauta para a mídia local com os 80 diagnósticos e as leituras públicas.</p></div>
+      <div class="card"><span class="pill op">Oportunidade de criação</span><h4>Pesquisa própria</h4><p><b>Não localizado:</b> pesquisa brasileira sobre como o pequeno negócio escolhe consultoria. <b>Criar:</b> um resumo anônimo das avaliações gratuitas, que vira conteúdo e pauta.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="crescer" style="background:#fff;border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="kicker">Se o objetivo for crescer</div>
+    <h2>Antes de anúncios: 3 camadas de apoio</h2>
+    <p class="sec-lead">Se os caminhos de hoje já trazem os clientes que vocês querem, eles seguem. Se o objetivo for ampliar, estas camadas ajudam cada real investido a render.</p>
+    <div class="path">
+      <div class="card"><div class="ic" style="background:var(--blue-bg);color:var(--blue)"><svg class="i" style="width:24px;height:24px"><use href="#route"/></svg></div><h4>Destino pronto</h4><ul><li>Mapa Digital com nome, preço e prazo iguais no site, no Instagram e no Google</li><li>Prova perto do botão principal</li><li>Horário de atendimento claro</li></ul></div>
+      <div class="card"><div class="ic" style="background:var(--orange-bg);color:var(--orange)"><svg class="i" style="width:24px;height:24px"><use href="#star"/></svg></div><h4>Prova reunida</h4><ul><li>Avaliações no Google de quem já gravou depoimento</li><li>Casos com números, com autorização</li><li>Respostas a cada avaliação</li></ul></div>
+      <div class="card"><div class="ic" style="background:var(--green-bg);color:var(--green)"><svg class="i" style="width:24px;height:24px"><use href="#shield"/></svg></div><h4>Medição</h4><ul><li>Origem de cada contato e de cada Mapa vendido</li><li>Taxa de Mapa Digital para plano mensal</li><li>Desempenho do perfil no Google, mês a mês</li></ul></div>
+    </div>
+    <div class="warn"><svg class="i"><use href="#alert"/></svg><span><b>Ponto de atenção:</b> depoimentos e resultados de clientes pedem autorização por escrito, e promessas de resultado em anúncios seguem o Código de Defesa do Consumidor e a autorregulamentação do CONAR. Dados de quem preenche a avaliação gratuita ou compra o Mapa Digital seguem a LGPD. Google e Meta têm políticas próprias para anúncios e para avaliações (não é permitido oferecer vantagem em troca de avaliação). Esta é uma leitura de marketing, não parecer jurídico.</span></div>
+  </div>
+</section>
+
+<section id="plano">
+  <div class="wrap">
+    <div class="kicker">Caminho possível</div>
+    <h2>Um caminho de 90 dias no Método VOS</h2>
+    <p class="sec-lead">Um exemplo de sequência, a ajustar na conversa de 30 minutos. O que já funciona entra como base.</p>
+    <div class="plan">
+      <div class="card b1"><div class="hd"><svg class="i"><use href="#eye"/></svg>VER · dias 1 a 30<span>Base</span></div><ul><li>Conversar sobre objetivos e sobre o cliente prioritário (cenários A, B ou C)</li><li>Entender de onde vêm os clientes hoje</li><li><b>Prioridade:</b> pedir avaliação no Google a quem já gravou depoimento</li><li>Conferir o horário e as fotos do perfil</li></ul></div>
+      <div class="card b2"><div class="hd"><svg class="i"><use href="#grid"/></svg>ORDENAR · dias 31 a 60<span>Estrutura</span></div><ul><li>Mapa Digital no site, no rodapé e no destaque do Instagram</li><li>Bio com cidade, atendimento online e convite</li><li>Faixa de prova na primeira tela do site</li><li>Serviços e área de atendimento no Perfil da Empresa</li></ul></div>
+      <div class="card b3"><div class="hd"><svg class="i"><use href="#shield"/></svg>SUSTENTAR · dias 61 a 90<span>Tração</span></div><ul><li>Séries com selo e card de próximo passo</li><li>Um post por semana no Google</li><li>Uma página para "consultoria de marketing em BH"</li><li>Medição de Mapas vendidos por origem</li><li>Teste de anúncio local em pequena escala, com medição</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="lim">
+      <h4 style="font-size:17px;display:flex;gap:10px;align-items:center"><svg class="i" style="color:var(--indigo)"><use href="#info"/></svg>Limites desta leitura</h4>
+      <ul>
+        <li>O objetivo informado no pedido foi testar o fluxo do Mapa Digital. Sem um objetivo de negócio declarado, os cenários cobrem três caminhos comuns; a conversa de 30 minutos é o lugar de escolher.</li>
+        <li>Baseada só em informações públicas, no Instagram, no site e em buscas feitas em 26/11/2026. Não temos acesso a vendas, métricas internas ou investimentos.</li>
+        <li>O navegador usado estava conectado às contas da YM no Instagram e no Google, então alguns prints mostram a visão de quem administra. Cobrimos os elementos que só a administradora vê, e o que citamos dessa visão está indicado.</li>
+        <li>Não abrimos destaques nem stories. As reações citadas são uma amostra pequena; não analisamos alcance.</li>
+        <li>Os prints do site foram feitos a partir do mesmo código publicado em ymnegocios.com.br, no tamanho de um celular.</li>
+        <li>O Google personaliza resultados por pessoa e local. Os dados dos concorrentes são o que estava público nessa data.</li>
+        <li>A pesquisa da BrightLocal é dos Estados Unidos; os dados do Sebrae são do Brasil. Não localizamos pesquisa brasileira sobre a escolha de consultoria de marketing.</li>
+        <li>As imagens de "possibilidade" são <b>ilustrativas</b>. Números, links, valores e textos entre colchetes devem ser validados pela YM.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="cta">
+      <h2>Vamos conversar sobre o que faz sentido para a YM?</h2>
+      <p>A conversa de 30 minutos está incluída no Mapa Digital. Nela, escolhemos juntos o que vale, ou não, mudar.</p>
+      <a class="btn" id="cta-whatsapp" href="https://wa.me/5531975073862?text=Ol%C3%A1%2C%20Yasmin%21%20Recebi%20o%20Mapa%20Digital%20da%20YM%20Marketing%20%26%20Neg%C3%B3cios%20e%20quero%20agendar%20a%20conversa%20de%2030%20minutos." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.4 14.1c-.2.6-1.3 1.2-1.8 1.3-.5.1-1 .1-3.3-.8-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.4z"/></svg>Agendar a conversa de 30 minutos (incluída)</a>
+      <small>WhatsApp (31) 97507-3862</small>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div><b>Fontes consultadas</b></div>
+    <ul class="srcs">
+      <li>Instagram @ym_marketingenegocios: perfil, grade e dois posts (25 e 26/11/2026), em 26/11/2026.</li>
+      <li>Site ymnegocios.com.br: página inicial e código da página, em 26/11/2026.</li>
+      <li>Buscas no Google por "YM Marketing &amp; Negócios Belo Horizonte" e "consultoria de marketing belo horizonte", e no Google Maps por "YM Marketing e Negócios Belo Horizonte", em 26/11/2026.</li>
+      <li>Buscas públicas por "YM Marketing" com Belo Horizonte, Yasmin Menezes e Reclame Aqui, em 26/11/2026.</li>
+      <li>Agência Sebrae de Notícias: <a href="https://agenciasebrae.com.br/dados/quase-metade-dos-pequenos-negocios-investe-em-propaganda-paga-na-internet" rel="noopener">"Quase metade dos pequenos negócios investe em propaganda paga na internet"</a> (Pulso dos Pequenos Negócios, 9ª edição, 17/02/2025) e <a href="https://agenciasebrae.com.br/dados/operacao-digital-esta-concentrada-em-apenas-uma-pessoa-nos-pequenos-negocios-aponta-pesquisa-inedita/" rel="noopener">"Operação digital está concentrada em apenas uma pessoa nos pequenos negócios"</a> (Radar Mercado Digital 2026, Sebrae e E-Commerce Brasil, 29/07/2026).</li>
+      <li>BrightLocal, <a href="https://www.brightlocal.com/research/local-consumer-review-survey-2025/" rel="noopener">Local Consumer Review Survey 2025</a> (1.026 consumidores dos EUA).</li>
+      <li>Google, Ajuda do Perfil da Empresa: <a href="https://support.google.com/business/answer/7091?hl=pt-BR" rel="noopener">classificação local</a> e <a href="https://support.google.com/business/answer/10515606" rel="noopener">perfil completo</a>.</li>
+    </ul>
+    <div>Material preparado pela YM Marketing &amp; Negócios para uso exclusivo da YM Marketing &amp; Negócios. Marcas, nomes e imagens das empresas citadas, das plataformas e de terceiros pertencem a seus titulares e aparecem aqui apenas para análise.</div>
+    <div>Desenvolvido por <a href="https://ymnegocios.com.br/">YM Marketing e Negócios</a></div>
+  </div>
+</footer>
+
+<script src="/assets/ym-analytics.js"></script>
+</body>
+</html>
