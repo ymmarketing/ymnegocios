@@ -11,6 +11,8 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
                                com links de visualização e de download em alta qualidade (12/11/2026)
    POST {approval_id}        → uma peça só, no mesmo formato (abre direto do aviso ou da aba do cliente)
    MARK_PUBLISHED {approval_id} → marca uma peça aprovada como publicada (não notifica o cliente)
+   LIBRARY {client_id?}      → biblioteca de conteúdos: todas as peças (menos arquivadas), sem depender de data (26/11/2026)
+   RESPOND {approval_id, comment} → resposta da YM ao cliente no histórico da peça (aparece para o cliente)
    Tabela central_ym_inbox é preenchida pelo gatilho trg_central_ym_client_approval_alert. */
 const PROD='https://ymnegocios.com.br';
 const ORIGINS=new Set([PROD,'https://www.ymnegocios.com.br','http://localhost:3000','http://localhost:5173']);
@@ -77,8 +79,8 @@ Deno.serve(async(req:Request)=>{
   }
 
   const slug=(v:unknown)=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'peca';
-  async function posts(filter:(q:any)=>any){
-    const iq=await filter(sb.from('client_approval_items').select('id,client_id,title,content_type,description,status,due_at,scheduled_at,content_id,client:crm_clients(contact:crm_contacts(name,business_name))')).limit(80);
+  async function posts(filter:(q:any)=>any,max=80){
+    const iq=await filter(sb.from('client_approval_items').select('id,client_id,title,content_type,description,status,due_at,scheduled_at,content_id,updated_at,client:crm_clients(contact:crm_contacts(name,business_name))')).limit(max);
     if(iq.error)throw iq.error;
     const items=iq.data||[];if(!items.length)return [];
     const ids=items.map((x:any)=>x.id);
@@ -95,7 +97,7 @@ Deno.serve(async(req:Request)=>{
       const vnum=new Map(vs.map((x:any)=>[x.id,x.version_number]));
       const seen=new Set<string>();
       const history=(aq.data||[]).filter((a:any)=>a.approval_id===it.id).filter((a:any)=>{const k=[a.version_id,a.action,a.comment||''].join('|');if(seen.has(k))return false;seen.add(k);return true}).map((a:any)=>({action:a.action,comment:a.comment,created_at:a.created_at,actor_type:a.actor_type,version_number:vnum.get(a.version_id)||null}));
-      return {approval_id:it.id,client_id:it.client_id,client_name,title:it.title,content_type:it.content_type,description:it.description,status:it.status,due_at:it.due_at,scheduled_at:it.scheduled_at,
+      return {approval_id:it.id,client_id:it.client_id,client_name,title:it.title,content_type:it.content_type,description:it.description,status:it.status,due_at:it.due_at,scheduled_at:it.scheduled_at,updated_at:it.updated_at,format:s.format||'',
         version_number:v?.version_number||null,version_count:vs.length,change_summary:v?.change_summary||null,sent_at:v?.sent_at||null,
         caption:s.caption_instagram||'',hook:s.hook||'',cta_text:s.cta_text||'',hashtags:Array.isArray(s.hashtags)?s.hashtags:[],client_notes:s.client_notes||'',recording_notes:s.recording_notes||'',reel_script:Array.isArray(s.reel_script)?s.reel_script:[],
         images:paths.map((p:string,i:number)=>({path:p,name:`${slug(client_name)}-${slug(it.title)}-${String(i+1).padStart(2,'0')}.${(p.split('.').pop()||'jpg').toLowerCase()}`})),
@@ -124,6 +126,22 @@ Deno.serve(async(req:Request)=>{
       const r=await posts((q:any)=>q.eq('id',b.approval_id));
       if(!r.length)return reply(404,{ok:false,error:'not_found'},origin);
       return reply(200,{ok:true,post:r[0]},origin);
+    }
+    if(action==='LIBRARY'){
+      const cid=uuid(b.client_id)?b.client_id:null;
+      const r=await posts((q:any)=>{let x=q.neq('status','CANCELADO').eq('visible_to_client',true);if(cid)x=x.eq('client_id',cid);return x.order('created_at',{ascending:true})},400);
+      return reply(200,{ok:true,posts:r},origin);
+    }
+    if(action==='RESPOND'){
+      const comment=String(b.comment||'').trim().slice(0,3000);
+      if(!uuid(b.approval_id)||!comment)return reply(400,{ok:false,error:'comment_required'},origin);
+      const it=await sb.from('client_approval_items').select('id,client_id,title').eq('id',b.approval_id).maybeSingle();if(it.error)throw it.error;if(!it.data)return reply(404,{ok:false,error:'not_found'},origin);
+      const v=await sb.from('client_approval_versions').select('id').eq('approval_id',b.approval_id).eq('visible_to_client',true).order('version_number',{ascending:false}).limit(1).maybeSingle();
+      const q=await sb.from('client_approval_actions').insert({approval_id:b.approval_id,version_id:v.data?.id||null,action:'COMENTARIO',comment,actor_type:'YM',actor_email:email});if(q.error)throw q.error;
+      await sb.from('client_notifications').insert({client_id:it.data.client_id,notification_type:'APROVACAO',title:'A YM respondeu sobre um conteúdo',message:it.data.title,target_url:'/areadocliente#aprovacoes',created_by:email});
+      await sb.from('central_ym_inbox').update({read_at:new Date().toISOString(),read_by:email}).eq('approval_id',b.approval_id).is('read_at',null);
+      const r=await posts((q:any)=>q.eq('id',b.approval_id));
+      return reply(200,{ok:true,post:r[0]||null},origin);
     }
     if(action==='MARK_PUBLISHED'){
       if(!uuid(b.approval_id))return reply(400,{ok:false,error:'approval_id_required'},origin);
@@ -155,7 +173,7 @@ Deno.serve(async(req:Request)=>{
       metrics()
     ]);
     if(list.error)throw list.error;if(unread.error)throw unread.error;
-    const items=(list.data||[]).map((x:any)=>{const c=one(x.client);const ct=one(c?.contact);const it=one(x.item);return {id:x.id,client_id:x.client_id,approval_id:x.approval_id,kind:x.kind,title:x.title,message:x.message,actor_email:x.actor_email,created_at:x.created_at,read_at:x.read_at,client_name:ct?.business_name||ct?.name||'Cliente',item_status:it?.status||null,scheduled_at:it?.scheduled_at||null,has_draft:revs.some((r:any)=>r.approval_id===x.approval_id)};});
+    const items=(list.data||[]).filter((x:any)=>one(x.item)?.status!=='CANCELADO').map((x:any)=>{const c=one(x.client);const ct=one(c?.contact);const it=one(x.item);return {id:x.id,client_id:x.client_id,approval_id:x.approval_id,kind:x.kind,title:x.title,message:x.message,actor_email:x.actor_email,created_at:x.created_at,read_at:x.read_at,client_name:ct?.business_name||ct?.name||'Cliente',item_status:it?.status||null,scheduled_at:it?.scheduled_at||null,has_draft:revs.some((r:any)=>r.approval_id===x.approval_id)};});
     return reply(200,{ok:true,unread:unread.count||0,items,revisions:revs,metrics:mets},origin);
   }catch(e:any){console.error('central-ym-inbox',action,e?.message||e);return reply(409,{ok:false,error:'inbox_failed',detail:String(e?.message||e).slice(0,400)},origin);}
 });

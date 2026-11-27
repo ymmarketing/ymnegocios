@@ -107,12 +107,12 @@
 
   function render(){
     const root=document.getElementById('caView_approvals');if(!root)return;
-    const items=(data.items||[]).filter(x=>filter==='all'||(filter==='unread'?!x.read_at:x.kind===filter));
-    root.innerHTML=`<div id="cypSlot"></div><div class="cyi-head"><div><h2>Aprovações dos clientes</h2><p>Tudo o que os clientes aprovaram, pediram de ajuste ou comentaram na Área do Cliente.</p></div>${data.unread?'<button class="ym-btn secondary" type="button" id="cyiAll">Marcar todas como vistas</button>':''}</div>
+    const items=(data.items||[]).filter(x=>x.item_status!=='CANCELADO').filter(x=>filter==='all'||(filter==='unread'?!x.read_at:x.kind===filter));
+    root.innerHTML=`<div id="cylSlot"></div><div class="cyi-head"><div><h2>Aprovações dos clientes</h2><p>Tudo o que os clientes aprovaram, pediram de ajuste ou comentaram na Área do Cliente.</p></div>${data.unread?'<button class="ym-btn secondary" type="button" id="cyiAll">Marcar todas como vistas</button>':''}</div>
       ${revisionsHtml()}<div class="cyi-sec">Respostas dos clientes</div>
       <div class="cyi-filters" style="margin-bottom:12px">${[['unread',`Novas (${data.unread||0})`],['AJUSTE_SOLICITADO','Ajustes'],['APROVADO','Aprovados'],['all','Todas']].map(f=>`<button type="button" data-f="${f[0]}" class="${filter===f[0]?'on':''}">${f[1]}</button>`).join('')}</div>
       <div class="cyi-list">${items.length?items.map(card).join(''):`<div class="cyi-empty">${filter==='unread'?'Nenhuma resposta nova. Tudo visto por aqui.':'Nenhuma resposta neste filtro.'}</div>`}</div>${metricsHtml()}`;
-    window.CentralYMPosting?.attach(root.querySelector('#cypSlot'));
+    if(window.CentralYMLibrary)window.CentralYMLibrary.mount(root.querySelector('#cylSlot'));else window.CentralYMPosting?.attach(root.querySelector('#cylSlot'));
     root.querySelectorAll('[data-send]').forEach(b=>b.onclick=()=>{const r=(data.revisions||[]).find(x=>x.version_id===b.dataset.send);if(!r)return;if(!confirm(`Enviar a versão ${r.version_number} de "${r.title}" para ${r.client_name}?\n\nA versão ${r.previous_version||1} continua guardada no histórico.`))return;b.disabled=true;act('SEND_REVISION',{version_id:r.version_id}).then(()=>YM.toast?.('Nova versão enviada. O cliente já vê o que mudou.'))});
     root.querySelectorAll('[data-discard]').forEach(b=>b.onclick=()=>{if(!confirm('Descartar este rascunho? O cliente nunca viu esta versão.'))return;act('DISCARD_REVISION',{version_id:b.dataset.discard})});
     root.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{filter=b.dataset.f;render()});
